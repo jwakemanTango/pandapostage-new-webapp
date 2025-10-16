@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Settings2 } from "lucide-react";
+import labelPreviewUrl from "@assets/label_1760604447339.png";
 
 type FormView = "four-step" | "three-step";
 
@@ -37,7 +38,9 @@ const CreateShipment = () => {
           rate: '$8.50',
           retailRate: '$10.20',
           deliveryDays: 3,
-          carrierId: 1
+          carrierId: 1,
+          labelUrl: labelPreviewUrl,
+          labelFormat: 'png'
         },
         {
           id: '2',
@@ -46,7 +49,9 @@ const CreateShipment = () => {
           rate: '$5.20',
           retailRate: '$6.50',
           deliveryDays: 5,
-          carrierId: 1
+          carrierId: 1,
+          labelUrl: labelPreviewUrl,
+          labelFormat: 'png'
         },
         {
           id: '3',
@@ -55,7 +60,9 @@ const CreateShipment = () => {
           rate: '$12.75',
           retailRate: '$15.30',
           deliveryDays: 4,
-          carrierId: 2
+          carrierId: 2,
+          labelUrl: labelPreviewUrl,
+          labelFormat: 'png'
         },
         {
           id: '4',
@@ -64,7 +71,9 @@ const CreateShipment = () => {
           rate: '$18.99',
           retailRate: '$24.50',
           deliveryDays: 2,
-          carrierId: 3
+          carrierId: 3,
+          labelUrl: labelPreviewUrl,
+          labelFormat: 'png'
         },
         {
           id: '5',
@@ -73,7 +82,9 @@ const CreateShipment = () => {
           rate: '$14.25',
           retailRate: '$17.80',
           deliveryDays: 3,
-          carrierId: 2
+          carrierId: 2,
+          labelUrl: labelPreviewUrl,
+          labelFormat: 'png'
         }
       ];
       

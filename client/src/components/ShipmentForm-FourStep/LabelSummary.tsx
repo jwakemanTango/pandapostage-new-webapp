@@ -10,6 +10,18 @@ interface LabelSummaryProps {
 }
 
 export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview = true }: LabelSummaryProps) => {
+  const handleDownloadLabel = () => {
+    // Create a new window for printing
+    const labelUrl = purchasedLabel.labelUrl || labelPreviewUrl;
+    const printWindow = window.open(labelUrl, '_blank');
+    
+    if (printWindow) {
+      printWindow.addEventListener('load', () => {
+        printWindow.print();
+      });
+    }
+  };
+
   return (
     <div className={`grid ${showLabelPreview ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'} gap-4`}>
       <div className="flex flex-col h-full">
@@ -57,7 +69,7 @@ export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview
           </div>
 
           <div className="space-y-3">
-            <Button className="w-full gap-2" data-testid="button-download-label">
+            <Button className="w-full gap-2" onClick={handleDownloadLabel} data-testid="button-download-label">
               <Download className="h-4 w-4" />
               Download Label
             </Button>

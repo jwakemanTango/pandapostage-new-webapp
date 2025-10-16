@@ -11,6 +11,18 @@ interface LabelSummaryProps {
 }
 
 export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview = true }: LabelSummaryProps) => {
+  const handleDownloadLabel = () => {
+    // Create a new window for printing
+    const labelUrl = purchasedLabel.labelUrl || labelPreviewUrl;
+    const printWindow = window.open(labelUrl, '_blank');
+    
+    if (printWindow) {
+      printWindow.addEventListener('load', () => {
+        printWindow.print();
+      });
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="pb-2 pt-3">
@@ -66,7 +78,7 @@ export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview
               </div>
 
               <div className="space-y-2">
-                <Button size="sm" className="w-full gap-1.5" data-testid="button-download-label">
+                <Button size="sm" className="w-full gap-1.5" onClick={handleDownloadLabel} data-testid="button-download-label">
                   <Download className="h-3.5 w-3.5" />
                   Download Label
                 </Button>

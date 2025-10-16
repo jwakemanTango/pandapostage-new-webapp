@@ -69,6 +69,8 @@ export const rateSchema = z.object({
   deliveryDays: z.number().optional(),
   deliveryDate: z.string().optional(),
   retailRate: z.string().optional(),
+  labelUrl: z.string().optional(),
+  labelFormat: z.enum(['pdf', 'png', 'zpl']).optional(),
 });
 
 // Address type for saved addresses

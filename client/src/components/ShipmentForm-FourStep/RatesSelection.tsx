@@ -13,6 +13,13 @@ interface RatesSelectionProps {
 }
 
 const RatesSelection = ({ rates = [], isLoading = false, onPurchase, isPurchasing = false }: RatesSelectionProps) => {
+  // Sort rates by price (low to high)
+  const sortedRates = [...rates].sort((a, b) => {
+    const priceA = parseFloat(a.rate.replace(/[^0-9.]/g, ''));
+    const priceB = parseFloat(b.rate.replace(/[^0-9.]/g, ''));
+    return priceA - priceB;
+  });
+
   const getCarrierLogo = (carrier: string) => {
     const size = 20;
     
@@ -75,12 +82,12 @@ const RatesSelection = ({ rates = [], isLoading = false, onPurchase, isPurchasin
       
       {/* Mobile Layout - Stacked Cards */}
       <div className="lg:hidden space-y-3">
-        {rates.length === 0 ? (
+        {sortedRates.length === 0 ? (
           <div className="text-center py-6 text-muted-foreground text-sm">
             No rates available for this shipment
           </div>
         ) : (
-          rates.map((rate) => (
+          sortedRates.map((rate) => (
             <div
               key={rate.id}
               className="border rounded-md p-3 space-y-3 hover-elevate"
@@ -142,14 +149,14 @@ const RatesSelection = ({ rates = [], isLoading = false, onPurchase, isPurchasin
             </tr>
           </thead>
           <tbody>
-            {rates.length === 0 ? (
+            {sortedRates.length === 0 ? (
               <tr>
                 <td colSpan={4} className="text-center py-6 text-muted-foreground text-sm">
                   No rates available for this shipment
                 </td>
               </tr>
             ) : (
-              rates.map((rate) => (
+              sortedRates.map((rate) => (
                 <tr
                   key={rate.id}
                   className="border-b hover-elevate"
