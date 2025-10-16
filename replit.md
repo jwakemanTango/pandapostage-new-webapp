@@ -70,9 +70,13 @@ Preferred communication style: Simple, everyday language.
     - `CompactLiveSummary.tsx` - Real-time summary sidebar with step indicators and PandaLogo header
     - `LabelSummary.tsx` - Post-purchase label display with compact styling
   - Form Layout Organization:
-    - **Addresses Section**: Shown first (2-column grid when not compact, 1-column when compact)
-    - **Package & Services Section**: Displayed underneath addresses (2-column responsive grid)
-    - Package Details and Additional Services stack vertically on small screens, side-by-side on larger screens
+    - **When Compact Addresses Disabled** (default):
+      - Addresses: 2-column grid (Ship From | Ship To)
+      - Package & Services: 2-column grid below addresses (Package Details | Additional Services)
+    - **When Compact Addresses Enabled**:
+      - Left column: Combined Address Form (with From/To toggle)
+      - Right column: Package Details and Additional Services stacked vertically
+      - Layout adapts responsively on smaller screens
   - Persistent Summary Sidebar:
     - CompactLiveSummary always positioned on the right side (320px wide, sticky)
     - Shows step progress indicators: Shipment → Select Rate → Print Label
