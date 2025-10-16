@@ -30,9 +30,9 @@ type EditingPackage = {
 }
 
 const PACKAGE_PRESETS = [
-  { name: "Small Box", weight: "1", dimensions: { length: "8", width: "6", height: "4" } },
-  { name: "Medium Box", weight: "5", dimensions: { length: "12", width: "10", height: "8" } },
-  { name: "Large Box", weight: "10", dimensions: { length: "18", width: "14", height: "12" } },
+  { name: "Small Box", carrier: "any", packageType: "parcel", weight: "1", dimensions: { length: "8", width: "6", height: "4" } },
+  { name: "Medium Box", carrier: "any", packageType: "parcel", weight: "5", dimensions: { length: "12", width: "10", height: "8" } },
+  { name: "Large Box", carrier: "any", packageType: "large_box", weight: "10", dimensions: { length: "18", width: "14", height: "12" } },
 ];
 
 const defaultPackage: PackageItem = {
@@ -75,6 +75,8 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
   };
 
   const handlePresetSelect = (preset: typeof PACKAGE_PRESETS[0]) => {
+    form.setValue("packages.0.carrier", preset.carrier);
+    form.setValue("packages.0.packageType", preset.packageType);
     form.setValue("packages.0.weightLbs", preset.weight);
     form.setValue("packages.0.length", preset.dimensions.length);
     form.setValue("packages.0.width", preset.dimensions.width);
@@ -166,7 +168,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
       {!showMultiPackage && !isEditing && (
         <>
           <div className="mb-4">
-            <FormLabel className="text-sm font-medium mb-2 block">Quick Presets</FormLabel>
+            <FormLabel className="text-sm font-medium mb-2 block">Custom Packages</FormLabel>
             <div className="flex gap-2">
               {PACKAGE_PRESETS.map((preset) => (
                 <Button

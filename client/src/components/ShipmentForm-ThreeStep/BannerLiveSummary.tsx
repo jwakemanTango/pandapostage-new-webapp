@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Package, MapPin, Truck, DollarSign, Printer } from "lucide-react";
 import { ShipmentFormData } from "@shared/schema";
 
@@ -42,7 +41,14 @@ export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErro
   return (
     <div className="sticky top-0 z-20 shadow-md bg-card border-b w-full">
       <div className="container mx-auto px-3 sm:px-5 max-w-[1400px]">
-        <div className="py-3 px-4">
+        <button
+          type="button"
+          className="w-full py-3 px-4 cursor-pointer hover-elevate active-elevate-2 text-left"
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          data-testid="button-toggle-banner-summary"
+          aria-label={isCollapsed ? "Expand summary" : "Collapse summary"}
+          aria-expanded={!isCollapsed}
+        >
           <div className="space-y-2 relative">
             {/* Step Progress - Centered */}
             <div className="flex items-center justify-center gap-6">
@@ -64,21 +70,14 @@ export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErro
               })}
             </div>
             
-            {/* Collapse Toggle - Positioned Absolutely */}
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="absolute top-0 right-0 h-8 w-8"
-              data-testid="button-toggle-banner-summary"
-            >
+            {/* Expand/Collapse Indicator - Positioned Absolutely */}
+            <div className="absolute top-0 right-0 h-8 w-8 flex items-center justify-center">
               {isCollapsed ? (
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
               ) : (
-                <ChevronUp className="h-4 w-4" />
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
               )}
-            </Button>
+            </div>
 
           {/* Shipment Info (when not collapsed) */}
           {!isCollapsed && (
@@ -121,7 +120,7 @@ export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErro
             </div>
           )}
           </div>
-        </div>
+        </button>
       </div>
     </div>
   );
