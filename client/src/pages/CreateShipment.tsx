@@ -25,72 +25,72 @@ const CreateShipment = () => {
 
   // TODO: remove mock functionality
   const handleGetRates = (data: any) => {
-    console.log('Getting rates for:', data);
+    console.log("Getting rates for:", data);
     setIsLoadingRates(true);
-    
+
     // Mock API call
     setTimeout(() => {
       const mockRates: Rate[] = [
         {
-          id: '1',
-          carrier: 'USPS',
-          service: 'Priority Mail',
-          rate: '$8.50',
-          retailRate: '$10.20',
+          id: "1",
+          carrier: "USPS",
+          service: "Priority Mail",
+          rate: "$8.50",
+          retailRate: "$10.20",
           deliveryDays: 3,
           carrierId: 1,
           labelUrl: labelPreviewUrl,
-          labelFormat: 'png'
+          labelFormat: "png",
         },
         {
-          id: '2',
-          carrier: 'USPS',
-          service: 'First Class',
-          rate: '$5.20',
-          retailRate: '$6.50',
+          id: "2",
+          carrier: "USPS",
+          service: "First Class",
+          rate: "$5.20",
+          retailRate: "$6.50",
           deliveryDays: 5,
           carrierId: 1,
           labelUrl: labelPreviewUrl,
-          labelFormat: 'png'
+          labelFormat: "png",
         },
         {
-          id: '3',
-          carrier: 'UPS',
-          service: 'Ground',
-          rate: '$12.75',
-          retailRate: '$15.30',
+          id: "3",
+          carrier: "UPS",
+          service: "Ground",
+          rate: "$12.75",
+          retailRate: "$15.30",
           deliveryDays: 4,
           carrierId: 2,
           labelUrl: labelPreviewUrl,
-          labelFormat: 'png'
+          labelFormat: "png",
         },
         {
-          id: '4',
-          carrier: 'FedEx',
-          service: '2Day',
-          rate: '$18.99',
-          retailRate: '$24.50',
+          id: "4",
+          carrier: "FedEx",
+          service: "2Day",
+          rate: "$18.99",
+          retailRate: "$24.50",
           deliveryDays: 2,
           carrierId: 3,
           labelUrl: labelPreviewUrl,
-          labelFormat: 'png'
+          labelFormat: "png",
         },
         {
-          id: '5',
-          carrier: 'UPS',
-          service: '3 Day Select',
-          rate: '$14.25',
-          retailRate: '$17.80',
+          id: "5",
+          carrier: "UPS",
+          service: "3 Day Select",
+          rate: "$14.25",
+          retailRate: "$17.80",
           deliveryDays: 3,
           carrierId: 2,
           labelUrl: labelPreviewUrl,
-          labelFormat: 'png'
-        }
+          labelFormat: "png",
+        },
       ];
-      
+
       setRates(mockRates);
       setIsLoadingRates(false);
-      
+
       toast({
         title: "Rates Available",
         description: `Found ${mockRates.length} shipping rate options`,
@@ -100,16 +100,17 @@ const CreateShipment = () => {
 
   // TODO: remove mock functionality
   const handlePurchaseLabel = (data: any) => {
-    console.log('Purchasing label:', data);
+    console.log("Purchasing label:", data);
     setIsPurchasing(true);
-    
+
     // Mock API call
     setTimeout(() => {
       setIsPurchasing(false);
-      
+
       toast({
         title: "Label Purchased Successfully",
-        description: "Your shipping label has been created and is ready to print.",
+        description:
+          "Your shipping label has been created and is ready to print.",
       });
     }, 1500);
   };
@@ -131,82 +132,102 @@ const CreateShipment = () => {
               DEBUG
             </Button>
           </div>
-          
+
           {showDebugPanel && (
-          <div className="flex flex-wrap items-center gap-3 sm:gap-6 p-3 bg-muted/30 rounded-lg border mb-3 sm:mb-4">
-            <div className="flex items-center gap-3" data-testid="view-toggle">
-              <Label htmlFor="view-toggle" className="text-xs sm:text-sm font-medium whitespace-nowrap">
-                {formView === "four-step" ? "4-Step Flow" : "3-Step Flow"}
-              </Label>
-              <Switch
-                id="view-toggle"
-                checked={formView === "three-step"}
-                onCheckedChange={(checked) => setFormView(checked ? "three-step" : "four-step")}
-                data-testid="switch-view-toggle"
-              />
+            <div className="flex flex-wrap items-center gap-3 sm:gap-6 p-3 bg-muted/30 rounded-lg border mb-3 sm:mb-4">
+              <div
+                className="flex items-center gap-3"
+                data-testid="view-toggle"
+              >
+                <Label
+                  htmlFor="view-toggle"
+                  className="text-xs sm:text-sm font-medium whitespace-nowrap"
+                >
+                  {formView === "four-step" ? "4-Step Flow" : "3-Step Flow"}
+                </Label>
+                <Switch
+                  id="view-toggle"
+                  checked={formView === "three-step"}
+                  onCheckedChange={(checked) =>
+                    setFormView(checked ? "three-step" : "four-step")
+                  }
+                  data-testid="switch-view-toggle"
+                />
+              </div>
+
+              <div className="hidden sm:block h-5 w-px bg-border" />
+
+              <div className="flex items-center gap-2">
+                <Label
+                  htmlFor="compact-addresses-toggle"
+                  className="text-xs sm:text-sm whitespace-nowrap"
+                >
+                  Combine Address Forms
+                </Label>
+                <Switch
+                  id="compact-addresses-toggle"
+                  checked={useCompactAddresses}
+                  onCheckedChange={setUseCompactAddresses}
+                  data-testid="switch-compact-addresses-global"
+                />
+              </div>
+
+              <div className="hidden sm:block h-5 w-px bg-border" />
+
+              <div className="flex items-center gap-2">
+                <Label
+                  htmlFor="show-summary-toggle"
+                  className="text-xs sm:text-sm whitespace-nowrap"
+                >
+                  Show Sidebar Summary
+                </Label>
+                <Switch
+                  id="show-summary-toggle"
+                  checked={showLiveSummary}
+                  onCheckedChange={setShowLiveSummary}
+                  data-testid="switch-show-summary-global"
+                />
+              </div>
+
+              <div className="hidden sm:block h-5 w-px bg-border" />
+
+              <div className="flex items-center gap-2">
+                <Label
+                  htmlFor="banner-summary-toggle"
+                  className="text-xs sm:text-sm whitespace-nowrap"
+                >
+                  Show Banner Summary
+                </Label>
+                <Switch
+                  id="banner-summary-toggle"
+                  checked={showBannerSummary}
+                  onCheckedChange={setShowBannerSummary}
+                  data-testid="switch-banner-summary-global"
+                />
+              </div>
+
+              <div className="hidden sm:block h-5 w-px bg-border" />
+
+              <div className="flex items-center gap-2">
+                <Label
+                  htmlFor="label-preview-toggle"
+                  className="text-xs sm:text-sm whitespace-nowrap"
+                >
+                  Show Label Preview (Last step)
+                </Label>
+                <Switch
+                  id="label-preview-toggle"
+                  checked={showLabelPreview}
+                  onCheckedChange={setShowLabelPreview}
+                  data-testid="switch-label-preview-global"
+                />
+              </div>
             </div>
-            
-            <div className="hidden sm:block h-5 w-px bg-border" />
-            
-            <div className="flex items-center gap-2">
-              <Label htmlFor="compact-addresses-toggle" className="text-xs sm:text-sm whitespace-nowrap">
-                Combine Address Forms
-              </Label>
-              <Switch
-                id="compact-addresses-toggle"
-                checked={useCompactAddresses}
-                onCheckedChange={setUseCompactAddresses}
-                data-testid="switch-compact-addresses-global"
-              />
-            </div>
-            
-            <div className="hidden sm:block h-5 w-px bg-border" />
-            
-            <div className="flex items-center gap-2">
-              <Label htmlFor="show-summary-toggle" className="text-xs sm:text-sm whitespace-nowrap">
-                Show Sidebar Summary
-              </Label>
-              <Switch
-                id="show-summary-toggle"
-                checked={showLiveSummary}
-                onCheckedChange={setShowLiveSummary}
-                data-testid="switch-show-summary-global"
-              />
-            </div>
-            
-            <div className="hidden sm:block h-5 w-px bg-border" />
-            
-            <div className="flex items-center gap-2">
-              <Label htmlFor="banner-summary-toggle" className="text-xs sm:text-sm whitespace-nowrap">
-                Show Banner Summary
-              </Label>
-              <Switch
-                id="banner-summary-toggle"
-                checked={showBannerSummary}
-                onCheckedChange={setShowBannerSummary}
-                data-testid="switch-banner-summary-global"
-              />
-            </div>
-            
-            <div className="hidden sm:block h-5 w-px bg-border" />
-            
-            <div className="flex items-center gap-2">
-              <Label htmlFor="label-preview-toggle" className="text-xs sm:text-sm whitespace-nowrap">
-                Show Label Preview
-              </Label>
-              <Switch
-                id="label-preview-toggle"
-                checked={showLabelPreview}
-                onCheckedChange={setShowLabelPreview}
-                data-testid="switch-label-preview-global"
-              />
-            </div>
-          </div>
           )}
         </div>
-        
+
         {formView === "four-step" ? (
-          <ShipmentForm 
+          <ShipmentForm
             onGetRates={handleGetRates}
             onPurchaseLabel={handlePurchaseLabel}
             rates={rates}
@@ -218,7 +239,7 @@ const CreateShipment = () => {
             showBannerSummary={showBannerSummary}
           />
         ) : (
-          <ShipmentFormFull 
+          <ShipmentFormFull
             onGetRates={handleGetRates}
             onPurchaseLabel={handlePurchaseLabel}
             rates={rates}
