@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,6 +30,7 @@ export const ShipmentForm = ({
   const [expandedSections, setExpandedSections] = useState<string[]>(["shipmentDetails"]);
   const [shipmentDetailsComplete, setShipmentDetailsComplete] = useState(false);
   const [showRatesSection, setShowRatesSection] = useState(false);
+  const ratesSectionRef = useRef<HTMLDivElement>(null);
   
   const form = useForm<ShipmentFormData>({
     resolver: zodResolver(createShipmentSchema),
@@ -111,6 +112,13 @@ export const ShipmentForm = ({
       if (!expandedSections.includes('rates')) {
         setExpandedSections([...expandedSections, 'rates']);
       }
+      
+      setTimeout(() => {
+        ratesSectionRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
     }
   };
 
@@ -185,16 +193,21 @@ export const ShipmentForm = ({
                   Shipment Details
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className="space-y-5 pt-3">
-                    <AddressForm form={form} type="fromAddress" title="From Address" />
-                    <div className="border-t pt-5">
-                      <AddressForm form={form} type="toAddress" title="To Address" />
-                    </div>
-                    <div className="border-t pt-5">
-                      <PackageForm form={form} />
-                    </div>
-                    <div className="border-t pt-5">
-                      <AdditionalServices form={form} />
+                  <div className="pt-3">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="space-y-5">
+                        <AddressForm form={form} type="fromAddress" title="From Address" />
+                        <div className="border-t pt-5">
+                          <AddressForm form={form} type="toAddress" title="To Address" />
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-5">
+                        <PackageForm form={form} />
+                        <div className="border-t pt-5">
+                          <AdditionalServices form={form} />
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
@@ -214,7 +227,7 @@ export const ShipmentForm = ({
               </AccordionItem>
 
               {showRatesSection && (
-                <AccordionItem value="rates">
+                <AccordionItem value="rates" ref={ratesSectionRef}>
                   <AccordionTrigger className="text-base font-semibold py-3" data-testid="accordion-rates">
                     Select Shipping Rate
                   </AccordionTrigger>

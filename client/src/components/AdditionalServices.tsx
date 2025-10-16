@@ -10,7 +10,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
     <div>
       <h3 className="text-base font-semibold mb-3">Additional Services</h3>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
+      <div className="space-y-2.5">
         <FormField
           control={form.control}
           name="additionalServices.saturdayDelivery"
