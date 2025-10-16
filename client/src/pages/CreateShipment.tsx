@@ -5,6 +5,8 @@ import { Rate } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Settings2 } from "lucide-react";
 
 type FormView = "four-step" | "three-step";
 
@@ -14,6 +16,7 @@ const CreateShipment = () => {
   const [showLiveSummary, setShowLiveSummary] = useState(true);
   const [showLabelPreview, setShowLabelPreview] = useState(true);
   const [showBannerSummary, setShowBannerSummary] = useState(false);
+  const [showDebugPanel, setShowDebugPanel] = useState(false);
   const [rates, setRates] = useState<Rate[]>([]);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -111,9 +114,22 @@ const CreateShipment = () => {
                 Compare rates from multiple carriers and purchase shipping labels
               </p>
             </div>
+            
+            {/* DEBUG Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowDebugPanel(!showDebugPanel)}
+              className="gap-1.5 text-xs"
+              data-testid="button-debug-toggle"
+            >
+              <Settings2 className="h-3.5 w-3.5" />
+              DEBUG
+            </Button>
           </div>
           
-          <div className="flex flex-wrap items-center gap-3 sm:gap-6 p-3 bg-muted/30 rounded-lg border">
+          {showDebugPanel && (
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6 p-3 bg-muted/30 rounded-lg border mb-3 sm:mb-4">
             <div className="flex items-center gap-3" data-testid="view-toggle">
               <Label htmlFor="view-toggle" className="text-xs sm:text-sm font-medium whitespace-nowrap">
                 {formView === "four-step" ? "4-Step View" : "3-Step View"}
@@ -182,6 +198,7 @@ const CreateShipment = () => {
               />
             </div>
           </div>
+          )}
         </div>
         
         {formView === "four-step" ? (
