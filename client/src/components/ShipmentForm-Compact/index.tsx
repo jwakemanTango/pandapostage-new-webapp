@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createShipmentSchema, ShipmentFormData, Rate, Address } from "@shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, MapPin } from "lucide-react";
+import { Loader2, MapPin, ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { CompactAddressForm } from "./CompactAddressForm";
 import { CompactPackageForm } from "./CompactPackageForm";
 import { CompactAdditionalServices } from "./CompactAdditionalServices";
+import { CompactLiveSummary } from "./CompactLiveSummary";
 import { LabelSummary } from "./LabelSummary";
 import RatesSelection from "../ShipmentForm-Steps/RatesSelection";
 
@@ -21,6 +22,8 @@ interface ShipmentFormFullProps {
   isPurchasing?: boolean;
 }
 
+type ViewState = "form" | "summary" | "label";
+
 export const ShipmentFormFull = ({
   onGetRates,
   onPurchaseLabel,
@@ -28,7 +31,7 @@ export const ShipmentFormFull = ({
   isLoadingRates = false,
   isPurchasing = false
 }: ShipmentFormFullProps) => {
-  const [ratesAvailable, setRatesAvailable] = useState(false);
+  const [viewState, setViewState] = useState<ViewState>("form");
   const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
 
   const { data: addresses } = useQuery<Address[]>({
@@ -106,17 +109,22 @@ export const ShipmentFormFull = ({
       packages
     });
     
-    setRatesAvailable(true);
+    setViewState("summary");
   };
 
   const handlePurchaseLabel = (rate: Rate) => {
     setPurchasedLabel(rate);
+    setViewState("label");
     onPurchaseLabel?.(rate);
+  };
+
+  const handleGoBack = () => {
+    setViewState("form");
   };
 
   const handleCreateAnother = () => {
     setPurchasedLabel(null);
-    setRatesAvailable(false);
+    setViewState("form");
     form.reset();
   };
 
@@ -135,12 +143,49 @@ export const ShipmentFormFull = ({
     }
   };
 
-  if (purchasedLabel) {
+  if (viewState === "label" && purchasedLabel) {
     return (
       <LabelSummary 
         purchasedLabel={purchasedLabel}
         onCreateAnother={handleCreateAnother}
       />
+    );
+  }
+
+  if (viewState === "summary") {
+    return (
+      <div className="space-y-3">
+        <div className="flex justify-start">
+          <Button
+            type="button"
+            onClick={handleGoBack}
+            variant="outline"
+            className="gap-2 h-8 text-xs"
+            data-testid="button-go-back"
+          >
+            <ArrowLeft className="h-3 w-3" />
+            Go Back
+          </Button>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <CompactLiveSummary formData={form.getValues()} />
+          
+          <Card>
+            <CardHeader className="pb-2 pt-3">
+              <CardTitle className="text-sm">Available Shipping Rates</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-2">
+              <RatesSelection
+                rates={rates}
+                isLoading={isLoadingRates}
+                onPurchase={handlePurchaseLabel}
+                isPurchasing={isPurchasing}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     );
   }
 
@@ -184,22 +229,6 @@ export const ShipmentFormFull = ({
             {isLoadingRates ? 'Loading Rates...' : 'Get Rates'}
           </Button>
         </div>
-
-        {ratesAvailable && (
-          <Card>
-            <CardHeader className="pb-2 pt-3">
-              <CardTitle className="text-sm">Available Shipping Rates</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-2">
-              <RatesSelection
-                rates={rates}
-                isLoading={isLoadingRates}
-                onPurchase={handlePurchaseLabel}
-                isPurchasing={isPurchasing}
-              />
-            </CardContent>
-          </Card>
-        )}
       </div>
     </Form>
   );
