@@ -14,7 +14,7 @@ const CreateShipment = () => {
   const [formView, setFormView] = useState<FormView>("three-step");
   const [useCompactAddresses, setUseCompactAddresses] = useState(true);
   const [showLiveSummary, setShowLiveSummary] = useState(true);
-  const [showLabelPreview, setShowLabelPreview] = useState(true);
+  const [showLabelPreview, setShowLabelPreview] = useState(false);
   const [showBannerSummary, setShowBannerSummary] = useState(false);
   const [showDebugPanel, setShowDebugPanel] = useState(false);
   const [rates, setRates] = useState<Rate[]>([]);

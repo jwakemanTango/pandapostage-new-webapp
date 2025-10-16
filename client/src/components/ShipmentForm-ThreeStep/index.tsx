@@ -185,7 +185,7 @@ export const ShipmentFormFull = ({
         </div>
         
           {showLiveSummary && (
-            <div className="hidden lg:block">
+            <div className="hidden lg:block sticky top-0 self-start">
               <CompactLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
             </div>
           )}
@@ -235,7 +235,7 @@ export const ShipmentFormFull = ({
               </div>
               
               {showLiveSummary && (
-                <div className="hidden lg:block">
+                <div className="hidden lg:block sticky top-0 self-start">
                   <CompactLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} />
                 </div>
               )}
@@ -335,7 +335,7 @@ export const ShipmentFormFull = ({
             </div>
 
             {showLiveSummary && (
-              <div className="hidden lg:block">
+              <div className="hidden lg:block sticky top-0 self-start">
                 <CompactLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} />
               </div>
             )}
