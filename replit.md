@@ -48,11 +48,12 @@ Preferred communication style: Simple, everyday language.
     - `PackageForm.tsx` - Package dimensions and weight inputs
     - `AdditionalServices.tsx` - Optional shipping services
     - `RatesSelection.tsx` - Carrier rate comparison and selection
-    - `LiveSummary.tsx` - Real-time summary sidebar showing shipment details
+    - `LiveSummary.tsx` - Real-time summary sidebar showing shipment details with PandaLogo header
     - `LabelSummary.tsx` - Post-purchase label display with tracking and actions
   - Progressive disclosure pattern with collapsible sections
   - Navigation between steps with validation at each stage
   - **Compact Addresses Toggle**: Switch to display one combined address form instead of two separate forms
+  - **Show Summary Toggle**: Toggle visibility of LiveSummary sidebar for cleaner workspace
   
 **ShipmentForm-ThreeStep** (`/components/ShipmentForm-ThreeStep/`) - Single-page compact workflow
   - Main component: `index.tsx` - orchestrates state management and view transitions
@@ -61,10 +62,14 @@ Preferred communication style: Simple, everyday language.
     - `CompactAddressFormCombined.tsx` - Combined compact address form with From/To toggle
     - `CompactPackageForm.tsx` - Package details input with compact styling
     - `CompactAdditionalServices.tsx` - Service checkboxes with compact layout
-    - `CompactLiveSummary.tsx` - Shows shipment summary in compact format
+    - `CompactLiveSummary.tsx` - Real-time summary sidebar showing shipment details with PandaLogo header
     - `LabelSummary.tsx` - Post-purchase label display with compact styling
+  - Layout with real-time LiveSummary sidebar (similar to FourStep):
+    - Form fields displayed on left with flexible width
+    - CompactLiveSummary shown on right as sticky sidebar (320px wide)
+    - Updates in real-time using form.watch() as user fills form
   - Three-view workflow with state management:
-    - **Form View**: Displays all form fields in 3-column grid (or 2-column with compact addresses) + "Get Rates" button
+    - **Form View**: Displays form fields + optional LiveSummary sidebar + "Get Rates" button
     - **Summary View**: Hides form, shows CompactLiveSummary + Rates side-by-side (2-column) + "Go Back" button
     - **Label View**: Shows only LabelSummary after purchase
   - View transitions:
@@ -74,14 +79,26 @@ Preferred communication style: Simple, everyday language.
     - "Create Another Shipment" → Form view (data reset)
   - Compact styling throughout: `text-xs` labels, `h-7` inputs/buttons, `h-3.5 w-3.5` icons
   - **Compact Addresses Toggle**: Switch to display one combined address form instead of two separate forms
+  - **Show Summary Toggle**: Toggle visibility of CompactLiveSummary sidebar for cleaner workspace
   - Optimized for experienced users who want efficient data entry and rate comparison
 
-**Compact Addresses Feature:**
+**Toggle Features:**
+
+**Compact Addresses Toggle:**
 - Both FourStep and ThreeStep forms include a "Compact Addresses" toggle
 - When enabled, displays single `AddressFormCombined` component instead of two separate address forms
 - Combined component includes internal From/To toggle to switch between addresses
 - Reduces visual clutter and screen space for address entry
 - Form validation and saved address functionality works identically in both modes
+
+**Show Summary Toggle:**
+- Both FourStep and ThreeStep forms include a "Show Summary" toggle
+- Controls visibility of LiveSummary/CompactLiveSummary sidebar
+- When hidden, form takes full width for maximum screen real estate
+- When shown, displays real-time shipment summary with PandaLogo header
+- Summary updates automatically using form.watch() as user fills out form fields
+- Sticky positioning keeps summary visible while scrolling
+- Default state: shown (can be toggled off for cleaner workspace)
   
 **Shared Components & Patterns:**
 - Component composition pattern ensures code reusability and maintainability

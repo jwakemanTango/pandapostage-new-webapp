@@ -38,7 +38,6 @@ export const ShipmentFormFull = ({
   const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
   const [useCompactAddresses, setUseCompactAddresses] = useState(false);
   const [showLiveSummary, setShowLiveSummary] = useState(true);
-  const [formValues, setFormValues] = useState<ShipmentFormData>(form.getValues());
 
   const { data: addresses } = useQuery<Address[]>({
     queryKey: ["/api/addresses"],
@@ -98,13 +97,7 @@ export const ShipmentFormFull = ({
     },
   });
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      setFormValues(value as ShipmentFormData);
-    });
-    
-    return () => subscription.unsubscribe();
-  }, [form]);
+  const formValues = form.watch();
 
   const handleGetRates = async () => {
     const isValid = await form.trigger(["fromAddress", "toAddress", "packages"]);
