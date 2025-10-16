@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package as PackageIcon } from "lucide-react";
-import { PACKAGE_TYPES, CARRIERS } from "./constants";
+import { PACKAGE_TYPES, CARRIERS } from "@/lib/constants";
 
 interface CompactPackageFormProps {
   form: any;

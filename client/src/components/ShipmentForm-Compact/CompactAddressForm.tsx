@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Address } from "@shared/schema";
-import { US_STATES } from "./constants";
+import { US_STATES } from "@/lib/constants";
 
 interface CompactAddressFormProps {
   form: any;
