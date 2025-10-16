@@ -254,13 +254,13 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
   return (
     <div>
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "from" | "to")}>
-        <TabsList className="w-full grid grid-cols-2">
-          <TabsTrigger value="from" className="gap-2" data-testid="tab-ship-from">
-            <Truck className="h-4 w-4" />
+        <TabsList className="w-full grid grid-cols-2 h-12 bg-muted p-1">
+          <TabsTrigger value="from" className="gap-2 text-base font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-ship-from">
+            <Truck className="h-5 w-5" />
             Ship From
           </TabsTrigger>
-          <TabsTrigger value="to" className="gap-2" data-testid="tab-ship-to">
-            <Package className="h-4 w-4" />
+          <TabsTrigger value="to" className="gap-2 text-base font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-ship-to">
+            <Package className="h-5 w-5" />
             Ship To
           </TabsTrigger>
         </TabsList>
