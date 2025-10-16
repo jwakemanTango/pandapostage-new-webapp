@@ -15,11 +15,12 @@ Preferred communication style: Simple, everyday language.
 - **Form Architecture**:
     - DEBUG button in top-right corner toggles visibility of development controls (3-Step Flow, 4-Step Flow, Combine Address Forms, Show Sidebar Summary, Show Banner Summary, Show Label Preview).
     - Default view: 3-Step Flow (can be changed to 4-Step Flow via DEBUG panel).
+    - Banner summary defaults to visible (showBannerSummary = true) on both mobile and desktop, can be toggled off via DEBUG panel.
     - `ShipmentForm-FourStep`: Multi-step guided workflow with progressive disclosure.
     - `ShipmentForm-ThreeStep`: Single-page compact workflow optimized for experienced users (default), featuring:
-        - Three distinct views (Form, Summary, Label) with clear step labels ("Shipment Details", "Select Rate", "Print Label")
+        - Three distinct views (Form, Summary, Label) with consistent layout: step titles positioned above content grid on all three steps for uniform visual hierarchy
         - Mobile-optimized layout with vertical field stacking, hidden summary on mobile, and fixed bottom navigation
-        - BannerLiveSummary component: full-width, sticky-top collapsible banner with centered step progress indicators (Truck, DollarSign, Printer icons), company name display (with city/state fallback), and package count. No corner radius for seamless full-width design.
+        - BannerLiveSummary component: full-width, sticky-top collapsible banner visible by default on mobile and desktop, controllable via DEBUG toggle. Features centered step progress indicators (Truck, DollarSign, Printer icons), company name display (with city/state fallback), and package count. No corner radius for seamless full-width design.
         - CompactLiveSummary component: sidebar summary with step-specific icons, completion checkmarks, validation error highlighting, sticky positioning (aligns with form initially, pins to top when scrolling)
         - CompactAddressFormCombined: Auto-opens invalid address tab (Ship From/Ship To) when validation errors detected
         - Stacked field labels for weight and dimensions in CompactPackageForm for cleaner, more compact presentation
