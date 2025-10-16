@@ -13,13 +13,14 @@ Preferred communication style: Simple, everyday language.
 - **UI Framework**: Shadcn UI (built on Radix UI), Tailwind CSS with custom design tokens, CSS variables for theming (light/dark mode), and a "New York" style design system.
 - **Design Philosophy**: Professional, business-application aesthetic, functional UI focused on efficiency, progressive disclosure, visual hierarchy through spacing/typography, and monospace fonts for data.
 - **Form Architecture**:
-    - Centralized toggle system for "4-Step View" / "3-Step View", "Compact Addresses", "Show Summary", and "Show Label Preview".
+    - DEBUG button in top-right corner toggles visibility of development controls (4-Step View, Compact Addresses, Show Summary, Show Label Preview, Show Banner Summary).
     - `ShipmentForm-FourStep`: Multi-step guided workflow with progressive disclosure.
     - `ShipmentForm-ThreeStep`: Single-page compact workflow optimized for experienced users, featuring:
         - Three distinct views (Form, Summary, Label) with clear step labels ("Shipment Details", "Select Rate", "Print Label")
         - Mobile-optimized layout with vertical field stacking, hidden summary on mobile, and fixed bottom navigation
-        - BannerLiveSummary component: horizontal, sticky-top collapsible summary with step progress indicators
-        - CompactLiveSummary component: sidebar summary with validation error highlighting and automatic tab switching
+        - BannerLiveSummary component: full-width, sticky-top collapsible banner with centered step progress indicators (Truck, DollarSign, Printer icons), company name display (with city/state fallback), and package count. No corner radius for seamless full-width design.
+        - CompactLiveSummary component: sidebar summary with step-specific icons, completion checkmarks, validation error highlighting, and automatic tab switching
+        - Stacked field labels for weight and dimensions in CompactPackageForm for cleaner, more compact presentation
         - Consistent font sizing (text-sm labels, h-9 text-sm controls) for comfortable readability
         - Mobile-first responsive breakpoints with proper spacing (pb-20 for fixed button clearance)
     - Shared validation patterns and schemas, component composition, and constants for reusability.
