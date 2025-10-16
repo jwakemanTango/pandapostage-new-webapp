@@ -9,8 +9,8 @@ import AddressForm from "./AddressForm";
 import PackageForm from "./PackageForm";
 import RatesSelection from "./RatesSelection";
 import AdditionalServices from "./AdditionalServices";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Loader2 } from "lucide-react";
+import { LiveSummary } from "./LiveSummary";
+import { MapPin, Package, Zap, DollarSign, Loader2 } from "lucide-react";
 
 interface ShipmentFormProps {
   onGetRates?: (data: any) => void;
@@ -27,7 +27,6 @@ export const ShipmentForm = ({
   isLoadingRates = false,
   isPurchasing = false
 }: ShipmentFormProps) => {
-  const [expandedSections, setExpandedSections] = useState<string[]>(["shipmentDetails"]);
   const [shipmentDetailsComplete, setShipmentDetailsComplete] = useState(false);
   const [showRatesSection, setShowRatesSection] = useState(false);
   const ratesSectionRef = useRef<HTMLDivElement>(null);
@@ -84,6 +83,8 @@ export const ShipmentForm = ({
       }
     },
   });
+
+  const [formValues, setFormValues] = useState<ShipmentFormData>(form.getValues());
   
   const validateShipmentDetails = async () => {
     const addressesValid = await form.trigger(["fromAddress", "toAddress"]);
@@ -108,10 +109,6 @@ export const ShipmentForm = ({
       });
       
       setShowRatesSection(true);
-      
-      if (!expandedSections.includes('rates')) {
-        setExpandedSections([...expandedSections, 'rates']);
-      }
       
       setTimeout(() => {
         ratesSectionRef.current?.scrollIntoView({ 
@@ -146,14 +143,6 @@ export const ShipmentForm = ({
           
           if (showRatesSection) {
             setShowRatesSection(false);
-            
-            if (expandedSections.includes('rates')) {
-              setExpandedSections(
-                expandedSections
-                  .filter(section => section !== 'rates')
-                  .concat(['shipmentDetails'])
-              );
-            }
           }
         } catch (err) {
           console.error("Validation error:", err);
@@ -161,88 +150,100 @@ export const ShipmentForm = ({
       }, 500);
     };
     
-    const subscription = form.watch((value, { name }) => {
-      if (name && (
-        name.startsWith('fromAddress') || 
-        name.startsWith('toAddress') || 
-        name.startsWith('packages')
-      )) {
-        checkFormCompletion();
-      }
+    const subscription = form.watch((value) => {
+      setFormValues(value as ShipmentFormData);
+      checkFormCompletion();
     });
     
     return () => {
       subscription.unsubscribe();
       clearTimeout(validationTimeout);
     };
-  }, [expandedSections, showRatesSection]);
+  }, [showRatesSection]);
   
   return (
-    <Card>
-      <CardContent className="p-6">
-        <Form {...form}>
-          <form>
-            <Accordion 
-              type="multiple" 
-              value={expandedSections} 
-              onValueChange={setExpandedSections}
-              className="mb-4"
-            >
-              <AccordionItem value="shipmentDetails">
-                <AccordionTrigger className="text-base font-semibold py-3" data-testid="accordion-shipment-details">
-                  Shipment Details
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="pt-4">
-                    <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-8">
-                      <div className="space-y-6">
-                        <AddressForm form={form} type="fromAddress" title="From Address" />
-                        <AddressForm form={form} type="toAddress" title="To Address" />
-                      </div>
-                      
-                      <div className="space-y-6">
-                        <PackageForm form={form} />
-                        <AdditionalServices form={form} />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-end mt-6 pt-6 border-t">
-                    <Button 
-                      type="button" 
-                      onClick={handleGetRates}
-                      disabled={isLoadingRates}
-                      className="gap-2"
-                      data-testid="button-get-rates"
-                    >
-                      {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin" />}
-                      {isLoadingRates ? 'Loading Rates...' : 'Get Rates'}
-                    </Button>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
+      <div className="space-y-6">
+        <Card className="bg-gradient-to-br from-background to-muted/20">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <MapPin className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold">Shipping Addresses</h3>
+            </div>
+            
+            <Form {...form}>
+              <form className="space-y-6">
+                <AddressForm form={form} type="fromAddress" title="From Address" />
+                <div className="border-t pt-6">
+                  <AddressForm form={form} type="toAddress" title="To Address" />
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
 
-              {showRatesSection && (
-                <AccordionItem value="rates" ref={ratesSectionRef}>
-                  <AccordionTrigger className="text-base font-semibold py-3" data-testid="accordion-rates">
-                    Select Shipping Rate
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="pt-4">
-                      <RatesSelection 
-                        rates={rates}
-                        isLoading={isLoadingRates}
-                        onPurchase={handlePurchase}
-                        isPurchasing={isPurchasing}
-                      />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-            </Accordion>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+        <Card className="bg-gradient-to-br from-background to-muted/20">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Package className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold">Package & Services</h3>
+            </div>
+            
+            <Form {...form}>
+              <form className="space-y-6">
+                <PackageForm form={form} />
+                <div className="border-t pt-6">
+                  <AdditionalServices form={form} />
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm border-t lg:relative lg:bg-transparent lg:border-0 p-4 lg:p-0 -mx-4 lg:mx-0">
+          <Button 
+            type="button" 
+            onClick={handleGetRates}
+            disabled={isLoadingRates}
+            className="w-full gap-2"
+            size="lg"
+            data-testid="button-get-rates"
+          >
+            {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin" />}
+            {isLoadingRates ? 'Loading Rates...' : 'Get Rates'}
+          </Button>
+        </div>
+
+        {showRatesSection && (
+          <Card className="bg-gradient-to-br from-background to-muted/20" ref={ratesSectionRef}>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <DollarSign className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold">Select Shipping Rate</h3>
+              </div>
+              <RatesSelection 
+                rates={rates}
+                isLoading={isLoadingRates}
+                onPurchase={handlePurchase}
+                isPurchasing={isPurchasing}
+              />
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      <div className="hidden lg:block">
+        <LiveSummary 
+          formData={formValues} 
+          isComplete={shipmentDetailsComplete}
+        />
+      </div>
+    </div>
   );
 };

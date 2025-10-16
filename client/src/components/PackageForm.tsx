@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Plus, Edit } from "lucide-react";
+import { Trash2, Plus, Edit, Box } from "lucide-react";
 import { useFieldArray } from "react-hook-form";
 
 interface PackageFormProps {
@@ -40,6 +40,12 @@ const PACKAGE_TYPES = [
   { value: "custom", label: "Custom Package" },
 ];
 
+const PACKAGE_PRESETS = [
+  { name: "Small Box", weight: "1", dimensions: { length: "8", width: "6", height: "4" } },
+  { name: "Medium Box", weight: "5", dimensions: { length: "12", width: "10", height: "8" } },
+  { name: "Large Box", weight: "10", dimensions: { length: "18", width: "14", height: "12" } },
+];
+
 const defaultPackage: PackageItem = {
   packageType: "parcel",
   weightLbs: "",
@@ -72,6 +78,13 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
   const getPackageTypeLabel = (value: string) => {
     const packageType = PACKAGE_TYPES.find(type => type.value === value);
     return packageType ? packageType.label : value;
+  };
+
+  const handlePresetSelect = (preset: typeof PACKAGE_PRESETS[0]) => {
+    form.setValue("packages.0.weightLbs", preset.weight);
+    form.setValue("packages.0.length", preset.dimensions.length);
+    form.setValue("packages.0.width", preset.dimensions.width);
+    form.setValue("packages.0.height", preset.dimensions.height);
   };
 
   const handleAddPackage = () => {
@@ -157,6 +170,26 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
 
       {!showMultiPackage && !isEditing && (
         <>
+          <div className="mb-4">
+            <FormLabel className="text-sm font-medium mb-2 block">Quick Presets</FormLabel>
+            <div className="flex gap-2">
+              {PACKAGE_PRESETS.map((preset) => (
+                <Button
+                  key={preset.name}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handlePresetSelect(preset)}
+                  className="gap-1.5"
+                  data-testid={`button-preset-${preset.name.toLowerCase().replace(' ', '-')}`}
+                >
+                  <Box className="h-3.5 w-3.5" />
+                  {preset.name}
+                </Button>
+              ))}
+            </div>
+          </div>
+
           <div className="space-y-4">
             <FormField
               control={form.control}

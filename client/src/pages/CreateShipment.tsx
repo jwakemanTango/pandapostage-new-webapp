@@ -104,23 +104,21 @@ const CreateShipment = () => {
         </div>
       </header>
       
-      <main className="container mx-auto px-5 py-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-5">
-            <h1 className="text-2xl font-bold mb-1.5">Create Shipment</h1>
-            <p className="text-sm text-muted-foreground">
-              Compare rates from multiple carriers and purchase shipping labels
-            </p>
-          </div>
-          
-          <ShipmentForm 
-            onGetRates={handleGetRates}
-            onPurchaseLabel={handlePurchaseLabel}
-            rates={rates}
-            isLoadingRates={isLoadingRates}
-            isPurchasing={isPurchasing}
-          />
+      <main className="container mx-auto px-5 py-8 max-w-[1400px]">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold mb-1.5">Create Shipment</h1>
+          <p className="text-sm text-muted-foreground">
+            Compare rates from multiple carriers and purchase shipping labels
+          </p>
         </div>
+        
+        <ShipmentForm 
+          onGetRates={handleGetRates}
+          onPurchaseLabel={handlePurchaseLabel}
+          rates={rates}
+          isLoadingRates={isLoadingRates}
+          isPurchasing={isPurchasing}
+        />
       </main>
     </div>
   );
