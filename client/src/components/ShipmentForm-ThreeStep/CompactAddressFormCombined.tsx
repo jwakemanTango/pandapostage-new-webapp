@@ -33,16 +33,16 @@ export const CompactAddressFormCombined = ({
   
   const renderAddressFields = (type: "fromAddress" | "toAddress") => {
     return (
-      <CardContent className="space-y-2 pt-2" key={type}>
+      <CardContent className="space-y-3 pt-3" key={type}>
         <FormField
           control={form.control}
           name={`${type}.dummy` as any}
           render={() => (
-            <FormItem className="space-y-0">
-              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
-                <FormLabel className="text-xs sm:text-right font-medium">Saved Address:</FormLabel>
+            <FormItem className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                <FormLabel className="text-sm sm:text-right font-medium">Saved Address:</FormLabel>
                 <Select onValueChange={(value) => onSavedAddressSelect(value, type)}>
-                  <SelectTrigger className="h-8 text-sm" data-testid={`select-saved-${type}`}>
+                  <SelectTrigger className="h-9 text-sm" data-testid={`select-saved-${type}`}>
                     <SelectValue placeholder="-- Select --" />
                   </SelectTrigger>
                   <SelectContent>
@@ -68,14 +68,14 @@ export const CompactAddressFormCombined = ({
           control={form.control}
           name={`${type}.company`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
-                <FormLabel className="text-xs sm:text-right font-medium">Company Name:</FormLabel>
+            <FormItem className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                <FormLabel className="text-sm sm:text-right font-medium">Company Name:</FormLabel>
                 <FormControl>
-                  <Input placeholder="Company Name" className="h-8 text-sm" {...field} data-testid={`input-${type}-company`} />
+                  <Input placeholder="Company Name" className="h-9 text-sm" {...field} data-testid={`input-${type}-company`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs sm:ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[128px]" />
             </FormItem>
           )}
         />
@@ -84,14 +84,14 @@ export const CompactAddressFormCombined = ({
           control={form.control}
           name={`${type}.name`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
-                <FormLabel className="text-xs sm:text-right font-medium">Contact Name: *</FormLabel>
+            <FormItem className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                <FormLabel className="text-sm sm:text-right font-medium">Contact Name: *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Full Name" className="h-8 text-sm" {...field} data-testid={`input-${type}-name`} />
+                  <Input placeholder="Full Name" className="h-9 text-sm" {...field} data-testid={`input-${type}-name`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs sm:ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[128px]" />
             </FormItem>
           )}
         />
@@ -100,14 +100,14 @@ export const CompactAddressFormCombined = ({
           control={form.control}
           name={`${type}.phone`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
-                <FormLabel className="text-xs sm:text-right font-medium">Phone Number: *</FormLabel>
+            <FormItem className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                <FormLabel className="text-sm sm:text-right font-medium">Phone Number: *</FormLabel>
                 <FormControl>
-                  <Input placeholder="(555) 123-4567" className="h-8 text-sm" {...field} data-testid={`input-${type}-phone`} />
+                  <Input placeholder="(555) 123-4567" className="h-9 text-sm" {...field} data-testid={`input-${type}-phone`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs sm:ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[128px]" />
             </FormItem>
           )}
         />
@@ -116,14 +116,14 @@ export const CompactAddressFormCombined = ({
           control={form.control}
           name={`${type}.addressLine1`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
-                <FormLabel className="text-xs sm:text-right font-medium">Street Address: *</FormLabel>
+            <FormItem className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                <FormLabel className="text-sm sm:text-right font-medium">Street Address: *</FormLabel>
                 <FormControl>
-                  <Input placeholder="123 Main St" className="h-8 text-sm" {...field} data-testid={`input-${type}-address1`} />
+                  <Input placeholder="123 Main St" className="h-9 text-sm" {...field} data-testid={`input-${type}-address1`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs sm:ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[128px]" />
             </FormItem>
           )}
         />
@@ -132,14 +132,14 @@ export const CompactAddressFormCombined = ({
           control={form.control}
           name={`${type}.addressLine2`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
-                <FormLabel className="text-xs sm:text-right font-medium">Address Line 2:</FormLabel>
+            <FormItem className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                <FormLabel className="text-sm sm:text-right font-medium">Address Line 2:</FormLabel>
                 <FormControl>
-                  <Input placeholder="Apt, Suite" className="h-8 text-sm" {...field} data-testid={`input-${type}-address2`} />
+                  <Input placeholder="Apt, Suite" className="h-9 text-sm" {...field} data-testid={`input-${type}-address2`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs sm:ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[128px]" />
             </FormItem>
           )}
         />
@@ -148,14 +148,14 @@ export const CompactAddressFormCombined = ({
           control={form.control}
           name={`${type}.city`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
-                <FormLabel className="text-xs sm:text-right font-medium">City: *</FormLabel>
+            <FormItem className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                <FormLabel className="text-sm sm:text-right font-medium">City: *</FormLabel>
                 <FormControl>
-                  <Input placeholder="City" className="h-8 text-sm" {...field} data-testid={`input-${type}-city`} />
+                  <Input placeholder="City" className="h-9 text-sm" {...field} data-testid={`input-${type}-city`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs sm:ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[128px]" />
             </FormItem>
           )}
         />
@@ -164,12 +164,12 @@ export const CompactAddressFormCombined = ({
           control={form.control}
           name={`${type}.state`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
-                <FormLabel className="text-xs sm:text-right font-medium">State: *</FormLabel>
+            <FormItem className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                <FormLabel className="text-sm sm:text-right font-medium">State: *</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="h-8 text-sm" data-testid={`select-${type}-state`}>
+                    <SelectTrigger className="h-9 text-sm" data-testid={`select-${type}-state`}>
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                   </FormControl>
@@ -182,7 +182,7 @@ export const CompactAddressFormCombined = ({
                   </SelectContent>
                 </Select>
               </div>
-              <FormMessage className="text-xs sm:ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[128px]" />
             </FormItem>
           )}
         />
@@ -191,14 +191,14 @@ export const CompactAddressFormCombined = ({
           control={form.control}
           name={`${type}.zipCode`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
-                <FormLabel className="text-xs sm:text-right font-medium">ZIP Code: *</FormLabel>
+            <FormItem className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                <FormLabel className="text-sm sm:text-right font-medium">ZIP Code: *</FormLabel>
                 <FormControl>
-                  <Input placeholder="12345" className="h-8 text-sm" {...field} data-testid={`input-${type}-zip`} />
+                  <Input placeholder="12345" className="h-9 text-sm" {...field} data-testid={`input-${type}-zip`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs sm:ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[128px]" />
             </FormItem>
           )}
         />

@@ -10,15 +10,15 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
   return (
     <Card>
       <CardHeader className="pb-2 pt-3">
-        <CardTitle className="text-sm font-semibold">Additional Services</CardTitle>
+        <CardTitle className="text-base font-semibold">Additional Services</CardTitle>
       </CardHeader>
-      <CardContent className="pt-2">
-        <div className="space-y-1.5">
+      <CardContent className="pt-3">
+        <div className="space-y-2.5">
           <FormField
             control={form.control}
             name="additionalServices.saturdayDelivery"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+              <FormItem className="flex flex-row items-center space-x-2.5 space-y-0">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
@@ -26,7 +26,7 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
                     data-testid="checkbox-saturday-delivery"
                   />
                 </FormControl>
-                <FormLabel className="text-xs font-normal leading-tight">
+                <FormLabel className="text-sm font-normal leading-tight cursor-pointer">
                   Saturday Delivery
                 </FormLabel>
               </FormItem>
@@ -36,7 +36,7 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
             control={form.control}
             name="additionalServices.requireSignature"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+              <FormItem className="flex flex-row items-center space-x-2.5 space-y-0">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
@@ -44,7 +44,7 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
                     data-testid="checkbox-require-signature"
                   />
                 </FormControl>
-                <FormLabel className="text-xs font-normal leading-tight">
+                <FormLabel className="text-sm font-normal leading-tight cursor-pointer">
                   Signature Required
                 </FormLabel>
               </FormItem>
@@ -54,7 +54,7 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
             control={form.control}
             name="additionalServices.insuranceValue"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+              <FormItem className="flex flex-row items-center space-x-2.5 space-y-0">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
@@ -62,7 +62,7 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
                     data-testid="checkbox-insurance"
                   />
                 </FormControl>
-                <FormLabel className="text-xs font-normal leading-tight">
+                <FormLabel className="text-sm font-normal leading-tight cursor-pointer">
                   Insurance
                 </FormLabel>
               </FormItem>
@@ -72,7 +72,7 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
             control={form.control}
             name="additionalServices.returnLabel"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+              <FormItem className="flex flex-row items-center space-x-2.5 space-y-0">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
@@ -80,7 +80,7 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
                     data-testid="checkbox-return-label"
                   />
                 </FormControl>
-                <FormLabel className="text-xs font-normal leading-tight">
+                <FormLabel className="text-sm font-normal leading-tight cursor-pointer">
                   Return Label
                 </FormLabel>
               </FormItem>
@@ -90,7 +90,7 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
             control={form.control}
             name="additionalServices.weekendService"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+              <FormItem className="flex flex-row items-center space-x-2.5 space-y-0">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
@@ -98,7 +98,7 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
                     data-testid="checkbox-weekend-service"
                   />
                 </FormControl>
-                <FormLabel className="text-xs font-normal leading-tight">
+                <FormLabel className="text-sm font-normal leading-tight cursor-pointer">
                   Weekend Service
                 </FormLabel>
               </FormItem>
@@ -108,7 +108,7 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
             control={form.control}
             name="additionalServices.certifiedMail"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+              <FormItem className="flex flex-row items-center space-x-2.5 space-y-0">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
@@ -116,7 +116,7 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
                     data-testid="checkbox-certified-mail"
                   />
                 </FormControl>
-                <FormLabel className="text-xs font-normal leading-tight">
+                <FormLabel className="text-sm font-normal leading-tight cursor-pointer">
                   Certified Mail
                 </FormLabel>
               </FormItem>

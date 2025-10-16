@@ -38,9 +38,15 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment", formErr
 
   const steps = [
     { id: "shipment", label: "Shipment" },
-    { id: "selectRate", label: "Select Rate" },
-    { id: "printLabel", label: "Print Label" }
+    { id: "selectRate", label: "Rate" },
+    { id: "printLabel", label: "Print" }
   ];
+
+  const stepLabels = {
+    shipment: "Shipment Details",
+    selectRate: "Select Rate",
+    printLabel: "Print Label"
+  };
 
   const currentStepIndex = steps.findIndex(step => step.id === currentStep);
 
@@ -50,7 +56,10 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment", formErr
         <PandaLogo compact className="h-28 w-full object-contain" />
       </CardHeader>
       <CardContent className="space-y-3 pt-4">
-        <h3 className="text-base font-semibold text-center">Shipment Summary</h3>
+        {/* Current Step Header */}
+        <div className="text-center pb-2 border-b">
+          <h3 className="text-lg font-bold text-primary">{stepLabels[currentStep]}</h3>
+        </div>
 
         {/* Step Progress Indicators */}
         <div className="space-y-2 pb-2 border-b">
@@ -59,13 +68,13 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment", formErr
             const isCurrent = index === currentStepIndex;
             
             return (
-              <div key={step.id} className="flex items-center gap-2">
+              <div key={step.id} className="flex items-center gap-2.5">
                 {isCompleted ? (
-                  <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                  <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
                 ) : isCurrent ? (
-                  <Circle className="h-4 w-4 text-primary fill-primary shrink-0" />
+                  <Circle className="h-5 w-5 text-primary fill-primary shrink-0" />
                 ) : (
-                  <Circle className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <Circle className="h-5 w-5 text-muted-foreground shrink-0" />
                 )}
                 <span className={`text-sm ${isCurrent ? 'font-semibold text-foreground' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}`}>
                   {step.label}

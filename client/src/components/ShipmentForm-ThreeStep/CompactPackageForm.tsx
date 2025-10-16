@@ -31,15 +31,15 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
   return (
     <Card>
       <CardHeader className="pb-2 pt-3">
-        <CardTitle className="text-sm flex items-center gap-2 font-semibold">
+        <CardTitle className="text-base flex items-center gap-2 font-semibold">
           <PackageIcon className="h-4 w-4" />
           Package Details
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-2 pt-2">
+      <CardContent className="space-y-3 pt-3">
         <div>
-          <FormLabel className="text-xs font-medium mb-1.5 block">Quick Presets</FormLabel>
-          <div className="flex gap-1.5">
+          <FormLabel className="text-sm font-medium mb-2 block">Quick Presets</FormLabel>
+          <div className="flex flex-col sm:flex-row gap-2">
             {PACKAGE_PRESETS.map((preset) => (
               <Button
                 key={preset.name}
@@ -47,10 +47,10 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
                 variant="outline"
                 size="sm"
                 onClick={() => handlePresetSelect(preset)}
-                className="gap-1 flex-1"
+                className="gap-1.5 flex-1 h-9 text-sm"
                 data-testid={`button-preset-${preset.name.toLowerCase().replace(' ', '-')}`}
               >
-                <Box className="h-3 w-3" />
+                <Box className="h-4 w-4" />
                 {preset.name}
               </Button>
             ))}
@@ -60,9 +60,9 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
           control={form.control}
           name="packages.0.carrier"
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                <FormLabel className="text-xs text-right font-medium">Preferred Carrier:</FormLabel>
+            <FormItem className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                <FormLabel className="text-sm sm:text-right font-medium">Preferred Carrier:</FormLabel>
                 <Select 
                   onValueChange={(value) => {
                     field.onChange(value);
@@ -76,7 +76,7 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
                   value={field.value || "any"}
                 >
                   <FormControl>
-                    <SelectTrigger className="h-8 text-sm" data-testid="select-carrier">
+                    <SelectTrigger className="h-9 text-sm" data-testid="select-carrier">
                       <SelectValue placeholder="Select carrier" />
                     </SelectTrigger>
                   </FormControl>
@@ -89,7 +89,7 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
                   </SelectContent>
                 </Select>
               </div>
-              <FormMessage className="text-xs ml-[128px]" />
+              <FormMessage className="text-xs sm:ml-[148px]" />
             </FormItem>
           )}
         />
@@ -98,12 +98,12 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
           control={form.control}
           name="packages.0.packageType"
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                <FormLabel className="text-xs text-right font-medium">Package Type: *</FormLabel>
+            <FormItem className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                <FormLabel className="text-sm sm:text-right font-medium">Package Type: *</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="h-8 text-sm" data-testid="select-package-type">
+                    <SelectTrigger className="h-9 text-sm" data-testid="select-package-type">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                   </FormControl>
@@ -116,24 +116,24 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
                   </SelectContent>
                 </Select>
               </div>
-              <FormMessage className="text-xs ml-[128px]" />
+              <FormMessage className="text-xs sm:ml-[148px]" />
             </FormItem>
           )}
         />
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-2">
           <FormField
             control={form.control}
             name="packages.0.weightLbs"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                  <FormLabel className="text-xs text-right font-medium">Weight (lbs): *</FormLabel>
+              <FormItem className="space-y-1">
+                <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                  <FormLabel className="text-sm sm:text-right font-medium">Weight (lbs): *</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-weight-lbs" />
+                    <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-weight-lbs" />
                   </FormControl>
                 </div>
-                <FormMessage className="text-xs ml-[128px]" />
+                <FormMessage className="text-xs sm:ml-[148px]" />
               </FormItem>
             )}
           />
@@ -141,32 +141,32 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             control={form.control}
             name="packages.0.weightOz"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <div className="grid grid-cols-[80px_1fr] items-center gap-2">
-                  <FormLabel className="text-xs text-right font-medium">Weight (oz):</FormLabel>
+              <FormItem className="space-y-1">
+                <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                  <FormLabel className="text-sm sm:text-right font-medium">Weight (oz):</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-weight-oz" />
+                    <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-weight-oz" />
                   </FormControl>
                 </div>
-                <FormMessage className="text-xs ml-[88px]" />
+                <FormMessage className="text-xs sm:ml-[108px]" />
               </FormItem>
             )}
           />
         </div>
 
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-2">
           <FormField
             control={form.control}
             name="packages.0.length"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <div className="grid grid-cols-[80px_1fr] items-center gap-2">
-                  <FormLabel className="text-xs text-right font-medium">Length (in):</FormLabel>
+              <FormItem className="space-y-1">
+                <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                  <FormLabel className="text-sm sm:text-right font-medium">Length (in):</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-length" />
+                    <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-length" />
                   </FormControl>
                 </div>
-                <FormMessage className="text-xs ml-[88px]" />
+                <FormMessage className="text-xs sm:ml-[108px]" />
               </FormItem>
             )}
           />
@@ -174,14 +174,14 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             control={form.control}
             name="packages.0.width"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <div className="grid grid-cols-[70px_1fr] items-center gap-2">
-                  <FormLabel className="text-xs text-right font-medium">Width (in):</FormLabel>
+              <FormItem className="space-y-1">
+                <div className="grid grid-cols-1 sm:grid-cols-[90px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                  <FormLabel className="text-sm sm:text-right font-medium">Width (in):</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-width" />
+                    <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-width" />
                   </FormControl>
                 </div>
-                <FormMessage className="text-xs ml-[78px]" />
+                <FormMessage className="text-xs sm:ml-[98px]" />
               </FormItem>
             )}
           />
@@ -189,14 +189,14 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             control={form.control}
             name="packages.0.height"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <div className="grid grid-cols-[70px_1fr] items-center gap-2">
-                  <FormLabel className="text-xs text-right font-medium">Height (in):</FormLabel>
+              <FormItem className="space-y-1">
+                <div className="grid grid-cols-1 sm:grid-cols-[90px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
+                  <FormLabel className="text-sm sm:text-right font-medium">Height (in):</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-height" />
+                    <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-height" />
                   </FormControl>
                 </div>
-                <FormMessage className="text-xs ml-[78px]" />
+                <FormMessage className="text-xs sm:ml-[98px]" />
               </FormItem>
             )}
           />

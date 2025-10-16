@@ -165,7 +165,11 @@ export const ShipmentFormFull = ({
   if (viewState === "label" && purchasedLabel) {
     return (
       <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
-        <div>
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 pb-2 border-b">
+            <h2 className="text-xl font-semibold">Print Label</h2>
+          </div>
+          
           <LabelSummary 
             purchasedLabel={purchasedLabel}
             onCreateAnother={handleCreateAnother}
@@ -174,7 +178,7 @@ export const ShipmentFormFull = ({
         </div>
         
         {showLiveSummary && (
-          <div>
+          <div className="hidden lg:block">
             <CompactLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
           </div>
         )}
@@ -184,42 +188,62 @@ export const ShipmentFormFull = ({
 
   if (viewState === "summary") {
     return (
-      <div className="space-y-3">
-        <div className="flex justify-start">
+      <div className="flex flex-col h-full lg:h-auto">
+        <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-20 lg:pb-0">
+          <div className="space-y-3 lg:space-y-4">
+            <div className="flex items-center justify-between gap-3 pb-2 border-b">
+              <h2 className="text-xl font-semibold">Select Rate</h2>
+              <Button
+                type="button"
+                onClick={handleGoBack}
+                variant="outline"
+                size="sm"
+                className="gap-2 hidden lg:flex"
+                data-testid="button-go-back"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Go Back
+              </Button>
+            </div>
+            
+            <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
+              <div>
+                <Card>
+                  <CardHeader className="pb-2 pt-3">
+                    <CardTitle className="text-base font-semibold">Available Shipping Rates</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-2">
+                    <RatesSelection
+                      rates={rates}
+                      isLoading={isLoadingRates}
+                      onPurchase={handlePurchaseLabel}
+                      isPurchasing={isPurchasing}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+              
+              {showLiveSummary && (
+                <div className="hidden lg:block">
+                  <CompactLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        {/* Mobile sticky bottom button */}
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t lg:hidden z-10">
           <Button
             type="button"
             onClick={handleGoBack}
             variant="outline"
-            className="gap-2"
-            data-testid="button-go-back"
+            className="w-full gap-2"
+            data-testid="button-go-back-mobile"
           >
-            <ArrowLeft className="h-3.5 w-3.5" />
+            <ArrowLeft className="h-4 w-4" />
             Go Back
           </Button>
-        </div>
-        
-        <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
-          <div>
-            <Card>
-              <CardHeader className="pb-2 pt-3">
-                <CardTitle className="text-sm font-semibold">Available Shipping Rates</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-2">
-                <RatesSelection
-                  rates={rates}
-                  isLoading={isLoadingRates}
-                  onPurchase={handlePurchaseLabel}
-                  isPurchasing={isPurchasing}
-                />
-              </CardContent>
-            </Card>
-          </div>
-          
-          {showLiveSummary && (
-            <div>
-              <CompactLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} />
-            </div>
-          )}
         </div>
       </div>
     );
@@ -227,73 +251,82 @@ export const ShipmentFormFull = ({
 
   return (
     <Form {...form}>
-      <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
-        <div className="space-y-3">
-          {useCompactAddresses ? (
-            /* Compact Layout: Combined Address on left, Package/Services stacked on right */
-            <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
-              <CompactAddressFormCombined
-                form={form}
-                addresses={addresses}
-                onSavedAddressSelect={handleSavedAddressSelect}
-              />
+      <div className="flex flex-col h-full lg:h-auto">
+        <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-24 lg:pb-0">
+          <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 pb-2 border-b">
+                <h2 className="text-xl font-semibold">Shipment Details</h2>
+              </div>
               
-              <div className="space-y-3">
-                <CompactPackageForm form={form} />
-                <CompactAdditionalServices form={form} />
-              </div>
+              {useCompactAddresses ? (
+                /* Compact Layout: Combined Address on left, Package/Services stacked on right */
+                <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
+                  <CompactAddressFormCombined
+                    form={form}
+                    addresses={addresses}
+                    onSavedAddressSelect={handleSavedAddressSelect}
+                  />
+                  
+                  <div className="space-y-3">
+                    <CompactPackageForm form={form} />
+                    <CompactAdditionalServices form={form} />
+                  </div>
+                </div>
+              ) : (
+                /* Standard Layout: Addresses in row, then Package/Services in row below */
+                <>
+                  {/* Addresses Section */}
+                  <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
+                    <CompactAddressForm
+                      form={form}
+                      type="fromAddress"
+                      title="Ship From"
+                      icon={<MapPin className="h-4 w-4" />}
+                      addresses={addresses}
+                      onSavedAddressSelect={handleSavedAddressSelect}
+                    />
+                    
+                    <CompactAddressForm
+                      form={form}
+                      type="toAddress"
+                      title="Ship To"
+                      icon={<MapPin className="h-4 w-4" />}
+                      addresses={addresses}
+                      onSavedAddressSelect={handleSavedAddressSelect}
+                    />
+                  </div>
+
+                  {/* Package Details and Additional Services Section */}
+                  <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
+                    <CompactPackageForm form={form} />
+                    <CompactAdditionalServices form={form} />
+                  </div>
+                </>
+              )}
             </div>
-          ) : (
-            /* Standard Layout: Addresses in row, then Package/Services in row below */
-            <>
-              {/* Addresses Section */}
-              <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
-                <CompactAddressForm
-                  form={form}
-                  type="fromAddress"
-                  title="Ship From"
-                  icon={<MapPin className="h-4 w-4" />}
-                  addresses={addresses}
-                  onSavedAddressSelect={handleSavedAddressSelect}
-                />
-                
-                <CompactAddressForm
-                  form={form}
-                  type="toAddress"
-                  title="Ship To"
-                  icon={<MapPin className="h-4 w-4" />}
-                  addresses={addresses}
-                  onSavedAddressSelect={handleSavedAddressSelect}
-                />
-              </div>
 
-              {/* Package Details and Additional Services Section */}
-              <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
-                <CompactPackageForm form={form} />
-                <CompactAdditionalServices form={form} />
+            {showLiveSummary && (
+              <div className="hidden lg:block">
+                <CompactLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} />
               </div>
-            </>
-          )}
-
-          <div className="flex justify-center pt-2">
-            <Button
-              type="button"
-              onClick={handleGetRates}
-              disabled={isLoadingRates}
-              className="w-full lg:w-auto min-w-[200px]"
-              data-testid="button-get-rates"
-            >
-              {isLoadingRates && <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" />}
-              {isLoadingRates ? 'Loading Rates...' : 'Get Rates'}
-            </Button>
+            )}
           </div>
         </div>
-
-        {showLiveSummary && (
-          <div>
-            <CompactLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} />
-          </div>
-        )}
+        
+        {/* Mobile sticky bottom button */}
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t lg:hidden z-10">
+          <Button
+            type="button"
+            onClick={handleGetRates}
+            disabled={isLoadingRates}
+            className="w-full h-11 text-sm"
+            data-testid="button-get-rates"
+          >
+            {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+            {isLoadingRates ? 'Loading Rates...' : 'Get Rates'}
+          </Button>
+        </div>
       </div>
     </Form>
   );
