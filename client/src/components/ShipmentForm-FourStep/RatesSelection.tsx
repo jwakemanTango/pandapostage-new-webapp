@@ -124,9 +124,9 @@ const RatesSelection = ({ rates = [], isLoading = false, onPurchase, isPurchasin
                     className="bg-primary hover:bg-primary/90 whitespace-nowrap"
                     disabled={isPurchasing}
                     onClick={() => onPurchase?.(rate)}
-                    data-testid={`button-process-label-${rate.id}`}
+                    data-testid={`button-buy-label-${rate.id}`}
                   >
-                    Process Label
+                    Buy Label
                   </Button>
                 </td>
               </tr>
