@@ -6,6 +6,12 @@ PandaPostage is a professional shipping rate comparison and label purchasing app
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (October 16, 2025)
+### Form Validation Improvements
+- **Auto-open Invalid Tab Fix**: Both 3-step and 4-step forms now properly auto-switch to the address tab containing validation errors. When Ship From is valid but Ship To has errors, the form automatically switches to the Ship To tab. Uses explicit formState property access (errors?.fromAddress, errors?.toAddress, errorCount) to ensure React Hook Form reactivity.
+- **Clear Errors on Change**: Forms now use `mode: "onChange"` and `reValidateMode: "onChange"` so validation errors clear immediately when fields are corrected. After initial validation attempt, typing in any field re-validates instantly and clears the error when valid.
+- **Phone Validation**: Requires at least 10 digits. Valid formats: "(555) 123-4567", "555-123-4567", "5551234567".
+
 ## System Architecture
 
 ### Frontend
@@ -16,13 +22,13 @@ Preferred communication style: Simple, everyday language.
     - DEBUG button in top-right corner toggles visibility of development controls (3-Step Flow, 4-Step Flow, Combine Address Forms, Show Sidebar Summary, Show Banner Summary, Show Label Preview).
     - Default view: 3-Step Flow (can be changed to 4-Step Flow via DEBUG panel).
     - Banner summary defaults to visible (showBannerSummary = true) on both mobile and desktop, can be toggled off via DEBUG panel.
-    - `ShipmentForm-FourStep`: Multi-step guided workflow with progressive disclosure.
+    - `ShipmentForm-FourStep`: Multi-step guided workflow with progressive disclosure. Features auto-open invalid address tab that dynamically switches to show validation errors, and onChange validation mode that clears field errors immediately when corrected.
     - `ShipmentForm-ThreeStep`: Single-page compact workflow optimized for experienced users (default), featuring:
         - Three distinct views (Form, Summary, Label) with consistent layout: step titles positioned above content grid on all three steps for uniform visual hierarchy
         - Mobile-optimized layout with vertical field stacking, hidden summary on mobile, and fixed bottom navigation
         - BannerLiveSummary component: full-width, sticky-top collapsible banner visible by default on mobile and desktop, controllable via DEBUG toggle. Features centered step progress indicators (Truck, DollarSign, Printer icons), company name display (with city/state fallback), and package count. No corner radius for seamless full-width design.
         - CompactLiveSummary component: sidebar summary with step-specific icons, completion checkmarks, validation error highlighting, sticky positioning (aligns with form initially, pins to top when scrolling)
-        - CompactAddressFormCombined: Auto-opens invalid address tab (Ship From/Ship To) when validation errors detected
+        - CompactAddressFormCombined: Auto-opens invalid address tab (Ship From/Ship To) when validation errors detected. Dynamically switches tabs as user fixes errors with onChange validation providing immediate feedback.
         - Stacked field labels for weight and dimensions in CompactPackageForm for cleaner, more compact presentation
         - Consistent font sizing (text-sm labels, h-9 text-sm controls) for comfortable readability
         - Mobile-first responsive breakpoints with proper spacing (pb-20 for fixed button clearance)

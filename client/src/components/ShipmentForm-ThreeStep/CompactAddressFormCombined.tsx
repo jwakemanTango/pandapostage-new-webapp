@@ -22,10 +22,12 @@ export const CompactAddressFormCombined = ({
   const [activeTab, setActiveTab] = useState<"from" | "to">("from");
   
   // Watch for validation errors and auto-switch tabs
-  const fromErrors = form.formState.errors?.fromAddress;
-  const toErrors = form.formState.errors?.toAddress;
-  
   useEffect(() => {
+    // Access formState properties explicitly to ensure React Hook Form tracks them
+    const fromErrors = form.formState.errors?.fromAddress;
+    const toErrors = form.formState.errors?.toAddress;
+    const errorCount = form.formState.errorCount;
+    
     const hasFromErrors = fromErrors && Object.keys(fromErrors).length > 0;
     const hasToErrors = toErrors && Object.keys(toErrors).length > 0;
     
@@ -42,7 +44,7 @@ export const CompactAddressFormCombined = ({
         setActiveTab("from");
       }
     }
-  }, [fromErrors, toErrors]);
+  }, [form.formState.errors?.fromAddress, form.formState.errors?.toAddress, form.formState.errorCount]);
   
   const renderAddressFields = (type: "fromAddress" | "toAddress") => {
     return (

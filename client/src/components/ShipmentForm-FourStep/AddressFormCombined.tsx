@@ -24,9 +24,10 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
   
   // Check for validation errors and switch to that tab
   useEffect(() => {
-    const errors = form.formState.errors;
-    const fromErrors = errors.fromAddress;
-    const toErrors = errors.toAddress;
+    // Access formState properties explicitly to ensure React Hook Form tracks them
+    const fromErrors = form.formState.errors?.fromAddress;
+    const toErrors = form.formState.errors?.toAddress;
+    const errorCount = form.formState.errorCount;
     
     const hasFromErrors = fromErrors && Object.keys(fromErrors).length > 0;
     const hasToErrors = toErrors && Object.keys(toErrors).length > 0;
@@ -44,7 +45,7 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
         setActiveTab("from");
       }
     }
-  }, [form.formState.errors]);
+  }, [form.formState.errors?.fromAddress, form.formState.errors?.toAddress, form.formState.errorCount]);
   
   const getFilteredAddresses = (type: "from" | "to", searchTerm: string) => {
     return addresses?.filter(address => {
