@@ -201,8 +201,33 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name={`packages.0.carrier`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Preferred Carrier</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value || "any"}>
+                      <FormControl>
+                        <SelectTrigger data-testid="select-carrier">
+                          <SelectValue placeholder="Select carrier" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {CARRIERS.map((carrier) => (
+                          <SelectItem key={carrier.value} value={carrier.value}>
+                            {carrier.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
               <FormField
                 control={form.control}
                 name={`packages.0.packageType`}
@@ -219,31 +244,6 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                         {PACKAGE_TYPES.map((type) => (
                           <SelectItem key={type.value} value={type.value}>
                             {type.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name={`packages.0.carrier`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm font-medium">Preferred Carrier <span className="text-muted-foreground font-normal text-xs">(optional)</span></FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value || "any"}>
-                      <FormControl>
-                        <SelectTrigger data-testid="select-carrier">
-                          <SelectValue placeholder="Select carrier" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {CARRIERS.map((carrier) => (
-                          <SelectItem key={carrier.value} value={carrier.value}>
-                            {carrier.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -357,7 +357,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
             </div>
           </div>
           
-          <div className="flex justify-end mt-5">
+          <div className="flex justify-end mt-4">
             <Button 
               type="button" 
               variant="outline" 
@@ -462,29 +462,10 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
       )}
 
       {isEditing && editingPackage && (
-        <div className="space-y-4 p-4 border rounded-md bg-card">
+        <div className="space-y-3 p-4 border rounded-md bg-card">
           <h4 className="font-semibold text-sm">Edit Package #{editingPackage.index + 1}</h4>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <FormLabel className="text-sm font-medium">Package Type</FormLabel>
-              <Select 
-                onValueChange={(value) => updatePackageField('packageType', value)} 
-                value={editingPackage.data.packageType}
-              >
-                <SelectTrigger data-testid="select-edit-package-type" className="mt-1.5">
-                  <SelectValue placeholder="Select package type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {PACKAGE_TYPES.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
             <div>
               <FormLabel className="text-sm font-medium">Preferred Carrier</FormLabel>
               <Select 
@@ -498,6 +479,25 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                   {CARRIERS.map((carrier) => (
                     <SelectItem key={carrier.value} value={carrier.value}>
                       {carrier.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <FormLabel className="text-sm font-medium">Package Type</FormLabel>
+              <Select 
+                onValueChange={(value) => updatePackageField('packageType', value)} 
+                value={editingPackage.data.packageType}
+              >
+                <SelectTrigger data-testid="select-edit-package-type" className="mt-1.5">
+                  <SelectValue placeholder="Select package type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PACKAGE_TYPES.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -263,9 +263,9 @@ export const ShipmentForm = ({
               </div>
               
               <Form {...form}>
-                <form className="space-y-6">
+                <form className="space-y-5">
                   <PackageForm form={form} />
-                  <div className="border-t pt-6">
+                  <div className="border-t pt-5">
                     <AdditionalServices form={form} />
                   </div>
                 </form>
