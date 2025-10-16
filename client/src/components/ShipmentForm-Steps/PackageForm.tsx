@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Plus, Edit, Box } from "lucide-react";
 import { useFieldArray } from "react-hook-form";
+import { PACKAGE_TYPES, CARRIERS } from "@/lib/constants";
 
 interface PackageFormProps {
   form: any;
@@ -27,27 +28,6 @@ type EditingPackage = {
   index: number;
   data: PackageItem;
 }
-
-const PACKAGE_TYPES = [
-  { value: "letter", label: "Letter/Envelope" },
-  { value: "parcel", label: "Parcel/Package" },
-  { value: "large_box", label: "Large Box" },
-  { value: "flat_rate_envelope", label: "Flat Rate Envelope" },
-  { value: "flat_rate_box_small", label: "Small Flat Rate Box" },
-  { value: "flat_rate_box_medium", label: "Medium Flat Rate Box" },
-  { value: "flat_rate_box_large", label: "Large Flat Rate Box" },
-  { value: "regional_box_a", label: "Regional Box A" },
-  { value: "regional_box_b", label: "Regional Box B" },
-  { value: "custom", label: "Custom Package" },
-];
-
-const CARRIERS = [
-  { value: "any", label: "Any Carrier" },
-  { value: "usps", label: "USPS" },
-  { value: "ups", label: "UPS" },
-  { value: "fedex", label: "FedEx" },
-  { value: "dhl", label: "DHL" },
-];
 
 const PACKAGE_PRESETS = [
   { name: "Small Box", weight: "1", dimensions: { length: "8", width: "6", height: "4" } },
