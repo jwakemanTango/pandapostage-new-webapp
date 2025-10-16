@@ -47,7 +47,7 @@ export const CompactAddressFormCombined = ({
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-1.5 pt-2">
+      <CardContent className="space-y-1.5 pt-2" key={type}>
         <FormField
           control={form.control}
           name={`${type}.dummy` as any}

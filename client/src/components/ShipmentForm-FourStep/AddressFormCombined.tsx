@@ -125,7 +125,7 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
         </Select>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4" key={type}>
         <FormField
           control={form.control}
           name={`${type}.company`}

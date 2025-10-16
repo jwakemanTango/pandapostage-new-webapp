@@ -121,8 +121,8 @@ export const ShipmentForm = ({
     const isValid = await validateStep(currentStep);
     
     if (!isValid) {
-      // If step 1 validation fails, check if fromAddress is invalid and force it open
-      if (currentStep === 1) {
+      // If step 1 validation fails in non-compact mode, check if fromAddress is invalid and force it open
+      if (currentStep === 1 && !useCompactAddresses) {
         const fromAddressValid = await form.trigger("fromAddress");
         if (!fromAddressValid) {
           setFromAddressOpen(true);
