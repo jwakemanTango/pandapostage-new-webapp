@@ -1,15 +1,23 @@
-export const PandaLogo = ({ className }: { className?: string }) => {
+import logoUrl from "@assets/panda-logo_1760601059590.png";
+
+export const PandaLogo = ({ className, compact = false }: { className?: string; compact?: boolean }) => {
+  if (compact) {
+    return (
+      <img 
+        src={logoUrl} 
+        alt="PandaPostage" 
+        className={`h-8 w-auto ${className || ''}`}
+      />
+    );
+  }
+  
   return (
     <div className={`flex items-center gap-3 ${className || ''}`}>
-      <div className="w-10 h-10 bg-primary rounded-md flex items-center justify-center">
-        <span className="text-2xl">🐼</span>
-      </div>
-      <div className="flex flex-col">
-        <span className="text-xl font-bold tracking-tight">
-          Panda<span className="text-primary">Postage</span>
-        </span>
-        <span className="text-xs text-muted-foreground">Shipping Made Simple</span>
-      </div>
+      <img 
+        src={logoUrl} 
+        alt="PandaPostage" 
+        className="h-10 w-auto"
+      />
     </div>
   );
 };
