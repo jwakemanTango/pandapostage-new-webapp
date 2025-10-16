@@ -10,7 +10,7 @@ type FormView = "four-step" | "three-step";
 
 const CreateShipment = () => {
   const [formView, setFormView] = useState<FormView>("four-step");
-  const [useCompactAddresses, setUseCompactAddresses] = useState(false);
+  const [useCompactAddresses, setUseCompactAddresses] = useState(true);
   const [showLiveSummary, setShowLiveSummary] = useState(true);
   const [showLabelPreview, setShowLabelPreview] = useState(true);
   const [rates, setRates] = useState<Rate[]>([]);
