@@ -9,7 +9,7 @@ interface BannerLiveSummaryProps {
 }
 
 export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErrors }: BannerLiveSummaryProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const { fromAddress, toAddress, packages } = formData || {};
   
   const hasFromAddress = fromAddress?.name && fromAddress?.city && fromAddress?.state;

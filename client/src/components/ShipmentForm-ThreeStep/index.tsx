@@ -173,6 +173,9 @@ export const ShipmentFormFull = ({
       form.setValue(`${type}.state`, address.state);
       form.setValue(`${type}.zipCode`, address.zipCode);
       form.setValue(`${type}.country`, address.country);
+      
+      // Clear validation errors for this address section
+      form.clearErrors(type);
     }
   };
 

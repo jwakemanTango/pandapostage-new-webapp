@@ -54,6 +54,9 @@ const AddressForm = ({ form, type, title, onAddressSelected, isOpen, onOpenChang
       form.setValue(`${type}.zipCode`, selectedAddress.zipCode);
       form.setValue(`${type}.country`, selectedAddress.country);
       
+      // Clear validation errors for this address section
+      form.clearErrors(type);
+      
       // Validate the fields after setting them
       if (type === "fromAddress") {
         const isValid = await form.trigger("fromAddress");
