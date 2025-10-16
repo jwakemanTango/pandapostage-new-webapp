@@ -385,14 +385,15 @@ export const ShipmentFormFull = ({
           {renderAddressSection("fromAddress", "Ship From", <MapPin className="h-3.5 w-3.5" />)}
           {renderAddressSection("toAddress", "Ship To", <MapPin className="h-3.5 w-3.5" />)}
           
-          <Card>
-            <CardHeader className="pb-2 pt-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <PackageIcon className="h-3.5 w-3.5" />
-                Package Details
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1.5 pt-2">
+          <div className="space-y-3">
+            <Card>
+              <CardHeader className="pb-2 pt-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <PackageIcon className="h-3.5 w-3.5" />
+                  Package Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-1.5 pt-2">
               <FormField
                 control={form.control}
                 name="packages.0.packageType"
@@ -529,15 +530,14 @@ export const ShipmentFormFull = ({
               </div>
             </CardContent>
           </Card>
-        </div>
 
-        <Card>
-          <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-sm">Additional Services</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-2">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-1">
-              <FormField
+          <Card>
+            <CardHeader className="pb-2 pt-3">
+              <CardTitle className="text-sm">Additional Services</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-2">
+              <div className="space-y-1">
+                <FormField
                 control={form.control}
                 name="additionalServices.saturdayDelivery"
                 render={({ field }) => (
@@ -645,9 +645,11 @@ export const ShipmentFormFull = ({
                   </FormItem>
                 )}
               />
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+            </CardContent>
+          </Card>
+          </div>
+        </div>
 
         <div className="flex justify-center pt-2">
           <Button
