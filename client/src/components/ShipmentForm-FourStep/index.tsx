@@ -3,9 +3,12 @@ import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { createShipmentSchema, ShipmentFormData, Rate } from "@shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddressForm from "./AddressForm";
+import AddressFormCombined from "./AddressFormCombined";
 import PackageForm from "./PackageForm";
 import RatesSelection from "./RatesSelection";
 import AdditionalServices from "./AdditionalServices";
@@ -34,6 +37,7 @@ export const ShipmentForm = ({
   const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
   const [ratesAvailable, setRatesAvailable] = useState(false);
   const [fromAddressOpen, setFromAddressOpen] = useState(true);
+  const [useCompactAddresses, setUseCompactAddresses] = useState(false);
   
   
   const form = useForm<ShipmentFormData>({
@@ -209,42 +213,64 @@ export const ShipmentForm = ({
         return (
           <Card className="bg-gradient-to-br from-background to-muted/20">
             <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <MapPin className="h-5 w-5 text-primary" />
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <MapPin className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold">Shipping Addresses</h3>
                 </div>
-                <h3 className="text-lg font-semibold">Shipping Addresses</h3>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="compact-addresses" className="text-sm">
+                    Compact Addresses
+                  </Label>
+                  <Switch
+                    id="compact-addresses"
+                    checked={useCompactAddresses}
+                    onCheckedChange={setUseCompactAddresses}
+                    data-testid="switch-compact-addresses"
+                  />
+                </div>
               </div>
               
               <Form {...form}>
                 <form className="space-y-6">
-                  <Collapsible open={fromAddressOpen} onOpenChange={setFromAddressOpen}>
-                    <CollapsibleTrigger className="flex items-center justify-between w-full group" data-testid="button-toggle-from-address">
-                      <div className="flex items-center gap-2">
-                        <PackageOpen className="h-4 w-4 text-muted-foreground" />
-                        <h3 className="text-base font-semibold">From Address</h3>
+                  {useCompactAddresses ? (
+                    <AddressFormCombined 
+                      form={form}
+                      onAddressSelected={() => setFromAddressOpen(false)}
+                    />
+                  ) : (
+                    <>
+                      <Collapsible open={fromAddressOpen} onOpenChange={setFromAddressOpen}>
+                        <CollapsibleTrigger className="flex items-center justify-between w-full group" data-testid="button-toggle-from-address">
+                          <div className="flex items-center gap-2">
+                            <PackageOpen className="h-4 w-4 text-muted-foreground" />
+                            <h3 className="text-base font-semibold">From Address</h3>
+                          </div>
+                          <ChevronDown className={`h-4 w-4 transition-transform ${fromAddressOpen ? '' : '-rotate-90'}`} />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="pt-4">
+                          <AddressForm 
+                            form={form} 
+                            type="fromAddress" 
+                            title="" 
+                            isOpen={fromAddressOpen}
+                            onOpenChange={setFromAddressOpen}
+                            onAddressSelected={() => setFromAddressOpen(false)}
+                          />
+                        </CollapsibleContent>
+                      </Collapsible>
+                      
+                      <div className="border-t pt-6">
+                        <div className="flex items-center gap-2 mb-4">
+                          <Navigation className="h-4 w-4 text-muted-foreground" />
+                          <h3 className="text-base font-semibold">To Address</h3>
+                        </div>
+                        <AddressForm form={form} type="toAddress" title="" />
                       </div>
-                      <ChevronDown className={`h-4 w-4 transition-transform ${fromAddressOpen ? '' : '-rotate-90'}`} />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="pt-4">
-                      <AddressForm 
-                        form={form} 
-                        type="fromAddress" 
-                        title="" 
-                        isOpen={fromAddressOpen}
-                        onOpenChange={setFromAddressOpen}
-                        onAddressSelected={() => setFromAddressOpen(false)}
-                      />
-                    </CollapsibleContent>
-                  </Collapsible>
-                  
-                  <div className="border-t pt-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Navigation className="h-4 w-4 text-muted-foreground" />
-                      <h3 className="text-base font-semibold">To Address</h3>
-                    </div>
-                    <AddressForm form={form} type="toAddress" title="" />
-                  </div>
+                    </>
+                  )}
                 </form>
               </Form>
             </CardContent>
