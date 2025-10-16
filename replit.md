@@ -67,20 +67,25 @@ Preferred communication style: Simple, everyday language.
     - `CompactAddressFormCombined.tsx` - Combined compact address form with From/To toggle
     - `CompactPackageForm.tsx` - Package details input with compact styling
     - `CompactAdditionalServices.tsx` - Service checkboxes with compact layout
-    - `CompactLiveSummary.tsx` - Real-time summary sidebar showing shipment details with PandaLogo header
+    - `CompactLiveSummary.tsx` - Real-time summary sidebar with step indicators and PandaLogo header
     - `LabelSummary.tsx` - Post-purchase label display with compact styling
-  - Layout with real-time LiveSummary sidebar (similar to FourStep):
-    - Form fields displayed on left with flexible width
-    - CompactLiveSummary shown on right as sticky sidebar (320px wide)
+  - Form Layout Organization:
+    - **Addresses Section**: Shown first (2-column grid when not compact, 1-column when compact)
+    - **Package & Services Section**: Displayed underneath addresses (2-column responsive grid)
+    - Package Details and Additional Services stack vertically on small screens, side-by-side on larger screens
+  - Persistent Summary Sidebar:
+    - CompactLiveSummary always positioned on the right side (320px wide, sticky)
+    - Shows step progress indicators: Shipment → Select Rate → Print Label
     - Updates in real-time using form.watch() as user fills form
-  - Three-view workflow with state management:
-    - **Form View**: Displays form fields + optional LiveSummary sidebar + "Get Rates" button
-    - **Summary View**: Hides form, shows CompactLiveSummary + Rates side-by-side (2-column) + "Go Back" button
-    - **Label View**: Shows only LabelSummary after purchase
+    - Remains visible throughout all three views when enabled
+  - Three-view workflow with consistent layout:
+    - **Form View**: Shows addresses + package/services + optional LiveSummary on right + "Get Rates" button
+    - **Summary View**: Shows rates on left + CompactLiveSummary on right + "Go Back" button
+    - **Label View**: Shows label details on left + CompactLiveSummary on right
   - View transitions:
-    - "Get Rates" → Summary view (form data preserved)
-    - "Purchase Label" → Label view
-    - "Go Back" → Form view (data preserved)
+    - "Get Rates" → Summary view (form data preserved, summary stays on right)
+    - "Purchase Label" → Label view (summary shows "Print Label" step)
+    - "Go Back" → Form view (data preserved, summary shows "Shipment" step)
     - "Create Another Shipment" → Form view (data reset)
   - Compact styling throughout: `text-xs` labels, `h-7` inputs/buttons, `h-3.5 w-3.5` icons
   - **Compact Addresses Toggle**: Switch to display one combined address form instead of two separate forms
