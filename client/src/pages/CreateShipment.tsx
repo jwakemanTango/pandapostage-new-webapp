@@ -12,7 +12,7 @@ import labelPreviewUrl from "@assets/label_1760604447339.png";
 type FormView = "four-step" | "three-step";
 
 const CreateShipment = () => {
-  const [formView, setFormView] = useState<FormView>("three-step");
+  const [formView, setFormView] = useState<FormView>("four-step");
   const [useCompactAddresses, setUseCompactAddresses] = useState(true);
   const [showLiveSummary, setShowLiveSummary] = useState(true);
   const [showLabelPreview, setShowLabelPreview] = useState(false);
@@ -143,7 +143,7 @@ const CreateShipment = () => {
                   htmlFor="view-toggle"
                   className="text-xs sm:text-sm font-medium whitespace-nowrap"
                 >
-                  {formView === "four-step" ? "4-Step Flow" : "3-Step Flow"}
+                  {formView === "four-step" ? "4-Step Flow" : "Compact 3-step flow"}
                 </Label>
                 <Switch
                   id="view-toggle"
