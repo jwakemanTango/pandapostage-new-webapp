@@ -6,9 +6,10 @@ import labelPreviewUrl from "@assets/label_1760604447339.png";
 interface LabelSummaryProps {
   purchasedLabel: Rate;
   onCreateAnother: () => void;
+  showLabelPreview?: boolean;
 }
 
-export const LabelSummary = ({ purchasedLabel, onCreateAnother }: LabelSummaryProps) => {
+export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview = true }: LabelSummaryProps) => {
   return (
     <div className="space-y-6">
       <div className="bg-chart-2/10 border border-chart-2/20 rounded-lg p-4">
@@ -87,17 +88,19 @@ export const LabelSummary = ({ purchasedLabel, onCreateAnother }: LabelSummaryPr
             </div>
           </div>
 
-          <div className="border rounded-lg p-4 bg-card">
-            <p className="text-xs text-muted-foreground mb-3">Label Preview</p>
-            <div className="border rounded-md overflow-hidden bg-white">
-              <img 
-                src={labelPreviewUrl} 
-                alt="Shipping Label Preview" 
-                className="w-full h-auto"
-                data-testid="img-label-preview"
-              />
+          {showLabelPreview && (
+            <div className="border rounded-lg p-4 bg-card">
+              <p className="text-xs text-muted-foreground mb-3">Label Preview</p>
+              <div className="border rounded-md overflow-hidden bg-white">
+                <img 
+                  src={labelPreviewUrl} 
+                  alt="Shipping Label Preview" 
+                  className="w-full h-auto"
+                  data-testid="img-label-preview"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

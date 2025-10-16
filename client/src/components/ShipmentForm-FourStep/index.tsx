@@ -25,6 +25,7 @@ interface ShipmentFormProps {
   isPurchasing?: boolean;
   useCompactAddresses?: boolean;
   showLiveSummary?: boolean;
+  showLabelPreview?: boolean;
 }
 
 export const ShipmentForm = ({ 
@@ -34,7 +35,8 @@ export const ShipmentForm = ({
   isLoadingRates = false,
   isPurchasing = false,
   useCompactAddresses = false,
-  showLiveSummary = true
+  showLiveSummary = true,
+  showLabelPreview = true
 }: ShipmentFormProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
@@ -325,6 +327,7 @@ export const ShipmentForm = ({
                 <LabelSummary 
                   purchasedLabel={purchasedLabel}
                   onCreateAnother={handleCreateAnother}
+                  showLabelPreview={showLabelPreview}
                 />
               )}
             </CardContent>

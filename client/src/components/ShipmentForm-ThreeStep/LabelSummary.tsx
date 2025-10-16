@@ -7,9 +7,10 @@ import labelPreviewUrl from "@assets/label_1760604447339.png";
 interface LabelSummaryProps {
   purchasedLabel: Rate;
   onCreateAnother: () => void;
+  showLabelPreview?: boolean;
 }
 
-export const LabelSummary = ({ purchasedLabel, onCreateAnother }: LabelSummaryProps) => {
+export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview = true }: LabelSummaryProps) => {
   return (
     <Card>
       <CardHeader className="pb-2 pt-3">
@@ -90,17 +91,19 @@ export const LabelSummary = ({ purchasedLabel, onCreateAnother }: LabelSummaryPr
             </div>
           </div>
 
-          <div className="border rounded-md p-2 bg-card">
-            <p className="text-xs text-muted-foreground mb-2">Label Preview</p>
-            <div className="border rounded-sm overflow-hidden bg-white">
-              <img 
-                src={labelPreviewUrl} 
-                alt="Shipping Label Preview" 
-                className="w-full h-auto"
-                data-testid="img-label-preview"
-              />
+          {showLabelPreview && (
+            <div className="border rounded-md p-2 bg-card">
+              <p className="text-xs text-muted-foreground mb-2">Label Preview</p>
+              <div className="border rounded-sm overflow-hidden bg-white">
+                <img 
+                  src={labelPreviewUrl} 
+                  alt="Shipping Label Preview" 
+                  className="w-full h-auto"
+                  data-testid="img-label-preview"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </CardContent>
     </Card>

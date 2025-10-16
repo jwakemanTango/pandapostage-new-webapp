@@ -25,6 +25,7 @@ interface ShipmentFormFullProps {
   isPurchasing?: boolean;
   useCompactAddresses?: boolean;
   showLiveSummary?: boolean;
+  showLabelPreview?: boolean;
 }
 
 type ViewState = "form" | "summary" | "label";
@@ -36,7 +37,8 @@ export const ShipmentFormFull = ({
   isLoadingRates = false,
   isPurchasing = false,
   useCompactAddresses = false,
-  showLiveSummary = true
+  showLiveSummary = true,
+  showLabelPreview = true
 }: ShipmentFormFullProps) => {
   const [viewState, setViewState] = useState<ViewState>("form");
   const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
@@ -167,6 +169,7 @@ export const ShipmentFormFull = ({
           <LabelSummary 
             purchasedLabel={purchasedLabel}
             onCreateAnother={handleCreateAnother}
+            showLabelPreview={showLabelPreview}
           />
         </div>
         

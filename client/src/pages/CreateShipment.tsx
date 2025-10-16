@@ -12,6 +12,7 @@ const CreateShipment = () => {
   const [formView, setFormView] = useState<FormView>("four-step");
   const [useCompactAddresses, setUseCompactAddresses] = useState(false);
   const [showLiveSummary, setShowLiveSummary] = useState(true);
+  const [showLabelPreview, setShowLabelPreview] = useState(true);
   const [rates, setRates] = useState<Rate[]>([]);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -151,6 +152,20 @@ const CreateShipment = () => {
                 data-testid="switch-show-summary-global"
               />
             </div>
+            
+            <div className="h-5 w-px bg-border" />
+            
+            <div className="flex items-center gap-2">
+              <Label htmlFor="label-preview-toggle" className="text-sm">
+                Show Label Preview
+              </Label>
+              <Switch
+                id="label-preview-toggle"
+                checked={showLabelPreview}
+                onCheckedChange={setShowLabelPreview}
+                data-testid="switch-label-preview-global"
+              />
+            </div>
           </div>
         </div>
         
@@ -163,6 +178,7 @@ const CreateShipment = () => {
             isPurchasing={isPurchasing}
             useCompactAddresses={useCompactAddresses}
             showLiveSummary={showLiveSummary}
+            showLabelPreview={showLabelPreview}
           />
         ) : (
           <ShipmentFormFull 
@@ -173,6 +189,7 @@ const CreateShipment = () => {
             isPurchasing={isPurchasing}
             useCompactAddresses={useCompactAddresses}
             showLiveSummary={showLiveSummary}
+            showLabelPreview={showLabelPreview}
           />
         )}
       </main>
