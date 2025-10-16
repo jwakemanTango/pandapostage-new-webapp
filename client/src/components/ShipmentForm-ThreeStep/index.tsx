@@ -12,7 +12,7 @@ import { CompactPackageForm } from "./CompactPackageForm";
 import { CompactAdditionalServices } from "./CompactAdditionalServices";
 import { CompactLiveSummary } from "./CompactLiveSummary";
 import { LabelSummary } from "./LabelSummary";
-import RatesSelection from "../ShipmentForm-Steps/RatesSelection";
+import RatesSelection from "../ShipmentForm-FourStep/RatesSelection";
 
 interface ShipmentFormFullProps {
   onGetRates?: (data: any) => void;

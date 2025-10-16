@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { ShipmentForm } from "@/components/ShipmentForm-Steps";
+import { ShipmentForm } from "@/components/ShipmentForm-FourStep";
 import { PandaLogo } from "@/components/PandaLogo";
 import { Rate } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
