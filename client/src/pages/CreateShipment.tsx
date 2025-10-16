@@ -93,12 +93,6 @@ const CreateShipment = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-5 py-3">
-          <PandaLogo />
-        </div>
-      </header>
-      
       <main className="container mx-auto px-5 py-8 max-w-[1400px]">
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-1.5">Create Shipment</h1>
