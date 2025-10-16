@@ -96,9 +96,11 @@ Preferred communication style: Simple, everyday language.
 - Controls visibility of LiveSummary/CompactLiveSummary sidebar
 - When hidden, form takes full width for maximum screen real estate
 - When shown, displays real-time shipment summary with PandaLogo header
-- Summary updates automatically using form.watch() as user fills out form fields
+- Summary updates automatically using form.watch() with useState/useEffect pattern
+- Both forms use consistent real-time update pattern: useState to store values, useEffect to subscribe to form.watch() changes
 - Sticky positioning keeps summary visible while scrolling
 - Default state: shown (can be toggled off for cleaner workspace)
+- Grid layout dynamically adjusts based on toggle state (e.g., lg:grid-cols-[1fr_380px] when shown)
   
 **Shared Components & Patterns:**
 - Component composition pattern ensures code reusability and maintainability

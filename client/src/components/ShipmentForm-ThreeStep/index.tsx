@@ -97,7 +97,15 @@ export const ShipmentFormFull = ({
     },
   });
 
-  const formValues = form.watch();
+  const [formValues, setFormValues] = useState<ShipmentFormData>(form.getValues());
+
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      setFormValues(value as ShipmentFormData);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const handleGetRates = async () => {
     const isValid = await form.trigger(["fromAddress", "toAddress", "packages"]);
