@@ -74,11 +74,9 @@ export const LiveSummary = ({
 
   return (
     <Card className="sticky top-6">
-      <CardHeader className="pb-4">
-        <div className="flex flex-col items-center gap-2 mb-2">
-          <PandaLogo compact className="h-8" />
-        </div>
-        <CardTitle className="text-lg text-center">Shipment Progress</CardTitle>
+      <CardHeader className="pb-4 flex flex-col items-center">
+        <PandaLogo compact className="h-8 mb-3" />
+        <CardTitle className="text-lg">Shipment Progress</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
