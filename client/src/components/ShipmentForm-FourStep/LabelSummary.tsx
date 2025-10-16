@@ -22,6 +22,14 @@ export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview
     }
   };
 
+  const handleEmailLabel = () => {
+    alert("TODO: NOT IMPLEMENTED");
+  };
+
+  const handleViewReceipt = () => {
+    alert("TODO: NOT IMPLEMENTED");
+  };
+
   return (
     <div className={`grid ${showLabelPreview ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'} gap-4`}>
       <div className="flex flex-col h-full">
@@ -73,11 +81,11 @@ export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview
               <Download className="h-4 w-4" />
               Download Label
             </Button>
-            <Button variant="outline" className="w-full gap-2" data-testid="button-email-label">
+            <Button variant="outline" className="w-full gap-2" onClick={handleEmailLabel} data-testid="button-email-label">
               <Mail className="h-4 w-4" />
               Email Label
             </Button>
-            <Button variant="outline" className="w-full gap-2" data-testid="button-view-receipt">
+            <Button variant="outline" className="w-full gap-2" onClick={handleViewReceipt} data-testid="button-view-receipt">
               <Receipt className="h-4 w-4" />
               View Receipt
             </Button>

@@ -23,6 +23,14 @@ export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview
     }
   };
 
+  const handleEmailLabel = () => {
+    alert("TODO: NOT IMPLEMENTED");
+  };
+
+  const handleViewReceipt = () => {
+    alert("TODO: NOT IMPLEMENTED");
+  };
+
   return (
     <Card>
       <CardHeader className="pb-2 pt-3">
@@ -82,11 +90,11 @@ export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview
                   <Download className="h-3.5 w-3.5" />
                   Download Label
                 </Button>
-                <Button size="sm" variant="outline" className="w-full gap-1.5" data-testid="button-email-label">
+                <Button size="sm" variant="outline" className="w-full gap-1.5" onClick={handleEmailLabel} data-testid="button-email-label">
                   <Mail className="h-3.5 w-3.5" />
                   Email Label
                 </Button>
-                <Button size="sm" variant="outline" className="w-full gap-1.5" data-testid="button-view-receipt">
+                <Button size="sm" variant="outline" className="w-full gap-1.5" onClick={handleViewReceipt} data-testid="button-view-receipt">
                   <Receipt className="h-3.5 w-3.5" />
                   View Receipt
                 </Button>
