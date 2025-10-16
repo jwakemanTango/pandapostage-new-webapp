@@ -135,15 +135,6 @@ export const ShipmentFormFull = ({
     }
   };
 
-  if (purchasedLabel) {
-    return (
-      <LabelSummary 
-        purchasedLabel={purchasedLabel}
-        onCreateAnother={handleCreateAnother}
-      />
-    );
-  }
-
   return (
     <Form {...form}>
       <div className="space-y-3">
@@ -172,21 +163,28 @@ export const ShipmentFormFull = ({
           </div>
         </div>
 
-        <div className="flex justify-center pt-2">
-          <Button
-            type="button"
-            onClick={handleGetRates}
-            disabled={isLoadingRates}
-            size="lg"
-            className="w-full lg:w-auto min-w-[200px]"
-            data-testid="button-get-rates"
-          >
-            {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-            {isLoadingRates ? 'Loading Rates...' : 'Get Rates'}
-          </Button>
-        </div>
+        {!purchasedLabel && (
+          <div className="flex justify-center pt-2">
+            <Button
+              type="button"
+              onClick={handleGetRates}
+              disabled={isLoadingRates}
+              size="lg"
+              className="w-full lg:w-auto min-w-[200px]"
+              data-testid="button-get-rates"
+            >
+              {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {isLoadingRates ? 'Loading Rates...' : 'Get Rates'}
+            </Button>
+          </div>
+        )}
 
-        {ratesAvailable && (
+        {purchasedLabel ? (
+          <LabelSummary 
+            purchasedLabel={purchasedLabel}
+            onCreateAnother={handleCreateAnother}
+          />
+        ) : ratesAvailable ? (
           <Card>
             <CardHeader className="pb-2 pt-3">
               <CardTitle className="text-sm">Available Shipping Rates</CardTitle>
@@ -200,7 +198,7 @@ export const ShipmentFormFull = ({
               />
             </CardContent>
           </Card>
-        )}
+        ) : null}
       </div>
     </Form>
   );

@@ -42,6 +42,7 @@ Preferred communication style: Simple, everyday language.
     - `AdditionalServices.tsx` - Optional shipping services
     - `RatesSelection.tsx` - Carrier rate comparison and selection
     - `LiveSummary.tsx` - Real-time summary of shipment details
+    - `LabelSummary.tsx` - Post-purchase label display with tracking and actions
   - Progressive disclosure pattern with collapsible sections
   - Navigation between steps with validation at each stage
   - Label summary screen displays after purchase with preview image, tracking number, and action buttons
@@ -52,16 +53,18 @@ Preferred communication style: Simple, everyday language.
     - `CompactAddressForm.tsx` - Address fields for from/to addresses
     - `CompactPackageForm.tsx` - Package details input
     - `CompactAdditionalServices.tsx` - Service checkboxes
-    - `LabelSummary.tsx` - Post-purchase label display
-    - `constants.ts` - Shared constants (US_STATES, PACKAGE_TYPES, CARRIERS)
+    - `LabelSummary.tsx` - Post-purchase label display (replaces rates section after purchase)
   - Compact 3-column responsive grid layout
   - All form sections visible on one page for faster data entry
   - Reuses RatesSelection component from ShipmentForm-Steps
+  - After purchase, rates section is replaced with label summary while form fields remain visible
   - "Create Another Shipment" button resets form to initial state
   - Optimized for experienced users who want quick access to all fields
   
 - Component composition pattern ensures code reusability and maintainability
 - Both forms share validation patterns and schemas from `@shared/schema.ts`
+- Both forms have dedicated LabelSummary components for consistent post-purchase display
+- Shared constants (US_STATES, PACKAGE_TYPES, CARRIERS) centralized in `/client/src/lib/constants.ts`
 - Field arrays support for handling multiple packages in a single shipment
 
 **State Management Pattern:**
