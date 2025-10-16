@@ -210,7 +210,8 @@ export const ShipmentFormFull = ({
     <Form {...form}>
       <div className="flex gap-4">
         <div className="flex-1 space-y-3">
-          <div className={`grid gap-3 ${useCompactAddresses ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 lg:grid-cols-3'}`}>
+          {/* Addresses Section */}
+          <div className={`grid gap-3 ${useCompactAddresses ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
             {useCompactAddresses ? (
               <CompactAddressFormCombined
                 form={form}
@@ -238,11 +239,12 @@ export const ShipmentFormFull = ({
                 />
               </>
             )}
-            
-            <div className="space-y-3">
-              <CompactPackageForm form={form} />
-              <CompactAdditionalServices form={form} />
-            </div>
+          </div>
+
+          {/* Package Details and Additional Services Section */}
+          <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
+            <CompactPackageForm form={form} />
+            <CompactAdditionalServices form={form} />
           </div>
 
           <div className="flex justify-center pt-2">
@@ -261,7 +263,7 @@ export const ShipmentFormFull = ({
 
         {showLiveSummary && (
           <div className="w-80 shrink-0">
-            <CompactLiveSummary formData={formValues} />
+            <CompactLiveSummary formData={formValues} currentStep="shipment" />
           </div>
         )}
       </div>
