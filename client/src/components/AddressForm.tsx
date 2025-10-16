@@ -132,7 +132,7 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
           <FormLabel className="text-sm font-medium">Select from saved addresses</FormLabel>
           <Button 
             type="button" 
-            variant="link" 
+            variant="ghost" 
             size="sm" 
             className="text-primary h-auto p-0 text-xs"
             data-testid={`button-manage-addresses-${type}`}
