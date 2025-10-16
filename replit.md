@@ -34,29 +34,37 @@ Preferred communication style: Simple, everyday language.
 - Inter font family for general UI and forms
 
 **Form Architecture:**
-- **ShipmentForm-Steps** (`/components/ShipmentForm-Steps/`) - Multi-step shipment creation workflow
+
+**View Toggle System:**
+- Main CreateShipment page (`/pages/CreateShipment.tsx`) features a toggle to switch between two form workflows
+- Toggle located at top-right of page: "4-Step View" ↔ "3-Step View"
+- Forms are completely independent with separate state (switching resets the other form)
+
+**ShipmentForm-FourStep** (`/components/ShipmentForm-FourStep/`) - Multi-step guided workflow
   - Main component: `index.tsx` - orchestrates state and validation
   - Child components for step-by-step wizard interface:
-    - `AddressForm.tsx` - Address input fields with validation
+    - `AddressForm.tsx` - Standard address input with saved address search/selection
+    - `AddressFormCombined.tsx` - Combined address form with From/To toggle (see Compact Addresses feature)
     - `PackageForm.tsx` - Package dimensions and weight inputs
     - `AdditionalServices.tsx` - Optional shipping services
     - `RatesSelection.tsx` - Carrier rate comparison and selection
-    - `LiveSummary.tsx` - Real-time summary of shipment details
+    - `LiveSummary.tsx` - Real-time summary sidebar showing shipment details
     - `LabelSummary.tsx` - Post-purchase label display with tracking and actions
   - Progressive disclosure pattern with collapsible sections
   - Navigation between steps with validation at each stage
-  - Label summary screen displays after purchase with preview image, tracking number, and action buttons
+  - **Compact Addresses Toggle**: Switch to display one combined address form instead of two separate forms
   
-- **ShipmentForm-Compact** (`/components/ShipmentForm-Compact/`) - Single-page compact shipment creation with three-view workflow
+**ShipmentForm-ThreeStep** (`/components/ShipmentForm-ThreeStep/`) - Single-page compact workflow
   - Main component: `index.tsx` - orchestrates state management and view transitions
   - Extracted child components for better maintainability:
-    - `CompactAddressForm.tsx` - Address fields for from/to addresses
-    - `CompactPackageForm.tsx` - Package details input
-    - `CompactAdditionalServices.tsx` - Service checkboxes
+    - `CompactAddressForm.tsx` - Compact address fields for from/to addresses
+    - `CompactAddressFormCombined.tsx` - Combined compact address form with From/To toggle
+    - `CompactPackageForm.tsx` - Package details input with compact styling
+    - `CompactAdditionalServices.tsx` - Service checkboxes with compact layout
     - `CompactLiveSummary.tsx` - Shows shipment summary in compact format
     - `LabelSummary.tsx` - Post-purchase label display with compact styling
   - Three-view workflow with state management:
-    - **Form View**: Displays all form fields in 3-column grid + "Get Rates" button
+    - **Form View**: Displays all form fields in 3-column grid (or 2-column with compact addresses) + "Get Rates" button
     - **Summary View**: Hides form, shows CompactLiveSummary + Rates side-by-side (2-column) + "Go Back" button
     - **Label View**: Shows only LabelSummary after purchase
   - View transitions:
@@ -65,8 +73,17 @@ Preferred communication style: Simple, everyday language.
     - "Go Back" → Form view (data preserved)
     - "Create Another Shipment" → Form view (data reset)
   - Compact styling throughout: `text-xs` labels, `h-7` inputs/buttons, `h-3.5 w-3.5` icons
+  - **Compact Addresses Toggle**: Switch to display one combined address form instead of two separate forms
   - Optimized for experienced users who want efficient data entry and rate comparison
+
+**Compact Addresses Feature:**
+- Both FourStep and ThreeStep forms include a "Compact Addresses" toggle
+- When enabled, displays single `AddressFormCombined` component instead of two separate address forms
+- Combined component includes internal From/To toggle to switch between addresses
+- Reduces visual clutter and screen space for address entry
+- Form validation and saved address functionality works identically in both modes
   
+**Shared Components & Patterns:**
 - Component composition pattern ensures code reusability and maintainability
 - Both forms share validation patterns and schemas from `@shared/schema.ts`
 - Both forms have dedicated LabelSummary components for consistent post-purchase display
