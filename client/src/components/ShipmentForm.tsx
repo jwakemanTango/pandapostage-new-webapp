@@ -10,7 +10,7 @@ import PackageForm from "./PackageForm";
 import RatesSelection from "./RatesSelection";
 import AdditionalServices from "./AdditionalServices";
 import { LiveSummary } from "./LiveSummary";
-import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight, Download, Mail, Receipt, ChevronDown } from "lucide-react";
+import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight, Download, Mail, Receipt, ChevronDown, PackageOpen, Navigation } from "lucide-react";
 import labelPreviewUrl from "@assets/label_1760604447339.png";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -220,7 +220,10 @@ export const ShipmentForm = ({
                 <form className="space-y-6">
                   <Collapsible open={fromAddressOpen} onOpenChange={setFromAddressOpen}>
                     <CollapsibleTrigger className="flex items-center justify-between w-full group" data-testid="button-toggle-from-address">
-                      <h3 className="text-base font-semibold">From Address</h3>
+                      <div className="flex items-center gap-2">
+                        <PackageOpen className="h-4 w-4 text-muted-foreground" />
+                        <h3 className="text-base font-semibold">From Address</h3>
+                      </div>
                       <ChevronDown className={`h-4 w-4 transition-transform ${fromAddressOpen ? '' : '-rotate-90'}`} />
                     </CollapsibleTrigger>
                     <CollapsibleContent className="pt-4">
@@ -236,7 +239,11 @@ export const ShipmentForm = ({
                   </Collapsible>
                   
                   <div className="border-t pt-6">
-                    <AddressForm form={form} type="toAddress" title="To Address" />
+                    <div className="flex items-center gap-2 mb-4">
+                      <Navigation className="h-4 w-4 text-muted-foreground" />
+                      <h3 className="text-base font-semibold">To Address</h3>
+                    </div>
+                    <AddressForm form={form} type="toAddress" title="" />
                   </div>
                 </form>
               </Form>
