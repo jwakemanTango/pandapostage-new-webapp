@@ -64,9 +64,11 @@ interface AddressFormProps {
   type: "fromAddress" | "toAddress";
   title: string;
   onAddressSelected?: () => void;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-const AddressForm = ({ form, type, title, onAddressSelected }: AddressFormProps) => {
+const AddressForm = ({ form, type, title, onAddressSelected, isOpen, onOpenChange }: AddressFormProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   
   const { data: addresses } = useQuery<Address[]>({
@@ -90,7 +92,7 @@ const AddressForm = ({ form, type, title, onAddressSelected }: AddressFormProps)
     );
   });
   
-  const handleSavedAddressSelect = (addressId: string) => {
+  const handleSavedAddressSelect = async (addressId: string) => {
     const selectedAddress = addresses?.find(address => address.id === parseInt(addressId));
     
     if (selectedAddress) {
@@ -104,8 +106,14 @@ const AddressForm = ({ form, type, title, onAddressSelected }: AddressFormProps)
       form.setValue(`${type}.zipCode`, selectedAddress.zipCode);
       form.setValue(`${type}.country`, selectedAddress.country);
       
-      // Notify parent that an address was selected
-      if (onAddressSelected) {
+      // Validate the fields after setting them
+      if (type === "fromAddress") {
+        const isValid = await form.trigger("fromAddress");
+        // Only notify parent if valid
+        if (isValid && onAddressSelected) {
+          onAddressSelected();
+        }
+      } else if (onAddressSelected) {
         onAddressSelected();
       }
     }

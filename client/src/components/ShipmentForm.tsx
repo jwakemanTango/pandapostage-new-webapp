@@ -35,6 +35,7 @@ export const ShipmentForm = ({
   const [ratesAvailable, setRatesAvailable] = useState(false);
   const [fromAddressOpen, setFromAddressOpen] = useState(true);
   
+  
   const form = useForm<ShipmentFormData>({
     resolver: zodResolver(createShipmentSchema),
     defaultValues: {
@@ -115,7 +116,16 @@ export const ShipmentForm = ({
   const handleNext = async () => {
     const isValid = await validateStep(currentStep);
     
-    if (!isValid) return;
+    if (!isValid) {
+      // If step 1 validation fails, check if fromAddress is invalid and force it open
+      if (currentStep === 1) {
+        const fromAddressValid = await form.trigger("fromAddress");
+        if (!fromAddressValid) {
+          setFromAddressOpen(true);
+        }
+      }
+      return;
+    }
 
     if (currentStep === 2) {
       const fromAddress = form.getValues("fromAddress");
@@ -218,6 +228,8 @@ export const ShipmentForm = ({
                         form={form} 
                         type="fromAddress" 
                         title="" 
+                        isOpen={fromAddressOpen}
+                        onOpenChange={setFromAddressOpen}
                         onAddressSelected={() => setFromAddressOpen(false)}
                       />
                     </CollapsibleContent>
