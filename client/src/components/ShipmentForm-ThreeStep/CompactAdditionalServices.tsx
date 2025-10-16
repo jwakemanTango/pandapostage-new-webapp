@@ -10,10 +10,10 @@ export const CompactAdditionalServices = ({ form }: CompactAdditionalServicesPro
   return (
     <Card>
       <CardHeader className="pb-2 pt-3">
-        <CardTitle className="text-sm">Additional Services</CardTitle>
+        <CardTitle className="text-sm font-semibold">Additional Services</CardTitle>
       </CardHeader>
       <CardContent className="pt-2">
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <FormField
             control={form.control}
             name="additionalServices.saturdayDelivery"

@@ -190,10 +190,10 @@ export const ShipmentFormFull = ({
             type="button"
             onClick={handleGoBack}
             variant="outline"
-            className="gap-2 h-8 text-xs"
+            className="gap-2 h-9 text-sm"
             data-testid="button-go-back"
           >
-            <ArrowLeft className="h-3 w-3" />
+            <ArrowLeft className="h-3.5 w-3.5" />
             Go Back
           </Button>
         </div>
@@ -202,7 +202,7 @@ export const ShipmentFormFull = ({
           <div className="flex-1">
             <Card>
               <CardHeader className="pb-2 pt-3">
-                <CardTitle className="text-sm">Available Shipping Rates</CardTitle>
+                <CardTitle className="text-sm font-semibold">Available Shipping Rates</CardTitle>
               </CardHeader>
               <CardContent className="pt-2">
                 <RatesSelection
@@ -252,7 +252,7 @@ export const ShipmentFormFull = ({
                   form={form}
                   type="fromAddress"
                   title="Ship From"
-                  icon={<MapPin className="h-3.5 w-3.5" />}
+                  icon={<MapPin className="h-4 w-4" />}
                   addresses={addresses}
                   onSavedAddressSelect={handleSavedAddressSelect}
                 />
@@ -261,7 +261,7 @@ export const ShipmentFormFull = ({
                   form={form}
                   type="toAddress"
                   title="Ship To"
-                  icon={<MapPin className="h-3.5 w-3.5" />}
+                  icon={<MapPin className="h-4 w-4" />}
                   addresses={addresses}
                   onSavedAddressSelect={handleSavedAddressSelect}
                 />

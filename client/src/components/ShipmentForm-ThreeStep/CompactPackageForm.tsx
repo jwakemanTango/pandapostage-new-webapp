@@ -13,22 +13,22 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
   return (
     <Card>
       <CardHeader className="pb-2 pt-3">
-        <CardTitle className="text-sm flex items-center gap-2">
-          <PackageIcon className="h-3.5 w-3.5" />
+        <CardTitle className="text-sm flex items-center gap-2 font-semibold">
+          <PackageIcon className="h-4 w-4" />
           Package Details
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-1.5 pt-2">
+      <CardContent className="space-y-2 pt-2">
         <FormField
           control={form.control}
           name="packages.0.packageType"
           render={({ field }) => (
             <FormItem className="space-y-0">
               <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                <FormLabel className="text-xs text-right">Package Type: *</FormLabel>
+                <FormLabel className="text-xs text-right font-medium">Package Type: *</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="h-7 text-xs" data-testid="select-package-type">
+                    <SelectTrigger className="h-8 text-sm" data-testid="select-package-type">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                   </FormControl>
@@ -52,10 +52,10 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
           render={({ field }) => (
             <FormItem className="space-y-0">
               <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                <FormLabel className="text-xs text-right">Carrier:</FormLabel>
+                <FormLabel className="text-xs text-right font-medium">Carrier:</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || "any"}>
                   <FormControl>
-                    <SelectTrigger className="h-7 text-xs" data-testid="select-carrier">
+                    <SelectTrigger className="h-8 text-sm" data-testid="select-carrier">
                       <SelectValue placeholder="Select carrier" />
                     </SelectTrigger>
                   </FormControl>
@@ -80,9 +80,9 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             render={({ field }) => (
               <FormItem className="space-y-0">
                 <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-                  <FormLabel className="text-xs text-right">Weight (lbs): *</FormLabel>
+                  <FormLabel className="text-xs text-right font-medium">Weight (lbs): *</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="0" className="h-7 text-xs" {...field} data-testid="input-weight-lbs" />
+                    <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-weight-lbs" />
                   </FormControl>
                 </div>
                 <FormMessage className="text-xs ml-[128px]" />
@@ -95,9 +95,9 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             render={({ field }) => (
               <FormItem className="space-y-0">
                 <div className="grid grid-cols-[80px_1fr] items-center gap-2">
-                  <FormLabel className="text-xs text-right">Weight (oz):</FormLabel>
+                  <FormLabel className="text-xs text-right font-medium">Weight (oz):</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="0" className="h-7 text-xs" {...field} data-testid="input-weight-oz" />
+                    <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-weight-oz" />
                   </FormControl>
                 </div>
                 <FormMessage className="text-xs ml-[88px]" />
@@ -113,9 +113,9 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             render={({ field }) => (
               <FormItem className="space-y-0">
                 <div className="grid grid-cols-[80px_1fr] items-center gap-2">
-                  <FormLabel className="text-xs text-right">Length (in):</FormLabel>
+                  <FormLabel className="text-xs text-right font-medium">Length (in):</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="0" className="h-7 text-xs" {...field} data-testid="input-length" />
+                    <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-length" />
                   </FormControl>
                 </div>
                 <FormMessage className="text-xs ml-[88px]" />
@@ -128,9 +128,9 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             render={({ field }) => (
               <FormItem className="space-y-0">
                 <div className="grid grid-cols-[70px_1fr] items-center gap-2">
-                  <FormLabel className="text-xs text-right">Width (in):</FormLabel>
+                  <FormLabel className="text-xs text-right font-medium">Width (in):</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="0" className="h-7 text-xs" {...field} data-testid="input-width" />
+                    <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-width" />
                   </FormControl>
                 </div>
                 <FormMessage className="text-xs ml-[78px]" />
@@ -143,9 +143,9 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             render={({ field }) => (
               <FormItem className="space-y-0">
                 <div className="grid grid-cols-[70px_1fr] items-center gap-2">
-                  <FormLabel className="text-xs text-right">Height (in):</FormLabel>
+                  <FormLabel className="text-xs text-right font-medium">Height (in):</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="0" className="h-7 text-xs" {...field} data-testid="input-height" />
+                    <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-height" />
                   </FormControl>
                 </div>
                 <FormMessage className="text-xs ml-[78px]" />
