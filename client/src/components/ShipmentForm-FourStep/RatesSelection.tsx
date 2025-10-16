@@ -68,72 +68,132 @@ const RatesSelection = ({ rates = [], isLoading = false, onPurchase, isPurchasin
   }
   
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full">
       <div className="flex justify-end mb-4">
         <div className="text-sm text-muted-foreground">Estimated delivery times</div>
       </div>
       
-      <table className="w-full min-w-full table-auto">
-        <thead>
-          <tr className="border-b">
-            <th className="text-left pb-2 font-semibold text-sm w-5/12">Service</th>
-            <th className="text-right pb-2 font-semibold text-sm text-destructive w-2/12">Retail</th>
-            <th className="text-right pb-2 font-semibold text-sm text-chart-2 w-2/12">Your Price</th>
-            <th className="text-right pb-2 font-semibold text-sm w-3/12"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {rates.length === 0 ? (
-            <tr>
-              <td colSpan={4} className="text-center py-6 text-muted-foreground text-sm">
-                No rates available for this shipment
-              </td>
-            </tr>
-          ) : (
-            rates.map((rate) => (
-              <tr
-                key={rate.id}
-                className="border-b hover-elevate"
-                data-testid={`row-rate-${rate.id}`}
-              >
-                <td className="py-2.5">
-                  <div className="flex items-start gap-2.5">
-                    <div className="flex-shrink-0 mt-0.5">
-                      {getCarrierLogo(rate.carrier)}
-                    </div>
-                    <div>
-                      <div className="font-medium text-sm" data-testid={`text-rate-service-${rate.id}`}>
-                        {rate.carrier} {rate.service}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {rate.deliveryDays && `${rate.deliveryDays} days`}
-                        {rate.deliveryDate && !rate.deliveryDays && `By ${rate.deliveryDate}`}
-                      </div>
-                    </div>
+      {/* Mobile Layout - Stacked Cards */}
+      <div className="lg:hidden space-y-3">
+        {rates.length === 0 ? (
+          <div className="text-center py-6 text-muted-foreground text-sm">
+            No rates available for this shipment
+          </div>
+        ) : (
+          rates.map((rate) => (
+            <div
+              key={rate.id}
+              className="border rounded-md p-3 space-y-3 hover-elevate"
+              data-testid={`row-rate-${rate.id}`}
+            >
+              <div className="flex items-start gap-2.5">
+                <div className="flex-shrink-0 mt-0.5">
+                  {getCarrierLogo(rate.carrier)}
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-sm" data-testid={`text-rate-service-${rate.id}`}>
+                    {rate.carrier} {rate.service}
                   </div>
-                </td>
-                <td className="text-right text-destructive font-medium font-mono py-2.5 text-sm" data-testid={`text-retail-rate-${rate.id}`}>
-                  {rate.retailRate}
-                </td>
-                <td className="text-right text-chart-2 font-semibold font-mono py-2.5 text-sm" data-testid={`text-your-rate-${rate.id}`}>
-                  {rate.rate}
-                </td>
-                <td className="text-right py-2.5">
-                  <Button 
-                    size="sm"
-                    className="bg-primary hover:bg-primary/90 whitespace-nowrap"
-                    disabled={isPurchasing}
-                    onClick={() => onPurchase?.(rate)}
-                    data-testid={`button-buy-label-${rate.id}`}
-                  >
-                    Buy Label
-                  </Button>
+                  <div className="text-xs text-muted-foreground">
+                    {rate.deliveryDays && `${rate.deliveryDays} days`}
+                    {rate.deliveryDate && !rate.deliveryDays && `By ${rate.deliveryDate}`}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <div className="text-xs text-muted-foreground mb-1">Retail</div>
+                  <div className="text-destructive font-medium font-mono text-sm" data-testid={`text-retail-rate-${rate.id}`}>
+                    {rate.retailRate}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground mb-1">Your Price</div>
+                  <div className="text-chart-2 font-semibold font-mono text-sm" data-testid={`text-your-rate-${rate.id}`}>
+                    {rate.rate}
+                  </div>
+                </div>
+              </div>
+              
+              <Button 
+                size="sm"
+                className="bg-primary hover:bg-primary/90 w-full"
+                disabled={isPurchasing}
+                onClick={() => onPurchase?.(rate)}
+                data-testid={`button-buy-label-${rate.id}`}
+              >
+                Buy Label
+              </Button>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Layout - Table */}
+      <div className="hidden lg:block overflow-x-auto">
+        <table className="w-full min-w-full table-auto">
+          <thead>
+            <tr className="border-b">
+              <th className="text-left pb-2 font-semibold text-sm w-5/12">Service</th>
+              <th className="text-right pb-2 font-semibold text-sm text-destructive w-2/12">Retail</th>
+              <th className="text-right pb-2 font-semibold text-sm text-chart-2 w-2/12">Your Price</th>
+              <th className="text-right pb-2 font-semibold text-sm w-3/12"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {rates.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="text-center py-6 text-muted-foreground text-sm">
+                  No rates available for this shipment
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              rates.map((rate) => (
+                <tr
+                  key={rate.id}
+                  className="border-b hover-elevate"
+                  data-testid={`row-rate-${rate.id}`}
+                >
+                  <td className="py-2.5">
+                    <div className="flex items-start gap-2.5">
+                      <div className="flex-shrink-0 mt-0.5">
+                        {getCarrierLogo(rate.carrier)}
+                      </div>
+                      <div>
+                        <div className="font-medium text-sm" data-testid={`text-rate-service-${rate.id}`}>
+                          {rate.carrier} {rate.service}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {rate.deliveryDays && `${rate.deliveryDays} days`}
+                          {rate.deliveryDate && !rate.deliveryDays && `By ${rate.deliveryDate}`}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="text-right text-destructive font-medium font-mono py-2.5 text-sm" data-testid={`text-retail-rate-${rate.id}`}>
+                    {rate.retailRate}
+                  </td>
+                  <td className="text-right text-chart-2 font-semibold font-mono py-2.5 text-sm" data-testid={`text-your-rate-${rate.id}`}>
+                    {rate.rate}
+                  </td>
+                  <td className="text-right py-2.5">
+                    <Button 
+                      size="sm"
+                      className="bg-primary hover:bg-primary/90 whitespace-nowrap"
+                      disabled={isPurchasing}
+                      onClick={() => onPurchase?.(rate)}
+                      data-testid={`button-buy-label-${rate.id}`}
+                    >
+                      Buy Label
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

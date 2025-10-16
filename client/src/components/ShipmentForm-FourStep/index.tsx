@@ -402,12 +402,12 @@ export const ShipmentForm = ({
         />
       )}
       <div className={`grid grid-cols-1 gap-6 ${showLiveSummary ? 'lg:grid-cols-[1fr_380px]' : ''}`}>
-      <div className="space-y-6">
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-          {renderStepContent()}
+        <div className="space-y-6">
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+            {renderStepContent()}
+          </div>
+          {renderNavigationButtons()}
         </div>
-        {renderNavigationButtons()}
-      </div>
 
         {showLiveSummary && (
           <div className="hidden lg:block">
