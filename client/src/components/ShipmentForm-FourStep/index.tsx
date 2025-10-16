@@ -388,10 +388,11 @@ export const ShipmentForm = ({
     );
   };
 
-  const getBannerStep = (): "shipment" | "selectRate" | "printLabel" => {
-    if (currentStep === 3) return "selectRate";
-    if (currentStep === 4) return "printLabel";
-    return "shipment";
+  const getBannerStep = (): "addresses" | "packages" | "rates" | "label" => {
+    if (currentStep === 1) return "addresses";
+    if (currentStep === 2) return "packages";
+    if (currentStep === 3) return "rates";
+    return "label";
   };
   
   return (
@@ -401,7 +402,8 @@ export const ShipmentForm = ({
           <BannerLiveSummary 
             formData={formValues} 
             currentStep={getBannerStep()} 
-            formErrors={form.formState.errors} 
+            formErrors={form.formState.errors}
+            workflow="4-step"
           />
         </div>
       )}

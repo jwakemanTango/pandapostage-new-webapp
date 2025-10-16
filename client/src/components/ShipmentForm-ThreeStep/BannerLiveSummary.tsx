@@ -4,11 +4,12 @@ import { ShipmentFormData } from "@shared/schema";
 
 interface BannerLiveSummaryProps {
   formData: ShipmentFormData;
-  currentStep?: "shipment" | "selectRate" | "printLabel";
+  currentStep?: "shipment" | "selectRate" | "printLabel" | "addresses" | "packages" | "rates" | "label";
   formErrors?: any;
+  workflow?: "3-step" | "4-step";
 }
 
-export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErrors }: BannerLiveSummaryProps) => {
+export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErrors, workflow = "3-step" }: BannerLiveSummaryProps) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const { fromAddress, toAddress, packages } = formData || {};
   
@@ -19,12 +20,20 @@ export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErro
   const hasFromAddressErrors = formErrors?.fromAddress && Object.keys(formErrors.fromAddress).length > 0;
   const hasToAddressErrors = formErrors?.toAddress && Object.keys(formErrors.toAddress).length > 0;
 
-  const steps = [
+  const steps3 = [
     { id: "shipment", label: "Shipment", icon: Truck },
     { id: "selectRate", label: "Rate", icon: DollarSign },
     { id: "printLabel", label: "Print", icon: Printer }
   ];
 
+  const steps4 = [
+    { id: "addresses", label: "Addresses", icon: MapPin },
+    { id: "packages", label: "Packages", icon: Package },
+    { id: "rates", label: "Rates", icon: DollarSign },
+    { id: "label", label: "Label", icon: Printer }
+  ];
+
+  const steps = workflow === "4-step" ? steps4 : steps3;
   const currentStepIndex = steps.findIndex(step => step.id === currentStep);
   
   // Get display value for addresses (company or city, state)

@@ -184,7 +184,7 @@ export const ShipmentFormFull = ({
       <>
         {showBannerSummary && (
           <div className="lg:block mb-4">
-            <BannerLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
+            <BannerLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} workflow="3-step" />
           </div>
         )}
         <div className="space-y-3 lg:space-y-4">
@@ -217,7 +217,7 @@ export const ShipmentFormFull = ({
       <div className="flex flex-col h-full lg:h-auto">
         {showBannerSummary && (
           <div className="lg:block mb-4">
-            <BannerLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} />
+            <BannerLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} workflow="3-step" />
           </div>
         )}
         <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-20 lg:pb-0">
@@ -285,7 +285,7 @@ export const ShipmentFormFull = ({
       <div className="flex flex-col h-full lg:h-auto">
         {showBannerSummary && (
           <div className="lg:block mb-4">
-            <BannerLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} />
+            <BannerLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} workflow="3-step" />
           </div>
         )}
         <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-24 lg:pb-0">
