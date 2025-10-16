@@ -11,6 +11,7 @@ import RatesSelection from "./RatesSelection";
 import AdditionalServices from "./AdditionalServices";
 import { LiveSummary } from "./LiveSummary";
 import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight } from "lucide-react";
+import labelPreviewUrl from "@assets/label_1760604447339.png";
 
 interface ShipmentFormProps {
   onGetRates?: (data: any) => void;
@@ -266,6 +267,18 @@ export const ShipmentForm = ({
                   <p className="text-sm text-muted-foreground">
                     Your shipping label has been created and is ready to download.
                   </p>
+                </div>
+
+                <div className="border rounded-lg p-4 bg-card">
+                  <p className="text-xs text-muted-foreground mb-3">Label Preview</p>
+                  <div className="border rounded-md overflow-hidden bg-white">
+                    <img 
+                      src={labelPreviewUrl} 
+                      alt="Shipping Label Preview" 
+                      className="w-full h-auto"
+                      data-testid="img-label-preview"
+                    />
+                  </div>
                 </div>
 
                 {purchasedLabel && (

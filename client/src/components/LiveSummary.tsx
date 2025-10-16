@@ -74,11 +74,11 @@ export const LiveSummary = ({
 
   return (
     <Card className="sticky top-6">
-      <CardHeader className="pb-4 flex flex-col items-center" style={{ backgroundColor: '#005392' }}>
-        <PandaLogo compact className="h-8 mb-3" />
+      <CardHeader className="pb-4 flex flex-col items-center rounded-t-xl" style={{ backgroundColor: '#005392' }}>
+        <PandaLogo compact className="h-12 mb-2" />
         <CardTitle className="text-lg text-white">Shipment Progress</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 mt-2">
         <div className="space-y-2">
           {steps.map((step) => {
             const StepIcon = step.icon;
