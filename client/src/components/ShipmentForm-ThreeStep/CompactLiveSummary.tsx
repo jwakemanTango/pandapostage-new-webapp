@@ -46,10 +46,10 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment" }: Compa
         <PandaLogo compact className="h-28 w-full object-contain" />
       </CardHeader>
       <CardContent className="space-y-3 pt-4">
-        <h3 className="text-sm font-semibold text-center">Shipment Summary</h3>
+        <h3 className="text-base font-semibold text-center">Shipment Summary</h3>
 
         {/* Step Progress Indicators */}
-        <div className="space-y-1.5 pb-2 border-b">
+        <div className="space-y-2 pb-2 border-b">
           {steps.map((step, index) => {
             const isCompleted = index < currentStepIndex;
             const isCurrent = index === currentStepIndex;
@@ -57,13 +57,13 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment" }: Compa
             return (
               <div key={step.id} className="flex items-center gap-2">
                 {isCompleted ? (
-                  <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
                 ) : isCurrent ? (
-                  <Circle className="h-3.5 w-3.5 text-primary fill-primary shrink-0" />
+                  <Circle className="h-4 w-4 text-primary fill-primary shrink-0" />
                 ) : (
-                  <Circle className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                  <Circle className="h-4 w-4 text-muted-foreground shrink-0" />
                 )}
-                <span className={`text-xs ${isCurrent ? 'font-semibold text-foreground' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}`}>
+                <span className={`text-sm ${isCurrent ? 'font-semibold text-foreground' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}`}>
                   {step.label}
                 </span>
               </div>
@@ -74,11 +74,11 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment" }: Compa
         <div className="space-y-3">
           <div>
             <div className="flex items-center gap-1.5 mb-1.5">
-              <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-              <h4 className="font-semibold text-xs">From Address</h4>
+              <MapPin className="h-4 w-4 text-muted-foreground" />
+              <h4 className="font-semibold text-sm">From Address</h4>
             </div>
             {hasFromAddress ? (
-              <div className="text-xs space-y-0.5 pl-5">
+              <div className="text-sm space-y-0.5 pl-5">
                 <p className="font-medium">{fromAddress?.name}</p>
                 {fromAddress?.company && <p className="text-muted-foreground">{fromAddress.company}</p>}
                 <p className="text-muted-foreground">
@@ -86,17 +86,17 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment" }: Compa
                 </p>
               </div>
             ) : (
-              <p className="text-xs text-muted-foreground pl-5">Not entered</p>
+              <p className="text-sm text-muted-foreground pl-5">Not entered</p>
             )}
           </div>
 
           <div>
             <div className="flex items-center gap-1.5 mb-1.5">
-              <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-              <h4 className="font-semibold text-xs">To Address</h4>
+              <MapPin className="h-4 w-4 text-muted-foreground" />
+              <h4 className="font-semibold text-sm">To Address</h4>
             </div>
             {hasToAddress ? (
-              <div className="text-xs space-y-0.5 pl-5">
+              <div className="text-sm space-y-0.5 pl-5">
                 <p className="font-medium">{toAddress?.name}</p>
                 {toAddress?.company && <p className="text-muted-foreground">{toAddress.company}</p>}
                 <p className="text-muted-foreground">
@@ -104,17 +104,17 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment" }: Compa
                 </p>
               </div>
             ) : (
-              <p className="text-xs text-muted-foreground pl-5">Not entered</p>
+              <p className="text-sm text-muted-foreground pl-5">Not entered</p>
             )}
           </div>
 
           {hasPackages && (
             <div>
               <div className="flex items-center gap-1.5 mb-1.5">
-                <Package className="h-3.5 w-3.5 text-muted-foreground" />
-                <h4 className="font-semibold text-xs">Package Details</h4>
+                <Package className="h-4 w-4 text-muted-foreground" />
+                <h4 className="font-semibold text-sm">Package Details</h4>
               </div>
-              <div className="text-xs space-y-1.5 pl-5">
+              <div className="text-sm space-y-1.5 pl-5">
                 {packages?.map((pkg, index) => (
                   <div key={index} className="space-y-0.5">
                     <p className="font-medium">Package {index + 1}</p>
@@ -134,7 +134,7 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment" }: Compa
 
           {selectedServices.length > 0 && (
             <div>
-              <h4 className="font-semibold text-xs mb-1.5">Additional Services</h4>
+              <h4 className="font-semibold text-sm mb-1.5">Additional Services</h4>
               <div className="flex flex-wrap gap-1 pl-5">
                 {selectedServices.map((service) => (
                   <Badge key={service} variant="secondary" className="text-xs h-5">
