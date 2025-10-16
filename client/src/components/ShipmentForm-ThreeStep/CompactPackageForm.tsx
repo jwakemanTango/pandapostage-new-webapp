@@ -46,6 +46,9 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
     form.setValue("packages.0.length", preset.dimensions.length);
     form.setValue("packages.0.width", preset.dimensions.width);
     form.setValue("packages.0.height", preset.dimensions.height);
+    
+    // Clear validation errors for package section
+    form.clearErrors("packages");
   };
 
   return (

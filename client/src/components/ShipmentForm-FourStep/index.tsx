@@ -397,7 +397,7 @@ export const ShipmentForm = ({
   return (
     <>
       {showBannerSummary && (
-        <div className="lg:block">
+        <div className="lg:block mb-4">
           <BannerLiveSummary 
             formData={formValues} 
             currentStep={getBannerStep()} 
