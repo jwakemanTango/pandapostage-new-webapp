@@ -38,6 +38,7 @@ export const ShipmentForm = ({
   const [ratesAvailable, setRatesAvailable] = useState(false);
   const [fromAddressOpen, setFromAddressOpen] = useState(true);
   const [useCompactAddresses, setUseCompactAddresses] = useState(false);
+  const [showLiveSummary, setShowLiveSummary] = useState(true);
   
   
   const form = useForm<ShipmentFormData>({
@@ -220,16 +221,29 @@ export const ShipmentForm = ({
                   </div>
                   <h3 className="text-lg font-semibold">Shipping Addresses</h3>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="compact-addresses" className="text-sm">
-                    Compact Addresses
-                  </Label>
-                  <Switch
-                    id="compact-addresses"
-                    checked={useCompactAddresses}
-                    onCheckedChange={setUseCompactAddresses}
-                    data-testid="switch-compact-addresses"
-                  />
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="compact-addresses" className="text-sm">
+                      Compact Addresses
+                    </Label>
+                    <Switch
+                      id="compact-addresses"
+                      checked={useCompactAddresses}
+                      onCheckedChange={setUseCompactAddresses}
+                      data-testid="switch-compact-addresses"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="show-summary-four-step" className="text-sm">
+                      Show Summary
+                    </Label>
+                    <Switch
+                      id="show-summary-four-step"
+                      checked={showLiveSummary}
+                      onCheckedChange={setShowLiveSummary}
+                      data-testid="switch-show-summary-four-step"
+                    />
+                  </div>
                 </div>
               </div>
               
@@ -391,7 +405,7 @@ export const ShipmentForm = ({
   };
   
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
+    <div className={`grid grid-cols-1 gap-6 ${showLiveSummary ? 'lg:grid-cols-[1fr_380px]' : ''}`}>
       <div className="space-y-6">
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
           {renderStepContent()}
@@ -399,15 +413,17 @@ export const ShipmentForm = ({
         {renderNavigationButtons()}
       </div>
 
-      <div className="hidden lg:block">
-        <LiveSummary 
-          formData={formValues}
-          currentStep={currentStep}
-          completedSteps={completedSteps}
-          purchasedLabel={purchasedLabel}
-          onStepClick={goToStep}
-        />
-      </div>
+      {showLiveSummary && (
+        <div className="hidden lg:block">
+          <LiveSummary 
+            formData={formValues}
+            currentStep={currentStep}
+            completedSteps={completedSteps}
+            purchasedLabel={purchasedLabel}
+            onStepClick={goToStep}
+          />
+        </div>
+      )}
     </div>
   );
 };
