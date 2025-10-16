@@ -21,15 +21,20 @@ export const CompactAddressFormCombined = ({
 }: CompactAddressFormCombinedProps) => {
   const [activeTab, setActiveTab] = useState<"from" | "to">("from");
   
-  // Check for validation errors and switch to that tab
+  // Watch for validation errors and auto-switch tabs
+  const fromErrors = form.formState.errors?.fromAddress;
+  const toErrors = form.formState.errors?.toAddress;
+  
   useEffect(() => {
-    const errors = form.formState.errors;
-    if (errors.fromAddress && Object.keys(errors.fromAddress).length > 0) {
+    // If fromAddress has errors, switch to "from" tab
+    if (fromErrors && Object.keys(fromErrors).length > 0) {
       setActiveTab("from");
-    } else if (errors.toAddress && Object.keys(errors.toAddress).length > 0) {
+    } 
+    // If only toAddress has errors (and fromAddress is valid), switch to "to" tab
+    else if (toErrors && Object.keys(toErrors).length > 0) {
       setActiveTab("to");
     }
-  }, [form.formState.errors]);
+  }, [fromErrors, toErrors]);
   
   const renderAddressFields = (type: "fromAddress" | "toAddress") => {
     return (

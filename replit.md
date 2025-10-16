@@ -20,7 +20,8 @@ Preferred communication style: Simple, everyday language.
         - Three distinct views (Form, Summary, Label) with clear step labels ("Shipment Details", "Select Rate", "Print Label")
         - Mobile-optimized layout with vertical field stacking, hidden summary on mobile, and fixed bottom navigation
         - BannerLiveSummary component: full-width, sticky-top collapsible banner with centered step progress indicators (Truck, DollarSign, Printer icons), company name display (with city/state fallback), and package count. No corner radius for seamless full-width design.
-        - CompactLiveSummary component: sidebar summary with step-specific icons, completion checkmarks, validation error highlighting, and automatic tab switching
+        - CompactLiveSummary component: sidebar summary with step-specific icons, completion checkmarks, validation error highlighting, sticky positioning (aligns with form initially, pins to top when scrolling)
+        - CompactAddressFormCombined: Auto-opens invalid address tab (Ship From/Ship To) when validation errors detected
         - Stacked field labels for weight and dimensions in CompactPackageForm for cleaner, more compact presentation
         - Consistent font sizing (text-sm labels, h-9 text-sm controls) for comfortable readability
         - Mobile-first responsive breakpoints with proper spacing (pb-20 for fixed button clearance)
