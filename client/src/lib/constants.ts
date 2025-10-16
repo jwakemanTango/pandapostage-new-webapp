@@ -71,3 +71,12 @@ export const CARRIERS = [
   { value: "fedex", label: "FedEx" },
   { value: "dhl", label: "DHL" },
 ];
+
+// Package types available for each carrier
+export const CARRIER_PACKAGE_TYPES: Record<string, string[]> = {
+  any: ["letter", "parcel", "large_box", "custom"],
+  usps: ["letter", "parcel", "large_box", "flat_rate_envelope", "flat_rate_box_small", "flat_rate_box_medium", "flat_rate_box_large", "regional_box_a", "regional_box_b", "custom"],
+  ups: ["letter", "parcel", "large_box", "custom"],
+  fedex: ["letter", "parcel", "large_box", "custom"],
+  dhl: ["letter", "parcel", "large_box", "custom"],
+};

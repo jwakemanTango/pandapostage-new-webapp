@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Plus, Edit, Box } from "lucide-react";
 import { useFieldArray } from "react-hook-form";
-import { PACKAGE_TYPES, CARRIERS } from "@/lib/constants";
+import { PACKAGE_TYPES, CARRIERS, CARRIER_PACKAGE_TYPES } from "@/lib/constants";
 
 interface PackageFormProps {
   form: any;
@@ -54,6 +54,10 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
     control: form.control,
     name: "packages"
   });
+
+  const selectedCarrier = form.watch("packages.0.carrier") || "any";
+  const availablePackageTypes = CARRIER_PACKAGE_TYPES[selectedCarrier] || CARRIER_PACKAGE_TYPES.any;
+  const filteredPackageTypes = PACKAGE_TYPES.filter(type => availablePackageTypes.includes(type.value));
 
   useEffect(() => {
     if (fields.length === 0) {
@@ -189,7 +193,18 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-medium">Preferred Carrier</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value || "any"}>
+                    <Select 
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        // Reset package type if it's not available for the new carrier
+                        const currentPackageType = form.getValues("packages.0.packageType");
+                        const newAvailableTypes = CARRIER_PACKAGE_TYPES[value] || CARRIER_PACKAGE_TYPES.any;
+                        if (currentPackageType && !newAvailableTypes.includes(currentPackageType)) {
+                          form.setValue("packages.0.packageType", "");
+                        }
+                      }} 
+                      value={field.value || "any"}
+                    >
                       <FormControl>
                         <SelectTrigger data-testid="select-carrier">
                           <SelectValue placeholder="Select carrier" />
@@ -221,7 +236,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {PACKAGE_TYPES.map((type) => (
+                        {filteredPackageTypes.map((type) => (
                           <SelectItem key={type.value} value={type.value}>
                             {type.label}
                           </SelectItem>
