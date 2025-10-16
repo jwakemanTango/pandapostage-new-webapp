@@ -2,17 +2,31 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package as PackageIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Package as PackageIcon, Box } from "lucide-react";
 import { PACKAGE_TYPES, CARRIERS, CARRIER_PACKAGE_TYPES } from "@/lib/constants";
 
 interface CompactPackageFormProps {
   form: any;
 }
 
+const PACKAGE_PRESETS = [
+  { name: "Small Box", weight: "1", dimensions: { length: "8", width: "6", height: "4" } },
+  { name: "Medium Box", weight: "5", dimensions: { length: "12", width: "10", height: "8" } },
+  { name: "Large Box", weight: "10", dimensions: { length: "18", width: "14", height: "12" } },
+];
+
 export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
   const selectedCarrier = form.watch("packages.0.carrier") || "any";
   const availablePackageTypes = CARRIER_PACKAGE_TYPES[selectedCarrier] || CARRIER_PACKAGE_TYPES.any;
   const filteredPackageTypes = PACKAGE_TYPES.filter(type => availablePackageTypes.includes(type.value));
+
+  const handlePresetSelect = (preset: typeof PACKAGE_PRESETS[0]) => {
+    form.setValue("packages.0.weightLbs", preset.weight);
+    form.setValue("packages.0.length", preset.dimensions.length);
+    form.setValue("packages.0.width", preset.dimensions.width);
+    form.setValue("packages.0.height", preset.dimensions.height);
+  };
 
   return (
     <Card>
@@ -23,6 +37,25 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2 pt-2">
+        <div>
+          <FormLabel className="text-xs font-medium mb-1.5 block">Quick Presets</FormLabel>
+          <div className="flex gap-1.5">
+            {PACKAGE_PRESETS.map((preset) => (
+              <Button
+                key={preset.name}
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handlePresetSelect(preset)}
+                className="gap-1 flex-1"
+                data-testid={`button-preset-${preset.name.toLowerCase().replace(' ', '-')}`}
+              >
+                <Box className="h-3 w-3" />
+                {preset.name}
+              </Button>
+            ))}
+          </div>
+        </div>
         <FormField
           control={form.control}
           name="packages.0.carrier"

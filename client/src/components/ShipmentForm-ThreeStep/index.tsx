@@ -190,7 +190,7 @@ export const ShipmentFormFull = ({
             type="button"
             onClick={handleGoBack}
             variant="outline"
-            className="gap-2 h-9 text-sm"
+            className="gap-2"
             data-testid="button-go-back"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
@@ -280,7 +280,7 @@ export const ShipmentFormFull = ({
               type="button"
               onClick={handleGetRates}
               disabled={isLoadingRates}
-              className="w-full lg:w-auto min-w-[200px] h-9 text-sm"
+              className="w-full lg:w-auto min-w-[200px]"
               data-testid="button-get-rates"
             >
               {isLoadingRates && <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" />}
