@@ -34,21 +34,35 @@ Preferred communication style: Simple, everyday language.
 - Inter font family for general UI and forms
 
 **Form Architecture:**
-- **ShipmentForm** - Multi-step shipment creation workflow with progressive validation
-  - Step-by-step wizard interface with collapsible sections
-  - Live summary component that updates as users fill forms
+- **ShipmentForm-Steps** (`/components/ShipmentForm-Steps/`) - Multi-step shipment creation workflow
+  - Main component: `index.tsx` - orchestrates state and validation
+  - Child components for step-by-step wizard interface:
+    - `AddressForm.tsx` - Address input fields with validation
+    - `PackageForm.tsx` - Package dimensions and weight inputs
+    - `AdditionalServices.tsx` - Optional shipping services
+    - `RatesSelection.tsx` - Carrier rate comparison and selection
+    - `LiveSummary.tsx` - Real-time summary of shipment details
+  - Progressive disclosure pattern with collapsible sections
   - Navigation between steps with validation at each stage
   - Label summary screen displays after purchase with preview image, tracking number, and action buttons
-- **ShipmentForm-Full** - Single-page compact shipment creation view
-  - All form sections displayed on one page for faster data entry
-  - Compact layout with 3-column responsive grid (Ship From, Ship To, Package Details + Additional Services)
-  - Inline labels for space efficiency
-  - Label summary screen displays after purchase with same functionality as multi-step form
+  
+- **ShipmentForm-Compact** (`/components/ShipmentForm-Compact/`) - Single-page compact shipment creation
+  - Main component: `index.tsx` - orchestrates single-page form
+  - Extracted child components for better maintainability:
+    - `CompactAddressForm.tsx` - Address fields for from/to addresses
+    - `CompactPackageForm.tsx` - Package details input
+    - `CompactAdditionalServices.tsx` - Service checkboxes
+    - `LabelSummary.tsx` - Post-purchase label display
+    - `constants.ts` - Shared constants (US_STATES, PACKAGE_TYPES, CARRIERS)
+  - Compact 3-column responsive grid layout
+  - All form sections visible on one page for faster data entry
+  - Reuses RatesSelection component from ShipmentForm-Steps
   - "Create Another Shipment" button resets form to initial state
-  - Same functionality as multi-step form but optimized for experienced users
-- Separated concerns: AddressForm, PackageForm, RatesSelection, AdditionalServices
-- Reusable form components with consistent validation patterns
-- Field arrays for handling multiple packages in a single shipment
+  - Optimized for experienced users who want quick access to all fields
+  
+- Component composition pattern ensures code reusability and maintainability
+- Both forms share validation patterns and schemas from `@shared/schema.ts`
+- Field arrays support for handling multiple packages in a single shipment
 
 **State Management Pattern:**
 - Server state managed through TanStack Query with custom query client
