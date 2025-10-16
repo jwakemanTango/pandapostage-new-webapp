@@ -10,6 +10,8 @@ type FormView = "four-step" | "three-step";
 
 const CreateShipment = () => {
   const [formView, setFormView] = useState<FormView>("four-step");
+  const [useCompactAddresses, setUseCompactAddresses] = useState(false);
+  const [showLiveSummary, setShowLiveSummary] = useState(true);
   const [rates, setRates] = useState<Rate[]>([]);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -99,23 +101,56 @@ const CreateShipment = () => {
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-5 py-8 max-w-[1400px]">
-        <div className="mb-6 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold mb-1.5">Create Shipment</h1>
-            <p className="text-sm text-muted-foreground">
-              Compare rates from multiple carriers and purchase shipping labels
-            </p>
+        <div className="mb-6">
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h1 className="text-2xl font-bold mb-1.5">Create Shipment</h1>
+              <p className="text-sm text-muted-foreground">
+                Compare rates from multiple carriers and purchase shipping labels
+              </p>
+            </div>
           </div>
-          <div className="flex items-center gap-3" data-testid="view-toggle">
-            <Label htmlFor="view-toggle" className="text-sm font-medium">
-              {formView === "four-step" ? "4-Step View" : "3-Step View"}
-            </Label>
-            <Switch
-              id="view-toggle"
-              checked={formView === "three-step"}
-              onCheckedChange={(checked) => setFormView(checked ? "three-step" : "four-step")}
-              data-testid="switch-view-toggle"
-            />
+          
+          <div className="flex items-center gap-6 p-3 bg-muted/30 rounded-lg border">
+            <div className="flex items-center gap-3" data-testid="view-toggle">
+              <Label htmlFor="view-toggle" className="text-sm font-medium">
+                {formView === "four-step" ? "4-Step View" : "3-Step View"}
+              </Label>
+              <Switch
+                id="view-toggle"
+                checked={formView === "three-step"}
+                onCheckedChange={(checked) => setFormView(checked ? "three-step" : "four-step")}
+                data-testid="switch-view-toggle"
+              />
+            </div>
+            
+            <div className="h-5 w-px bg-border" />
+            
+            <div className="flex items-center gap-2">
+              <Label htmlFor="compact-addresses-toggle" className="text-sm">
+                Compact Addresses
+              </Label>
+              <Switch
+                id="compact-addresses-toggle"
+                checked={useCompactAddresses}
+                onCheckedChange={setUseCompactAddresses}
+                data-testid="switch-compact-addresses-global"
+              />
+            </div>
+            
+            <div className="h-5 w-px bg-border" />
+            
+            <div className="flex items-center gap-2">
+              <Label htmlFor="show-summary-toggle" className="text-sm">
+                Show Summary
+              </Label>
+              <Switch
+                id="show-summary-toggle"
+                checked={showLiveSummary}
+                onCheckedChange={setShowLiveSummary}
+                data-testid="switch-show-summary-global"
+              />
+            </div>
           </div>
         </div>
         
@@ -126,6 +161,8 @@ const CreateShipment = () => {
             rates={rates}
             isLoadingRates={isLoadingRates}
             isPurchasing={isPurchasing}
+            useCompactAddresses={useCompactAddresses}
+            showLiveSummary={showLiveSummary}
           />
         ) : (
           <ShipmentFormFull 
@@ -134,6 +171,8 @@ const CreateShipment = () => {
             rates={rates}
             isLoadingRates={isLoadingRates}
             isPurchasing={isPurchasing}
+            useCompactAddresses={useCompactAddresses}
+            showLiveSummary={showLiveSummary}
           />
         )}
       </main>
