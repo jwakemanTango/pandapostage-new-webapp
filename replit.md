@@ -7,6 +7,12 @@ PandaPostage is a professional shipping rate comparison and label purchasing app
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (October 16, 2025)
+### UI and Navigation Improvements
+- **Ship To Icon Update**: Changed Ship To tab icon from `Package` to `MapPinned` in both 3-step and 4-step flows to avoid visual conflict with package details section. MapPinned better represents the destination concept.
+- **Banner Summary Sticky Positioning**: Increased z-index from z-20 to z-50 to ensure banner properly pins to top of viewport when scrolling and stays above all content (except modals/dialogs).
+- **Streamlined Page Layout**: Removed "Create Shipment" page title and subtitle for cleaner demo experience. DEBUG button remains visible in top-right corner for toggling development controls.
+- **Package Section Auto-scroll**: In 3-step flow, when addresses are valid but package details have validation errors, the form automatically scrolls to the package section to guide user attention.
+
 ### Form Validation Improvements
 - **Auto-open Invalid Tab Fix**: Both 3-step and 4-step forms now properly auto-switch to the address tab containing validation errors. When Ship From is valid but Ship To has errors, the form automatically switches to the Ship To tab. Uses explicit formState property access (errors?.fromAddress, errors?.toAddress, errorCount) to ensure React Hook Form reactivity.
 - **Clear Errors on Change**: Forms now use `mode: "onChange"` and `reValidateMode: "onChange"` so validation errors clear immediately when fields are corrected. After initial validation attempt, typing in any field re-validates instantly and clears the error when valid.
