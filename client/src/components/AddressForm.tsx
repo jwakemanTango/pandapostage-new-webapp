@@ -65,9 +65,10 @@ interface AddressFormProps {
   form: any;
   type: "fromAddress" | "toAddress";
   title: string;
+  onAddressSelected?: () => void;
 }
 
-const AddressForm = ({ form, type, title }: AddressFormProps) => {
+const AddressForm = ({ form, type, title, onAddressSelected }: AddressFormProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   
@@ -105,6 +106,11 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
       form.setValue(`${type}.state`, selectedAddress.state);
       form.setValue(`${type}.zipCode`, selectedAddress.zipCode);
       form.setValue(`${type}.country`, selectedAddress.country);
+      
+      // Notify parent that an address was selected
+      if (onAddressSelected) {
+        onAddressSelected();
+      }
     }
   };
 

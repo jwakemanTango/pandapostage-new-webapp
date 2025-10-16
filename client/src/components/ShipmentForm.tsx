@@ -10,8 +10,9 @@ import PackageForm from "./PackageForm";
 import RatesSelection from "./RatesSelection";
 import AdditionalServices from "./AdditionalServices";
 import { LiveSummary } from "./LiveSummary";
-import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight, Download, Mail, Receipt, Plus } from "lucide-react";
+import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight, Download, Mail, Receipt, Plus, ChevronDown } from "lucide-react";
 import labelPreviewUrl from "@assets/label_1760604447339.png";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ShipmentFormProps {
   onGetRates?: (data: any) => void;
@@ -32,6 +33,7 @@ export const ShipmentForm = ({
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
   const [ratesAvailable, setRatesAvailable] = useState(false);
+  const [fromAddressOpen, setFromAddressOpen] = useState(true);
   
   const form = useForm<ShipmentFormData>({
     resolver: zodResolver(createShipmentSchema),
@@ -194,7 +196,21 @@ export const ShipmentForm = ({
               
               <Form {...form}>
                 <form className="space-y-6">
-                  <AddressForm form={form} type="fromAddress" title="From Address" />
+                  <Collapsible open={fromAddressOpen} onOpenChange={setFromAddressOpen}>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full group" data-testid="button-toggle-from-address">
+                      <h3 className="text-base font-semibold">From Address</h3>
+                      <ChevronDown className={`h-4 w-4 transition-transform ${fromAddressOpen ? '' : '-rotate-90'}`} />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="pt-4">
+                      <AddressForm 
+                        form={form} 
+                        type="fromAddress" 
+                        title="" 
+                        onAddressSelected={() => setFromAddressOpen(false)}
+                      />
+                    </CollapsibleContent>
+                  </Collapsible>
+                  
                   <div className="border-t pt-6">
                     <AddressForm form={form} type="toAddress" title="To Address" />
                   </div>
@@ -305,28 +321,33 @@ export const ShipmentForm = ({
                           )}
                         </div>
 
-                        <div className="space-y-2">
-                          <Button className="w-full gap-2" data-testid="button-download-label">
-                            <Download className="h-4 w-4" />
-                            Download Label
-                          </Button>
-                          <Button variant="outline" className="w-full gap-2" data-testid="button-email-label">
-                            <Mail className="h-4 w-4" />
-                            Email Label
-                          </Button>
-                          <Button variant="outline" className="w-full gap-2" data-testid="button-view-receipt">
-                            <Receipt className="h-4 w-4" />
-                            View Receipt
-                          </Button>
-                          <Button 
-                            onClick={handleCreateAnother}
-                            variant="outline"
-                            className="w-full gap-2"
-                            data-testid="button-create-another"
-                          >
-                            <Plus className="h-4 w-4" />
-                            Create Another Shipment
-                          </Button>
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Button className="w-full gap-2" data-testid="button-download-label">
+                              <Download className="h-4 w-4" />
+                              Download Label
+                            </Button>
+                            <Button variant="outline" className="w-full gap-2" data-testid="button-email-label">
+                              <Mail className="h-4 w-4" />
+                              Email Label
+                            </Button>
+                            <Button variant="outline" className="w-full gap-2" data-testid="button-view-receipt">
+                              <Receipt className="h-4 w-4" />
+                              View Receipt
+                            </Button>
+                          </div>
+                          
+                          <div className="border-t pt-4">
+                            <Button 
+                              onClick={handleCreateAnother}
+                              variant="default"
+                              className="w-full gap-2"
+                              data-testid="button-create-another"
+                            >
+                              <Plus className="h-4 w-4" />
+                              Create Another Shipment
+                            </Button>
+                          </div>
                         </div>
                       </div>
 
