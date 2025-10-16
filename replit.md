@@ -11,6 +11,7 @@ Preferred communication style: Simple, everyday language.
 - **Ship To Icon Update**: Changed Ship To tab icon from `Package` to `MapPinned` in both 3-step and 4-step flows to avoid visual conflict with package details section. MapPinned better represents the destination concept.
 - **Banner Summary Sticky Positioning**: Increased z-index from z-20 to z-50 to ensure banner properly pins to top of viewport when scrolling and stays above all content (except modals/dialogs).
 - **Banner Default State**: Banner summary now defaults to collapsed state for cleaner initial view. Users can click to expand/view details.
+- **Banner Spacing**: Added consistent 1rem spacing (mb-4) between banner summary and content below in all views and both workflows for better visual separation.
 - **Streamlined Page Layout**: Removed "Create Shipment" page title and subtitle for cleaner demo experience. DEBUG button remains visible in top-right corner for toggling development controls.
 - **Package Section Auto-scroll**: In 3-step flow, when addresses are valid but package details have validation errors, the form automatically scrolls to the package section to guide user attention.
 
@@ -18,6 +19,7 @@ Preferred communication style: Simple, everyday language.
 - **Auto-open Invalid Tab Fix**: Both 3-step and 4-step forms now properly auto-switch to the address tab containing validation errors. When Ship From is valid but Ship To has errors, the form automatically switches to the Ship To tab. Uses explicit formState property access (errors?.fromAddress, errors?.toAddress, errorCount) to ensure React Hook Form reactivity.
 - **Clear Errors on Change**: Forms now use `mode: "onChange"` and `reValidateMode: "onChange"` so validation errors clear immediately when fields are corrected. After initial validation attempt, typing in any field re-validates instantly and clears the error when valid.
 - **Clear Errors on Saved Address Selection**: Selecting a saved address from the dropdown now immediately clears all validation errors for that address section (Ship From or Ship To) in both 3-step and 4-step flows.
+- **Clear Errors on Custom Package Selection**: Clicking any custom package preset button (Small Box, Medium Box, Large Box, USPS-Letter, UPS Parcel) now immediately clears all package validation errors in both workflows, similar to saved address behavior.
 - **Phone Validation**: Requires at least 10 digits. Valid formats: "(555) 123-4567", "555-123-4567", "5551234567".
 
 ## System Architecture
