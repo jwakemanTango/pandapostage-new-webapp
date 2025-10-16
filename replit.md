@@ -35,10 +35,15 @@ Preferred communication style: Simple, everyday language.
 
 **Form Architecture:**
 
-**View Toggle System:**
-- Main CreateShipment page (`/pages/CreateShipment.tsx`) features a toggle to switch between two form workflows
-- Toggle located at top-right of page: "4-Step View" ↔ "3-Step View"
-- Forms are completely independent with separate state (switching resets the other form)
+**Centralized Toggle System:**
+- Main CreateShipment page (`/pages/CreateShipment.tsx`) features centralized toggle controls at the top
+- All three toggles displayed in a horizontal control strip with visual separators:
+  - **View Toggle**: "4-Step View" ↔ "3-Step View" - switches between form workflows
+  - **Compact Addresses**: Controls address layout (separate vs. combined forms)
+  - **Show Summary**: Controls LiveSummary sidebar visibility
+- State managed at parent level (CreateShipment) and passed down as props to both forms
+- Toggle state persists when switching between 4-Step and 3-Step views
+- Forms are completely independent with separate state (switching views resets form data)
 
 **ShipmentForm-FourStep** (`/components/ShipmentForm-FourStep/`) - Multi-step guided workflow
   - Main component: `index.tsx` - orchestrates state and validation
@@ -82,25 +87,28 @@ Preferred communication style: Simple, everyday language.
   - **Show Summary Toggle**: Toggle visibility of CompactLiveSummary sidebar for cleaner workspace
   - Optimized for experienced users who want efficient data entry and rate comparison
 
-**Toggle Features:**
+**Toggle Behavior:**
 
 **Compact Addresses Toggle:**
-- Both FourStep and ThreeStep forms include a "Compact Addresses" toggle
-- When enabled, displays single `AddressFormCombined` component instead of two separate address forms
-- Combined component includes internal From/To toggle to switch between addresses
+- Centralized control at page level, affects both FourStep and ThreeStep forms
+- When disabled (default): Displays separate From/To address forms
+- When enabled: Displays single combined address form with internal From/To toggle
+- Combined component: `AddressFormCombined` (4-Step) or `CompactAddressFormCombined` (3-Step)
 - Reduces visual clutter and screen space for address entry
 - Form validation and saved address functionality works identically in both modes
+- State passed as `useCompactAddresses` prop to both forms
 
 **Show Summary Toggle:**
-- Both FourStep and ThreeStep forms include a "Show Summary" toggle
-- Controls visibility of LiveSummary/CompactLiveSummary sidebar
-- When hidden, form takes full width for maximum screen real estate
-- When shown, displays real-time shipment summary with PandaLogo header
+- Centralized control at page level, affects both FourStep and ThreeStep forms
+- When enabled (default): Displays LiveSummary sidebar with real-time updates
+- When disabled: Form takes full width for maximum screen real estate
+- 4-Step: Shows `LiveSummary` component with PandaLogo header
+- 3-Step: Shows `CompactLiveSummary` component with PandaLogo header
 - Summary updates automatically using form.watch() with useState/useEffect pattern
 - Both forms use consistent real-time update pattern: useState to store values, useEffect to subscribe to form.watch() changes
 - Sticky positioning keeps summary visible while scrolling
-- Default state: shown (can be toggled off for cleaner workspace)
 - Grid layout dynamically adjusts based on toggle state (e.g., lg:grid-cols-[1fr_380px] when shown)
+- State passed as `showLiveSummary` prop to both forms
   
 **Shared Components & Patterns:**
 - Component composition pattern ensures code reusability and maintainability
