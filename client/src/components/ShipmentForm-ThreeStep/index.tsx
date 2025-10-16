@@ -2,12 +2,15 @@ import { useState } from "react";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createShipmentSchema, ShipmentFormData, Rate, Address } from "@shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, MapPin, ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { CompactAddressForm } from "./CompactAddressForm";
+import { CompactAddressFormCombined } from "./CompactAddressFormCombined";
 import { CompactPackageForm } from "./CompactPackageForm";
 import { CompactAdditionalServices } from "./CompactAdditionalServices";
 import { CompactLiveSummary } from "./CompactLiveSummary";
@@ -33,6 +36,7 @@ export const ShipmentFormFull = ({
 }: ShipmentFormFullProps) => {
   const [viewState, setViewState] = useState<ViewState>("form");
   const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
+  const [useCompactAddresses, setUseCompactAddresses] = useState(false);
 
   const { data: addresses } = useQuery<Address[]>({
     queryKey: ["/api/addresses"],
@@ -192,24 +196,49 @@ export const ShipmentFormFull = ({
   return (
     <Form {...form}>
       <div className="space-y-3">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-          <CompactAddressForm
-            form={form}
-            type="fromAddress"
-            title="Ship From"
-            icon={<MapPin className="h-3.5 w-3.5" />}
-            addresses={addresses}
-            onSavedAddressSelect={handleSavedAddressSelect}
-          />
-          
-          <CompactAddressForm
-            form={form}
-            type="toAddress"
-            title="Ship To"
-            icon={<MapPin className="h-3.5 w-3.5" />}
-            addresses={addresses}
-            onSavedAddressSelect={handleSavedAddressSelect}
-          />
+        <div className="flex justify-end mb-2">
+          <div className="flex items-center gap-2">
+            <Label htmlFor="compact-addresses-three-step" className="text-xs">
+              Compact Addresses
+            </Label>
+            <Switch
+              id="compact-addresses-three-step"
+              checked={useCompactAddresses}
+              onCheckedChange={setUseCompactAddresses}
+              data-testid="switch-compact-addresses-three-step"
+              className="scale-75"
+            />
+          </div>
+        </div>
+
+        <div className={`grid gap-3 ${useCompactAddresses ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 lg:grid-cols-3'}`}>
+          {useCompactAddresses ? (
+            <CompactAddressFormCombined
+              form={form}
+              addresses={addresses}
+              onSavedAddressSelect={handleSavedAddressSelect}
+            />
+          ) : (
+            <>
+              <CompactAddressForm
+                form={form}
+                type="fromAddress"
+                title="Ship From"
+                icon={<MapPin className="h-3.5 w-3.5" />}
+                addresses={addresses}
+                onSavedAddressSelect={handleSavedAddressSelect}
+              />
+              
+              <CompactAddressForm
+                form={form}
+                type="toAddress"
+                title="Ship To"
+                icon={<MapPin className="h-3.5 w-3.5" />}
+                addresses={addresses}
+                onSavedAddressSelect={handleSavedAddressSelect}
+              />
+            </>
+          )}
           
           <div className="space-y-3">
             <CompactPackageForm form={form} />
