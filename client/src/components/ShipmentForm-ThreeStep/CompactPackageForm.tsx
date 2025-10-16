@@ -127,13 +127,11 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             name="packages.0.weightLbs"
             render={({ field }) => (
               <FormItem className="space-y-1">
-                <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
-                  <FormLabel className="text-sm sm:text-right font-medium">Weight (lbs): *</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-weight-lbs" />
-                  </FormControl>
-                </div>
-                <FormMessage className="text-xs sm:ml-[148px]" />
+                <FormLabel className="text-sm font-medium">Weight (lbs): *</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-weight-lbs" />
+                </FormControl>
+                <FormMessage className="text-xs" />
               </FormItem>
             )}
           />
@@ -142,13 +140,11 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             name="packages.0.weightOz"
             render={({ field }) => (
               <FormItem className="space-y-1">
-                <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
-                  <FormLabel className="text-sm sm:text-right font-medium">Weight (oz):</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-weight-oz" />
-                  </FormControl>
-                </div>
-                <FormMessage className="text-xs sm:ml-[108px]" />
+                <FormLabel className="text-sm font-medium">Weight (oz):</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-weight-oz" />
+                </FormControl>
+                <FormMessage className="text-xs" />
               </FormItem>
             )}
           />
@@ -160,13 +156,11 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             name="packages.0.length"
             render={({ field }) => (
               <FormItem className="space-y-1">
-                <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
-                  <FormLabel className="text-sm sm:text-right font-medium">Length (in):</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-length" />
-                  </FormControl>
-                </div>
-                <FormMessage className="text-xs sm:ml-[108px]" />
+                <FormLabel className="text-sm font-medium">Length (in):</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-length" />
+                </FormControl>
+                <FormMessage className="text-xs" />
               </FormItem>
             )}
           />
@@ -175,13 +169,11 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             name="packages.0.width"
             render={({ field }) => (
               <FormItem className="space-y-1">
-                <div className="grid grid-cols-1 sm:grid-cols-[90px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
-                  <FormLabel className="text-sm sm:text-right font-medium">Width (in):</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-width" />
-                  </FormControl>
-                </div>
-                <FormMessage className="text-xs sm:ml-[98px]" />
+                <FormLabel className="text-sm font-medium">Width (in):</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-width" />
+                </FormControl>
+                <FormMessage className="text-xs" />
               </FormItem>
             )}
           />
@@ -190,13 +182,11 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             name="packages.0.height"
             render={({ field }) => (
               <FormItem className="space-y-1">
-                <div className="grid grid-cols-1 sm:grid-cols-[90px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
-                  <FormLabel className="text-sm sm:text-right font-medium">Height (in):</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-height" />
-                  </FormControl>
-                </div>
-                <FormMessage className="text-xs sm:ml-[98px]" />
+                <FormLabel className="text-sm font-medium">Height (in):</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="0" className="h-9 text-sm" {...field} data-testid="input-height" />
+                </FormControl>
+                <FormMessage className="text-xs" />
               </FormItem>
             )}
           />

@@ -43,7 +43,7 @@ export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErro
     <div className="sticky top-0 z-20 shadow-md bg-card border-b w-full">
       <div className="container mx-auto px-3 sm:px-5 max-w-[1400px]">
         <div className="py-3 px-4">
-          <div className="space-y-2">
+          <div className="space-y-2 relative">
             {/* Step Progress - Centered */}
             <div className="flex items-center justify-center gap-6">
               {steps.map((step, index) => {
@@ -62,23 +62,23 @@ export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErro
                   </div>
                 );
               })}
-              
-              {/* Collapse Toggle */}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsCollapsed(!isCollapsed)}
-                className="shrink-0 h-8 w-8 ml-auto"
-                data-testid="button-toggle-banner-summary"
-              >
-                {isCollapsed ? (
-                  <ChevronDown className="h-4 w-4" />
-                ) : (
-                  <ChevronUp className="h-4 w-4" />
-                )}
-              </Button>
             </div>
+            
+            {/* Collapse Toggle - Positioned Absolutely */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="absolute top-0 right-0 h-8 w-8"
+              data-testid="button-toggle-banner-summary"
+            >
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
 
           {/* Shipment Info (when not collapsed) */}
           {!isCollapsed && (
