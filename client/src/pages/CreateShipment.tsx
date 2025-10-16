@@ -88,11 +88,6 @@ const CreateShipment = () => {
         title: "Label Purchased Successfully",
         description: "Your shipping label has been created and is ready to print.",
       });
-      
-      // Reset form after successful purchase
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
     }, 1500);
   };
 
