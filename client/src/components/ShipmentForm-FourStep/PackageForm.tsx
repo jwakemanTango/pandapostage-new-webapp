@@ -187,7 +187,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -459,7 +459,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
       )}
 
       {isEditing && editingPackage && (
-        <div className="space-y-3 p-4 border rounded-md bg-card">
+        <div className="space-y-2 p-4 border rounded-md bg-card">
           <h4 className="font-semibold text-sm">Edit Package #{editingPackage.index + 1}</h4>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

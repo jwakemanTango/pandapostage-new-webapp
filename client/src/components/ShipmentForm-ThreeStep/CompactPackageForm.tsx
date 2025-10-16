@@ -38,7 +38,7 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
           Package Details
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3 pt-3">
+      <CardContent className="space-y-2 pt-3">
         <div>
           <FormLabel className="text-sm font-medium mb-2 block">Custom Packages</FormLabel>
           <div className="flex flex-col sm:flex-row gap-2">
@@ -58,68 +58,71 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
             ))}
           </div>
         </div>
-        <FormField
-          control={form.control}
-          name="packages.0.carrier"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel className="text-sm font-medium">Preferred Carrier:</FormLabel>
-              <Select 
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  // Reset package type if it's not available for the new carrier
-                  const currentPackageType = form.getValues("packages.0.packageType");
-                  const newAvailableTypes = CARRIER_PACKAGE_TYPES[value] || CARRIER_PACKAGE_TYPES.any;
-                  if (currentPackageType && !newAvailableTypes.includes(currentPackageType)) {
-                    form.setValue("packages.0.packageType", "");
-                  }
-                }} 
-                value={field.value || "any"}
-              >
-                <FormControl>
-                  <SelectTrigger className="h-9 text-sm" data-testid="select-carrier">
-                    <SelectValue placeholder="Select carrier" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {CARRIERS.map((carrier) => (
-                    <SelectItem key={carrier.value} value={carrier.value}>
-                      {carrier.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
 
-        <FormField
-          control={form.control}
-          name="packages.0.packageType"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel className="text-sm font-medium">Package Type: *</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger className="h-9 text-sm" data-testid="select-package-type">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {filteredPackageTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <FormField
+            control={form.control}
+            name="packages.0.carrier"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <FormLabel className="text-sm font-medium">Preferred Carrier:</FormLabel>
+                <Select 
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    // Reset package type if it's not available for the new carrier
+                    const currentPackageType = form.getValues("packages.0.packageType");
+                    const newAvailableTypes = CARRIER_PACKAGE_TYPES[value] || CARRIER_PACKAGE_TYPES.any;
+                    if (currentPackageType && !newAvailableTypes.includes(currentPackageType)) {
+                      form.setValue("packages.0.packageType", "");
+                    }
+                  }} 
+                  value={field.value || "any"}
+                >
+                  <FormControl>
+                    <SelectTrigger className="h-9 text-sm" data-testid="select-carrier">
+                      <SelectValue placeholder="Select carrier" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {CARRIERS.map((carrier) => (
+                      <SelectItem key={carrier.value} value={carrier.value}>
+                        {carrier.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-2">
+          <FormField
+            control={form.control}
+            name="packages.0.packageType"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <FormLabel className="text-sm font-medium">Package Type: *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="h-9 text-sm" data-testid="select-package-type">
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {filteredPackageTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="packages.0.weightLbs"
@@ -148,7 +151,7 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <FormField
             control={form.control}
             name="packages.0.length"
