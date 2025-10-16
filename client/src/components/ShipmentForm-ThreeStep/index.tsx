@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -45,6 +45,7 @@ export const ShipmentFormFull = ({
 }: ShipmentFormFullProps) => {
   const [viewState, setViewState] = useState<ViewState>("form");
   const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
+  const packageSectionRef = useRef<HTMLDivElement>(null);
 
   const { data: addresses } = useQuery<Address[]>({
     queryKey: ["/api/addresses"],
@@ -120,6 +121,14 @@ export const ShipmentFormFull = ({
     const isValid = await form.trigger(["fromAddress", "toAddress", "packages"]);
     
     if (!isValid) {
+      // Check if addresses are valid but packages have errors
+      const addressErrors = form.formState.errors?.fromAddress || form.formState.errors?.toAddress;
+      const packageErrors = form.formState.errors?.packages;
+      
+      // If addresses are valid but packages have errors, scroll to package section
+      if (!addressErrors && packageErrors && packageSectionRef.current) {
+        packageSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
       return;
     }
 
@@ -294,7 +303,7 @@ export const ShipmentFormFull = ({
                     onSavedAddressSelect={handleSavedAddressSelect}
                   />
                   
-                  <div className="space-y-3">
+                  <div className="space-y-3" ref={packageSectionRef}>
                     <CompactPackageForm form={form} />
                     <CompactAdditionalServices form={form} />
                   </div>
@@ -324,7 +333,7 @@ export const ShipmentFormFull = ({
                   </div>
 
                   {/* Package Details and Additional Services Section */}
-                  <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
+                  <div className="grid gap-3 grid-cols-1 lg:grid-cols-2" ref={packageSectionRef}>
                     <CompactPackageForm form={form} />
                     <CompactAdditionalServices form={form} />
                   </div>

@@ -118,14 +118,7 @@ const CreateShipment = () => {
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-3 sm:px-5 py-4 sm:py-8 max-w-[1400px]">
         <div className="mb-4 sm:mb-6">
-          <div className="flex items-start justify-between gap-4 mb-3 sm:mb-4">
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold mb-1.5">Create Shipment</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                Compare rates from multiple carriers and purchase shipping labels
-              </p>
-            </div>
-            
+          <div className="flex items-start justify-end gap-4 mb-3 sm:mb-4">
             {/* DEBUG Button */}
             <Button
               variant="ghost"

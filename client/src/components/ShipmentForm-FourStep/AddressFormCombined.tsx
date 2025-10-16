@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { Address } from "@shared/schema";
 import { US_STATES } from "@/lib/constants";
-import { Truck, Package } from "lucide-react";
+import { Truck, MapPinned } from "lucide-react";
 
 interface AddressFormCombinedProps {
   form: any;
@@ -275,7 +275,7 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
             Ship From
           </TabsTrigger>
           <TabsTrigger value="to" className="gap-2 text-base font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-ship-to">
-            <Package className="h-5 w-5" />
+            <MapPinned className="h-5 w-5" />
             Ship To
           </TabsTrigger>
         </TabsList>

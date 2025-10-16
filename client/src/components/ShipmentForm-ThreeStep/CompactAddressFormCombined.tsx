@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Address } from "@shared/schema";
 import { US_STATES } from "@/lib/constants";
-import { Truck, Package } from "lucide-react";
+import { Truck, MapPinned } from "lucide-react";
 
 interface CompactAddressFormCombinedProps {
   form: any;
@@ -230,7 +230,7 @@ export const CompactAddressFormCombined = ({
             Ship From
           </TabsTrigger>
           <TabsTrigger value="to" className="gap-2 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-ship-to">
-            <Package className="h-4 w-4" />
+            <MapPinned className="h-4 w-4" />
             Ship To
           </TabsTrigger>
         </TabsList>
