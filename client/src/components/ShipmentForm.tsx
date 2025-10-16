@@ -140,7 +140,13 @@ export const ShipmentForm = ({
 
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      const newStep = currentStep - 1;
+      setCurrentStep(newStep);
+      
+      // Reopen From Address section when going back to step 1
+      if (newStep === 1) {
+        setFromAddressOpen(true);
+      }
     }
   };
 
@@ -151,6 +157,11 @@ export const ShipmentForm = ({
     
     if (step <= Math.max(...completedSteps, 0) + 1) {
       setCurrentStep(step);
+      
+      // Reopen From Address section when navigating to step 1
+      if (step === 1) {
+        setFromAddressOpen(true);
+      }
     }
   };
 
