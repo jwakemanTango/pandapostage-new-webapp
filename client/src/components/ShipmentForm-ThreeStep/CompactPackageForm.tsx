@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Package as PackageIcon, Box } from "lucide-react";
+import { SiUsps, SiUps, SiFedex } from "react-icons/si";
 import { PACKAGE_TYPES, CARRIERS, CARRIER_PACKAGE_TYPES } from "@/lib/constants";
 
 interface CompactPackageFormProps {
@@ -11,12 +12,26 @@ interface CompactPackageFormProps {
 }
 
 const PACKAGE_PRESETS = [
-  { name: "Small Box", carrier: "fedex", packageType: "parcel", weightLbs: "1", weightOz: "0", dimensions: { length: "8", width: "6", height: "4" } },
-  { name: "Medium Box", carrier: "fedex", packageType: "parcel", weightLbs: "5", weightOz: "0", dimensions: { length: "12", width: "10", height: "8" } },
-  { name: "Large Box", carrier: "fedex", packageType: "large_box", weightLbs: "10", weightOz: "0", dimensions: { length: "18", width: "14", height: "12" } },
+  { name: "Small Box", carrier: "any", packageType: "parcel", weightLbs: "1", weightOz: "0", dimensions: { length: "8", width: "6", height: "4" } },
+  { name: "Medium Box", carrier: "any", packageType: "parcel", weightLbs: "5", weightOz: "0", dimensions: { length: "12", width: "10", height: "8" } },
+  { name: "Large Box", carrier: "any", packageType: "large_box", weightLbs: "10", weightOz: "0", dimensions: { length: "18", width: "14", height: "12" } },
   { name: "USPS-Letter", carrier: "usps", packageType: "letter", weightLbs: "0", weightOz: "1", dimensions: { length: "12", width: "12", height: "1" } },
   { name: "UPS Parcel", carrier: "ups", packageType: "parcel", weightLbs: "1", weightOz: "0", dimensions: { length: "8", width: "8", height: "4" } },
 ];
+
+const getPresetIcon = (carrier: string) => {
+  const iconSize = 16;
+  switch (carrier.toLowerCase()) {
+    case 'usps':
+      return <SiUsps size={iconSize} />;
+    case 'ups':
+      return <SiUps size={iconSize} />;
+    case 'fedex':
+      return <SiFedex size={iconSize} />;
+    default:
+      return <Box className="h-4 w-4" />;
+  }
+};
 
 export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
   const selectedCarrier = form.watch("packages.0.carrier") || "any";
@@ -44,7 +59,7 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
       <CardContent className="space-y-2 pt-3">
         <div className="pb-2 border-b">
           <FormLabel className="text-sm font-medium mb-2 block">Custom Packages</FormLabel>
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-wrap gap-2">
             {PACKAGE_PRESETS.map((preset) => (
               <Button
                 key={preset.name}
@@ -52,10 +67,10 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
                 variant="outline"
                 size="sm"
                 onClick={() => handlePresetSelect(preset)}
-                className="gap-1.5 flex-1 h-9 text-sm"
+                className="gap-1.5 h-9 text-sm"
                 data-testid={`button-preset-${preset.name.toLowerCase().replace(/\s+/g, '-')}`}
               >
-                <Box className="h-4 w-4" />
+                {getPresetIcon(preset.carrier)}
                 {preset.name}
               </Button>
             ))}
