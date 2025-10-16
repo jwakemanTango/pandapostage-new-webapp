@@ -373,11 +373,11 @@ export const ShipmentForm = ({
                           <Button 
                             onClick={handleCreateAnother}
                             size="lg"
-                            className="w-full gap-3 h-14 text-base font-semibold"
-                            style={{ backgroundColor: '#005392', color: 'rgb(255, 113, 97)' }}
+                            className="w-full gap-3 h-14 text-base font-semibold text-white"
+                            style={{ backgroundColor: '#005392' }}
                             data-testid="button-create-another"
                           >
-                            <ArrowLeft className="h-5 w-5" />
+                            <ArrowLeft className="h-6 w-6" style={{ color: 'rgb(255, 113, 97)' }} />
                             Create Another Shipment
                           </Button>
                         </div>
