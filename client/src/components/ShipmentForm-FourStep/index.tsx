@@ -14,6 +14,7 @@ import RatesSelection from "./RatesSelection";
 import AdditionalServices from "./AdditionalServices";
 import { LiveSummary } from "./LiveSummary";
 import { LabelSummary } from "./LabelSummary";
+import { BannerLiveSummary } from "../ShipmentForm-ThreeStep/BannerLiveSummary";
 import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight, ChevronDown, PackageOpen, Navigation } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -26,6 +27,7 @@ interface ShipmentFormProps {
   useCompactAddresses?: boolean;
   showLiveSummary?: boolean;
   showLabelPreview?: boolean;
+  showBannerSummary?: boolean;
 }
 
 export const ShipmentForm = ({ 
@@ -36,7 +38,8 @@ export const ShipmentForm = ({
   isPurchasing = false,
   useCompactAddresses = false,
   showLiveSummary = true,
-  showLabelPreview = true
+  showLabelPreview = true,
+  showBannerSummary = false
 }: ShipmentFormProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
@@ -382,9 +385,23 @@ export const ShipmentForm = ({
       </div>
     );
   };
+
+  const getBannerStep = (): "shipment" | "selectRate" | "printLabel" => {
+    if (currentStep === 3) return "selectRate";
+    if (currentStep === 4) return "printLabel";
+    return "shipment";
+  };
   
   return (
-    <div className={`grid grid-cols-1 gap-6 ${showLiveSummary ? 'lg:grid-cols-[1fr_380px]' : ''}`}>
+    <>
+      {showBannerSummary && (
+        <BannerLiveSummary 
+          formData={formValues} 
+          currentStep={getBannerStep()} 
+          formErrors={form.formState.errors} 
+        />
+      )}
+      <div className={`grid grid-cols-1 gap-6 ${showLiveSummary ? 'lg:grid-cols-[1fr_380px]' : ''}`}>
       <div className="space-y-6">
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
           {renderStepContent()}
@@ -392,18 +409,19 @@ export const ShipmentForm = ({
         {renderNavigationButtons()}
       </div>
 
-      {showLiveSummary && (
-        <div className="hidden lg:block">
-          <LiveSummary 
-            formData={formValues}
-            currentStep={currentStep}
-            completedSteps={completedSteps}
-            purchasedLabel={purchasedLabel}
-            onStepClick={goToStep}
-            formErrors={form.formState.errors}
-          />
-        </div>
-      )}
-    </div>
+        {showLiveSummary && (
+          <div className="hidden lg:block">
+            <LiveSummary 
+              formData={formValues}
+              currentStep={currentStep}
+              completedSteps={completedSteps}
+              purchasedLabel={purchasedLabel}
+              onStepClick={goToStep}
+              formErrors={form.formState.errors}
+            />
+          </div>
+        )}
+      </div>
+    </>
   );
 };

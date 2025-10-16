@@ -13,6 +13,7 @@ const CreateShipment = () => {
   const [useCompactAddresses, setUseCompactAddresses] = useState(true);
   const [showLiveSummary, setShowLiveSummary] = useState(true);
   const [showLabelPreview, setShowLabelPreview] = useState(true);
+  const [showBannerSummary, setShowBannerSummary] = useState(false);
   const [rates, setRates] = useState<Rate[]>([]);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -166,6 +167,20 @@ const CreateShipment = () => {
                 data-testid="switch-label-preview-global"
               />
             </div>
+            
+            <div className="hidden sm:block h-5 w-px bg-border" />
+            
+            <div className="flex items-center gap-2">
+              <Label htmlFor="banner-summary-toggle" className="text-xs sm:text-sm whitespace-nowrap">
+                Show Banner Summary
+              </Label>
+              <Switch
+                id="banner-summary-toggle"
+                checked={showBannerSummary}
+                onCheckedChange={setShowBannerSummary}
+                data-testid="switch-banner-summary-global"
+              />
+            </div>
           </div>
         </div>
         
@@ -179,6 +194,7 @@ const CreateShipment = () => {
             useCompactAddresses={useCompactAddresses}
             showLiveSummary={showLiveSummary}
             showLabelPreview={showLabelPreview}
+            showBannerSummary={showBannerSummary}
           />
         ) : (
           <ShipmentFormFull 
@@ -190,6 +206,7 @@ const CreateShipment = () => {
             useCompactAddresses={useCompactAddresses}
             showLiveSummary={showLiveSummary}
             showLabelPreview={showLabelPreview}
+            showBannerSummary={showBannerSummary}
           />
         )}
       </main>

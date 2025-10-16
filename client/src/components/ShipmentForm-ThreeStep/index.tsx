@@ -14,6 +14,7 @@ import { CompactAddressFormCombined } from "./CompactAddressFormCombined";
 import { CompactPackageForm } from "./CompactPackageForm";
 import { CompactAdditionalServices } from "./CompactAdditionalServices";
 import { CompactLiveSummary } from "./CompactLiveSummary";
+import { BannerLiveSummary } from "./BannerLiveSummary";
 import { LabelSummary } from "./LabelSummary";
 import RatesSelection from "../ShipmentForm-FourStep/RatesSelection";
 
@@ -26,6 +27,7 @@ interface ShipmentFormFullProps {
   useCompactAddresses?: boolean;
   showLiveSummary?: boolean;
   showLabelPreview?: boolean;
+  showBannerSummary?: boolean;
 }
 
 type ViewState = "form" | "summary" | "label";
@@ -38,7 +40,8 @@ export const ShipmentFormFull = ({
   isPurchasing = false,
   useCompactAddresses = false,
   showLiveSummary = true,
-  showLabelPreview = true
+  showLabelPreview = true,
+  showBannerSummary = false
 }: ShipmentFormFullProps) => {
   const [viewState, setViewState] = useState<ViewState>("form");
   const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
@@ -164,11 +167,15 @@ export const ShipmentFormFull = ({
 
   if (viewState === "label" && purchasedLabel) {
     return (
-      <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
-        <div className="space-y-4">
-          <div className="flex items-center gap-3 pb-2 border-b">
-            <h2 className="text-xl font-semibold">Print Label</h2>
-          </div>
+      <>
+        {showBannerSummary && (
+          <BannerLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
+        )}
+        <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 pb-2 border-b">
+              <h2 className="text-xl font-semibold">Print Label</h2>
+            </div>
           
           <LabelSummary 
             purchasedLabel={purchasedLabel}
@@ -177,18 +184,22 @@ export const ShipmentFormFull = ({
           />
         </div>
         
-        {showLiveSummary && (
-          <div className="hidden lg:block">
-            <CompactLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
-          </div>
-        )}
-      </div>
+          {showLiveSummary && (
+            <div className="hidden lg:block">
+              <CompactLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
+            </div>
+          )}
+        </div>
+      </>
     );
   }
 
   if (viewState === "summary") {
     return (
       <div className="flex flex-col h-full lg:h-auto">
+        {showBannerSummary && (
+          <BannerLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} />
+        )}
         <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-20 lg:pb-0">
           <div className="space-y-3 lg:space-y-4">
             <div className="flex items-center justify-between gap-3 pb-2 border-b">
@@ -252,6 +263,9 @@ export const ShipmentFormFull = ({
   return (
     <Form {...form}>
       <div className="flex flex-col h-full lg:h-auto">
+        {showBannerSummary && (
+          <BannerLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} />
+        )}
         <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-24 lg:pb-0">
           <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
             <div className="space-y-4">
