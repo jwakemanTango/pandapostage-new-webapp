@@ -12,6 +12,7 @@ Preferred communication style: Simple, everyday language.
 - **Banner Summary Sticky Positioning**: Increased z-index from z-20 to z-50 to ensure banner properly pins to top of viewport when scrolling and stays above all content (except modals/dialogs).
 - **Banner Default State**: Banner summary now defaults to collapsed state for cleaner initial view. Users can click to expand/view details.
 - **Banner Spacing**: Added consistent 1rem spacing (mb-4) between banner summary and content below in all views and both workflows for better visual separation.
+- **Dynamic Banner Steps**: Banner summary now displays workflow-specific steps. 3-step workflow shows "Shipment → Rate → Print", while 4-step workflow shows "Addresses → Packages → Rates → Label" with appropriate icons (Truck, MapPin, Package, DollarSign, Printer).
 - **Streamlined Page Layout**: Removed "Create Shipment" page title and subtitle for cleaner demo experience. DEBUG button remains visible in top-right corner for toggling development controls.
 - **Package Section Auto-scroll**: In 3-step flow, when addresses are valid but package details have validation errors, the form automatically scrolls to the package section to guide user attention.
 
@@ -36,7 +37,7 @@ Preferred communication style: Simple, everyday language.
     - `ShipmentForm-ThreeStep`: Single-page compact workflow optimized for experienced users (default), featuring:
         - Three distinct views (Form, Summary, Label) with consistent layout: step titles positioned above content grid on all three steps for uniform visual hierarchy
         - Mobile-optimized layout with vertical field stacking, hidden summary on mobile, and fixed bottom navigation
-        - BannerLiveSummary component: full-width, sticky-top collapsible banner visible by default on mobile and desktop, controllable via DEBUG toggle. Features centered step progress indicators (Truck, DollarSign, Printer icons), company name display (with city/state fallback), and package count. No corner radius for seamless full-width design.
+        - BannerLiveSummary component: full-width, sticky-top collapsible banner visible by default on mobile and desktop, controllable via DEBUG toggle. Features centered step progress indicators that dynamically adapt to workflow (3-step: Shipment/Rate/Print with Truck/DollarSign/Printer icons; 4-step: Addresses/Packages/Rates/Label with MapPin/Package/DollarSign/Printer icons), company name display (with city/state fallback), and package count. No corner radius for seamless full-width design.
         - CompactLiveSummary component: sidebar summary with step-specific icons, completion checkmarks, validation error highlighting, sticky positioning (aligns with form initially, pins to top when scrolling)
         - CompactAddressFormCombined: Auto-opens invalid address tab (Ship From/Ship To) when validation errors detected. Dynamically switches tabs as user fixes errors with onChange validation providing immediate feedback.
         - Stacked field labels for weight and dimensions in CompactPackageForm for cleaner, more compact presentation
