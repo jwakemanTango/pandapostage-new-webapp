@@ -296,7 +296,7 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium">State</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger data-testid={`select-${type}-state`}>
                     <SelectValue placeholder="Select state" />

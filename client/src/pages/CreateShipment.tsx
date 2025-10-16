@@ -95,10 +95,7 @@ const CreateShipment = () => {
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-5 py-8 max-w-[1400px]">
         <div className="mb-6">
-          <div className="flex items-center gap-3 mb-1.5">
-            <PandaLogo compact />
-            <h1 className="text-2xl font-bold">Create Shipment</h1>
-          </div>
+          <h1 className="text-2xl font-bold mb-1.5">Create Shipment</h1>
           <p className="text-sm text-muted-foreground">
             Compare rates from multiple carriers and purchase shipping labels
           </p>
