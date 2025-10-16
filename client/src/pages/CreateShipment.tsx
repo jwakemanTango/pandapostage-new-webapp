@@ -101,20 +101,20 @@ const CreateShipment = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-5 py-8 max-w-[1400px]">
-        <div className="mb-6">
-          <div className="flex items-start justify-between gap-4 mb-4">
+      <main className="container mx-auto px-3 sm:px-5 py-4 sm:py-8 max-w-[1400px]">
+        <div className="mb-4 sm:mb-6">
+          <div className="flex items-start justify-between gap-4 mb-3 sm:mb-4">
             <div>
-              <h1 className="text-2xl font-bold mb-1.5">Create Shipment</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-xl sm:text-2xl font-bold mb-1.5">Create Shipment</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Compare rates from multiple carriers and purchase shipping labels
               </p>
             </div>
           </div>
           
-          <div className="flex items-center gap-6 p-3 bg-muted/30 rounded-lg border">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6 p-3 bg-muted/30 rounded-lg border">
             <div className="flex items-center gap-3" data-testid="view-toggle">
-              <Label htmlFor="view-toggle" className="text-sm font-medium">
+              <Label htmlFor="view-toggle" className="text-xs sm:text-sm font-medium whitespace-nowrap">
                 {formView === "four-step" ? "4-Step View" : "3-Step View"}
               </Label>
               <Switch
@@ -125,10 +125,10 @@ const CreateShipment = () => {
               />
             </div>
             
-            <div className="h-5 w-px bg-border" />
+            <div className="hidden sm:block h-5 w-px bg-border" />
             
             <div className="flex items-center gap-2">
-              <Label htmlFor="compact-addresses-toggle" className="text-sm">
+              <Label htmlFor="compact-addresses-toggle" className="text-xs sm:text-sm whitespace-nowrap">
                 Compact Addresses
               </Label>
               <Switch
@@ -139,10 +139,10 @@ const CreateShipment = () => {
               />
             </div>
             
-            <div className="h-5 w-px bg-border" />
+            <div className="hidden sm:block h-5 w-px bg-border" />
             
             <div className="flex items-center gap-2">
-              <Label htmlFor="show-summary-toggle" className="text-sm">
+              <Label htmlFor="show-summary-toggle" className="text-xs sm:text-sm whitespace-nowrap">
                 Show Summary
               </Label>
               <Switch
@@ -153,10 +153,10 @@ const CreateShipment = () => {
               />
             </div>
             
-            <div className="h-5 w-px bg-border" />
+            <div className="hidden sm:block h-5 w-px bg-border" />
             
             <div className="flex items-center gap-2">
-              <Label htmlFor="label-preview-toggle" className="text-sm">
+              <Label htmlFor="label-preview-toggle" className="text-xs sm:text-sm whitespace-nowrap">
                 Show Label Preview
               </Label>
               <Switch

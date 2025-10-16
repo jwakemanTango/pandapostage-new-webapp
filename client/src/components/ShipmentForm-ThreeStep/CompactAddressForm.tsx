@@ -36,8 +36,8 @@ export const CompactAddressForm = ({
           name={`${type}.dummy` as any}
           render={() => (
             <FormItem className="space-y-0">
-              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                <FormLabel className="text-xs text-right font-medium">Saved Address:</FormLabel>
+              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
+                <FormLabel className="text-xs sm:text-right font-medium">Saved Address:</FormLabel>
                 <Select onValueChange={(value) => onSavedAddressSelect(value, type)}>
                   <SelectTrigger className="h-8 text-sm" data-testid={`select-saved-${type}`}>
                     <SelectValue placeholder="-- Select --" />
@@ -66,13 +66,13 @@ export const CompactAddressForm = ({
           name={`${type}.company`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                <FormLabel className="text-xs text-right font-medium">Company Name:</FormLabel>
+              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
+                <FormLabel className="text-xs sm:text-right font-medium">Company Name:</FormLabel>
                 <FormControl>
                   <Input placeholder="Company Name" className="h-8 text-sm" {...field} data-testid={`input-${type}-company`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[108px]" />
             </FormItem>
           )}
         />
@@ -82,13 +82,13 @@ export const CompactAddressForm = ({
           name={`${type}.name`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                <FormLabel className="text-xs text-right font-medium">Contact Name: *</FormLabel>
+              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
+                <FormLabel className="text-xs sm:text-right font-medium">Contact Name: *</FormLabel>
                 <FormControl>
                   <Input placeholder="Full Name" className="h-8 text-sm" {...field} data-testid={`input-${type}-name`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[108px]" />
             </FormItem>
           )}
         />
@@ -98,13 +98,13 @@ export const CompactAddressForm = ({
           name={`${type}.phone`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                <FormLabel className="text-xs text-right font-medium">Phone Number: *</FormLabel>
+              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
+                <FormLabel className="text-xs sm:text-right font-medium">Phone Number: *</FormLabel>
                 <FormControl>
                   <Input placeholder="(555) 123-4567" className="h-8 text-sm" {...field} data-testid={`input-${type}-phone`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[108px]" />
             </FormItem>
           )}
         />
@@ -114,13 +114,13 @@ export const CompactAddressForm = ({
           name={`${type}.addressLine1`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                <FormLabel className="text-xs text-right font-medium">Address Line 1: *</FormLabel>
+              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
+                <FormLabel className="text-xs sm:text-right font-medium">Address Line 1: *</FormLabel>
                 <FormControl>
                   <Input placeholder="Street Address" className="h-8 text-sm" {...field} data-testid={`input-${type}-address1`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[108px]" />
             </FormItem>
           )}
         />
@@ -130,13 +130,13 @@ export const CompactAddressForm = ({
           name={`${type}.addressLine2`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                <FormLabel className="text-xs text-right font-medium">Address Line 2:</FormLabel>
+              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
+                <FormLabel className="text-xs sm:text-right font-medium">Address Line 2:</FormLabel>
                 <FormControl>
                   <Input placeholder="Apt, Suite, etc." className="h-8 text-sm" {...field} data-testid={`input-${type}-address2`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[108px]" />
             </FormItem>
           )}
         />
@@ -146,13 +146,13 @@ export const CompactAddressForm = ({
           name={`${type}.city`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                <FormLabel className="text-xs text-right font-medium">City: *</FormLabel>
+              <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] items-start sm:items-center gap-1 sm:gap-2">
+                <FormLabel className="text-xs sm:text-right font-medium">City: *</FormLabel>
                 <FormControl>
                   <Input placeholder="City" className="h-8 text-sm" {...field} data-testid={`input-${type}-city`} />
                 </FormControl>
               </div>
-              <FormMessage className="text-xs ml-[108px]" />
+              <FormMessage className="text-xs sm:ml-[108px]" />
             </FormItem>
           )}
         />
@@ -180,7 +180,7 @@ export const CompactAddressForm = ({
                     </SelectContent>
                   </Select>
                 </div>
-                <FormMessage className="text-xs ml-[108px]" />
+                <FormMessage className="text-xs sm:ml-[108px]" />
               </FormItem>
             )}
           />

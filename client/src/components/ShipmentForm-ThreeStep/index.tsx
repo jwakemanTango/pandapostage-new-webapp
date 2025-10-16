@@ -164,8 +164,8 @@ export const ShipmentFormFull = ({
 
   if (viewState === "label" && purchasedLabel) {
     return (
-      <div className="flex gap-4">
-        <div className="flex-1">
+      <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
+        <div>
           <LabelSummary 
             purchasedLabel={purchasedLabel}
             onCreateAnother={handleCreateAnother}
@@ -174,7 +174,7 @@ export const ShipmentFormFull = ({
         </div>
         
         {showLiveSummary && (
-          <div className="w-80 shrink-0">
+          <div>
             <CompactLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
           </div>
         )}
@@ -198,8 +198,8 @@ export const ShipmentFormFull = ({
           </Button>
         </div>
         
-        <div className="flex gap-4">
-          <div className="flex-1">
+        <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
+          <div>
             <Card>
               <CardHeader className="pb-2 pt-3">
                 <CardTitle className="text-sm font-semibold">Available Shipping Rates</CardTitle>
@@ -216,7 +216,7 @@ export const ShipmentFormFull = ({
           </div>
           
           {showLiveSummary && (
-            <div className="w-80 shrink-0">
+            <div>
               <CompactLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} />
             </div>
           )}
@@ -227,8 +227,8 @@ export const ShipmentFormFull = ({
 
   return (
     <Form {...form}>
-      <div className="flex gap-4">
-        <div className="flex-1 space-y-3">
+      <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
+        <div className="space-y-3">
           {useCompactAddresses ? (
             /* Compact Layout: Combined Address on left, Package/Services stacked on right */
             <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
@@ -290,7 +290,7 @@ export const ShipmentFormFull = ({
         </div>
 
         {showLiveSummary && (
-          <div className="w-80 shrink-0">
+          <div>
             <CompactLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} />
           </div>
         )}
