@@ -53,12 +53,12 @@ Preferred communication style: Simple, everyday language.
     - `CompactAddressForm.tsx` - Address fields for from/to addresses
     - `CompactPackageForm.tsx` - Package details input
     - `CompactAdditionalServices.tsx` - Service checkboxes
-    - `LabelSummary.tsx` - Post-purchase label display (replaces rates section after purchase)
+    - `LabelSummary.tsx` - Post-purchase label display (replaces entire form after purchase)
   - Compact 3-column responsive grid layout
   - All form sections visible on one page for faster data entry
   - Reuses RatesSelection component from ShipmentForm-Steps
-  - After purchase, rates section is replaced with label summary while form fields remain visible
-  - "Create Another Shipment" button resets form to initial state
+  - After purchase, entire form is replaced with label summary
+  - "Create Another Shipment" button resets and shows form again
   - Optimized for experienced users who want quick access to all fields
   
 - Component composition pattern ensures code reusability and maintainability
