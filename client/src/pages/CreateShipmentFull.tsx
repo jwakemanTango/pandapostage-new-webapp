@@ -1,19 +1,17 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { ShipmentForm } from "@/components/ShipmentForm";
-import { PandaLogo } from "@/components/PandaLogo";
+import { ShipmentFormFull } from "@/components/ShipmentForm-Full";
 import { Rate } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
-const CreateShipment = () => {
+const CreateShipmentFull = () => {
   const [rates, setRates] = useState<Rate[]>([]);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
   const { toast } = useToast();
 
-  // TODO: remove mock functionality
   const handleGetRates = (data: any) => {
     console.log('Getting rates for:', data);
     setIsLoadingRates(true);
@@ -78,7 +76,6 @@ const CreateShipment = () => {
     }, 1500);
   };
 
-  // TODO: remove mock functionality
   const handlePurchaseLabel = (data: any) => {
     console.log('Purchasing label:', data);
     setIsPurchasing(true);
@@ -99,20 +96,20 @@ const CreateShipment = () => {
       <main className="container mx-auto px-5 py-8 max-w-[1400px]">
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold mb-1.5">Create Shipment</h1>
+            <h1 className="text-2xl font-bold mb-1.5">Create Shipment (Single Page)</h1>
             <p className="text-sm text-muted-foreground">
-              Compare rates from multiple carriers and purchase shipping labels
+              All-in-one compact view - compare rates and purchase shipping labels
             </p>
           </div>
-          <Link href="/full">
-            <Button variant="outline" size="sm" className="gap-2" data-testid="link-full-view">
-              Single Page View
-              <ArrowRight className="h-4 w-4" />
+          <Link href="/">
+            <Button variant="outline" size="sm" className="gap-2" data-testid="link-step-view">
+              <ArrowLeft className="h-4 w-4" />
+              Step-by-Step View
             </Button>
           </Link>
         </div>
         
-        <ShipmentForm 
+        <ShipmentFormFull 
           onGetRates={handleGetRates}
           onPurchaseLabel={handlePurchaseLabel}
           rates={rates}
@@ -124,4 +121,4 @@ const CreateShipment = () => {
   );
 };
 
-export default CreateShipment;
+export default CreateShipmentFull;

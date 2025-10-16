@@ -34,8 +34,15 @@ Preferred communication style: Simple, everyday language.
 - Inter font family for general UI and forms
 
 **Form Architecture:**
-- Multi-step shipment creation workflow with progressive validation
-- Live summary component that updates as users fill forms
+- **ShipmentForm** - Multi-step shipment creation workflow with progressive validation
+  - Step-by-step wizard interface with collapsible sections
+  - Live summary component that updates as users fill forms
+  - Navigation between steps with validation at each stage
+- **ShipmentForm-Full** - Single-page compact shipment creation view
+  - All form sections displayed on one page for faster data entry
+  - Compact layout with side-by-side address inputs
+  - Grid-based responsive design for efficiency
+  - Same functionality as multi-step form but optimized for experienced users
 - Separated concerns: AddressForm, PackageForm, RatesSelection, AdditionalServices
 - Reusable form components with consistent validation patterns
 - Field arrays for handling multiple packages in a single shipment
