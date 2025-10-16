@@ -13,6 +13,7 @@ Preferred communication style: Simple, everyday language.
 - **Banner Default State**: Banner summary now defaults to collapsed state for cleaner initial view. Users can click to expand/view details.
 - **Banner Spacing**: Added consistent 1rem spacing (mb-4) between banner summary and content below in all views and both workflows for better visual separation.
 - **Dynamic Banner Steps**: Banner summary now displays workflow-specific steps. 3-step workflow shows "Shipment → Rate → Print", while 4-step workflow shows "Addresses → Packages → Rates → Label" with appropriate icons (Truck, MapPin, Package, DollarSign, Printer).
+- **Default Workflow**: Changed default workflow to 4-Step Flow. Application now loads with the guided 4-step workflow by default. DEBUG toggle renamed to "Compact 3-step flow" for clarity.
 - **Streamlined Page Layout**: Removed "Create Shipment" page title and subtitle for cleaner demo experience. DEBUG button remains visible in top-right corner for toggling development controls.
 - **Package Section Auto-scroll**: In 3-step flow, when addresses are valid but package details have validation errors, the form automatically scrolls to the package section to guide user attention.
 
@@ -30,8 +31,8 @@ Preferred communication style: Simple, everyday language.
 - **UI Framework**: Shadcn UI (built on Radix UI), Tailwind CSS with custom design tokens, CSS variables for theming (light/dark mode), and a "New York" style design system.
 - **Design Philosophy**: Professional, business-application aesthetic, functional UI focused on efficiency, progressive disclosure, visual hierarchy through spacing/typography, and monospace fonts for data.
 - **Form Architecture**:
-    - DEBUG button in top-right corner toggles visibility of development controls (3-Step Flow, 4-Step Flow, Combine Address Forms, Show Sidebar Summary, Show Banner Summary, Show Label Preview).
-    - Default view: 3-Step Flow (can be changed to 4-Step Flow via DEBUG panel).
+    - DEBUG button in top-right corner toggles visibility of development controls (4-Step Flow, Compact 3-step flow, Combine Address Forms, Show Sidebar Summary, Show Banner Summary, Show Label Preview).
+    - Default view: 4-Step Flow (can be changed to Compact 3-step flow via DEBUG panel).
     - Banner summary defaults to visible (showBannerSummary = true) on both mobile and desktop, can be toggled off via DEBUG panel.
     - `ShipmentForm-FourStep`: Multi-step guided workflow with progressive disclosure. Features auto-open invalid address tab that dynamically switches to show validation errors, and onChange validation mode that clears field errors immediately when corrected.
     - `ShipmentForm-ThreeStep`: Single-page compact workflow optimized for experienced users (default), featuring:
