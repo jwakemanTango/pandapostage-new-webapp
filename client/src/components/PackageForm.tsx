@@ -136,20 +136,20 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold">Package Details</h3>
+          <h3 className="text-base font-semibold">Package Details</h3>
           {showErrors && fields.some(pkg => {
             const typedPkg = pkg as unknown as PackageItem;
             return !typedPkg.packageType || !typedPkg.weightLbs;
           }) && (
-            <Badge variant="destructive" className="px-2 py-1">
+            <Badge variant="destructive" className="px-1.5 py-0.5 text-xs">
               Missing information
             </Badge>
           )}
         </div>
         {showMultiPackage && (
-          <Badge variant="outline" className="px-2 py-1" data-testid="badge-package-count">
+          <Badge variant="outline" className="px-1.5 py-0.5 text-xs" data-testid="badge-package-count">
             {fields.length} {fields.length === 1 ? "package" : "packages"}
           </Badge>
         )}
@@ -157,13 +157,13 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
 
       {!showMultiPackage && !isEditing && (
         <>
-          <div className="space-y-4">
+          <div className="space-y-3">
             <FormField
               control={form.control}
               name={`packages.0.packageType`}
               render={({ field }) => (
-                <FormItem className="mb-4">
-                  <FormLabel>Package Type</FormLabel>
+                <FormItem>
+                  <FormLabel className="text-sm">Package Type</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger data-testid="select-package-type">
@@ -183,9 +183,9 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
               )}
             />
             
-            <div className="mb-4">
-              <FormLabel>Weight</FormLabel>
-              <div className="flex gap-4 mt-2">
+            <div>
+              <FormLabel className="text-sm">Weight</FormLabel>
+              <div className="flex gap-3 mt-1.5">
                 <FormField
                   control={form.control}
                   name={`packages.0.weightLbs`}
@@ -243,15 +243,15 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
               </div>
             </div>
             
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-3">
               <FormField
                 control={form.control}
                 name={`packages.0.length`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Length (in)</FormLabel>
+                    <FormLabel className="text-sm">Length (in)</FormLabel>
                     <FormControl>
-                      <Input type="text" placeholder="Length" {...field} data-testid="input-length" />
+                      <Input type="text" placeholder="0" {...field} data-testid="input-length" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -262,9 +262,9 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                 name={`packages.0.width`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Width (in)</FormLabel>
+                    <FormLabel className="text-sm">Width (in)</FormLabel>
                     <FormControl>
-                      <Input type="text" placeholder="Width" {...field} data-testid="input-width" />
+                      <Input type="text" placeholder="0" {...field} data-testid="input-width" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -275,9 +275,9 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                 name={`packages.0.height`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Height (in)</FormLabel>
+                    <FormLabel className="text-sm">Height (in)</FormLabel>
                     <FormControl>
-                      <Input type="text" placeholder="Height" {...field} data-testid="input-height" />
+                      <Input type="text" placeholder="0" {...field} data-testid="input-height" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -286,10 +286,11 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
             </div>
           </div>
           
-          <div className="flex justify-end mt-6">
+          <div className="flex justify-end mt-4">
             <Button 
               type="button" 
               variant="outline" 
+              size="sm"
               className="gap-2" 
               onClick={enableMultiPackage}
               data-testid="button-add-multiple-packages"
@@ -303,15 +304,15 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
 
       {showMultiPackage && !isEditing && (
         <>
-          <div className="mb-4 rounded-md border">
+          <div className="mb-3 rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[80px]">#</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead className="text-right">Weight</TableHead>
-                  <TableHead className="text-right">Dimensions</TableHead>
-                  <TableHead className="text-right w-[100px]">Actions</TableHead>
+                  <TableHead className="w-[60px] py-2">#</TableHead>
+                  <TableHead className="py-2">Type</TableHead>
+                  <TableHead className="text-right py-2">Weight</TableHead>
+                  <TableHead className="text-right py-2">Dimensions</TableHead>
+                  <TableHead className="text-right w-[100px] py-2">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -324,20 +325,20 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                       onClick={() => handleEditPackage(index)}
                       data-testid={`row-package-${index}`}
                     >
-                      <TableCell className="font-medium">{index + 1}</TableCell>
-                      <TableCell>
+                      <TableCell className="font-medium py-2">{index + 1}</TableCell>
+                      <TableCell className="py-2">
                         {typedPkg.packageType ? getPackageTypeLabel(typedPkg.packageType) : "Parcel/Package"}
                       </TableCell>
-                      <TableCell className="text-right font-mono">
+                      <TableCell className="text-right font-mono text-sm py-2">
                         {typedPkg.weightLbs ? `${typedPkg.weightLbs} lbs ${typedPkg.weightOz || '0'} oz` : '-'}
                       </TableCell>
-                      <TableCell className="text-right font-mono">
+                      <TableCell className="text-right font-mono text-sm py-2">
                         {typedPkg.length && typedPkg.width && typedPkg.height 
                           ? `${typedPkg.length} × ${typedPkg.width} × ${typedPkg.height}"`
                           : '-'}
                       </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
+                      <TableCell className="text-right py-2">
+                        <div className="flex justify-end gap-1">
                           <Button
                             type="button"
                             size="icon"
@@ -377,6 +378,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
             <Button 
               type="button" 
               variant="outline" 
+              size="sm"
               className="gap-2" 
               onClick={handleAddPackage}
               data-testid="button-add-another-package"
@@ -389,16 +391,16 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
       )}
 
       {isEditing && editingPackage && (
-        <div className="space-y-4 p-4 border rounded-md bg-card">
-          <h4 className="font-semibold">Edit Package #{editingPackage.index + 1}</h4>
+        <div className="space-y-3 p-3 border rounded-md bg-card">
+          <h4 className="font-semibold text-sm">Edit Package #{editingPackage.index + 1}</h4>
           
           <div>
-            <FormLabel>Package Type</FormLabel>
+            <FormLabel className="text-sm">Package Type</FormLabel>
             <Select 
               onValueChange={(value) => updatePackageField('packageType', value)} 
               value={editingPackage.data.packageType}
             >
-              <SelectTrigger data-testid="select-edit-package-type">
+              <SelectTrigger data-testid="select-edit-package-type" className="mt-1.5">
                 <SelectValue placeholder="Select package type" />
               </SelectTrigger>
               <SelectContent>
@@ -412,8 +414,8 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
           </div>
 
           <div>
-            <FormLabel>Weight</FormLabel>
-            <div className="flex gap-4 mt-2">
+            <FormLabel className="text-sm">Weight</FormLabel>
+            <div className="flex gap-3 mt-1.5">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <Input 
@@ -447,35 +449,38 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
             </div>
           </div>
           
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             <div>
-              <FormLabel>Length (in)</FormLabel>
+              <FormLabel className="text-sm">Length (in)</FormLabel>
               <Input 
                 type="text" 
-                placeholder="Length" 
+                placeholder="0" 
                 value={editingPackage.data.length}
                 onChange={(e) => updatePackageField('length', e.target.value)}
                 data-testid="input-edit-length"
+                className="mt-1.5"
               />
             </div>
             <div>
-              <FormLabel>Width (in)</FormLabel>
+              <FormLabel className="text-sm">Width (in)</FormLabel>
               <Input 
                 type="text" 
-                placeholder="Width" 
+                placeholder="0" 
                 value={editingPackage.data.width}
                 onChange={(e) => updatePackageField('width', e.target.value)}
                 data-testid="input-edit-width"
+                className="mt-1.5"
               />
             </div>
             <div>
-              <FormLabel>Height (in)</FormLabel>
+              <FormLabel className="text-sm">Height (in)</FormLabel>
               <Input 
                 type="text" 
-                placeholder="Height" 
+                placeholder="0" 
                 value={editingPackage.data.height}
                 onChange={(e) => updatePackageField('height', e.target.value)}
                 data-testid="input-edit-height"
+                className="mt-1.5"
               />
             </div>
           </div>
@@ -483,14 +488,16 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
           <div className="flex justify-end gap-2 pt-2">
             <Button 
               type="button" 
-              variant="outline" 
+              variant="outline"
+              size="sm"
               onClick={handleCancelEdit}
               data-testid="button-cancel-edit"
             >
               Cancel
             </Button>
             <Button 
-              type="button" 
+              type="button"
+              size="sm"
               onClick={handleSavePackage}
               data-testid="button-save-package"
             >

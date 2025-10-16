@@ -99,16 +99,16 @@ const CreateShipment = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-5 py-3">
           <PandaLogo />
         </div>
       </header>
       
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-5 py-6">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-2">Create Shipment</h1>
-            <p className="text-muted-foreground">
+          <div className="mb-5">
+            <h1 className="text-2xl font-bold mb-1.5">Create Shipment</h1>
+            <p className="text-sm text-muted-foreground">
               Compare rates from multiple carriers and purchase shipping labels
             </p>
           </div>

@@ -8,14 +8,14 @@ interface AdditionalServicesProps {
 const AdditionalServices = ({ form }: AdditionalServicesProps) => {
   return (
     <div>
-      <h3 className="text-lg font-semibold mb-4">Additional Services</h3>
+      <h3 className="text-base font-semibold mb-3">Additional Services</h3>
       
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
         <FormField
           control={form.control}
           name="additionalServices.saturdayDelivery"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem className="flex flex-row items-start space-x-2.5 space-y-0">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -23,7 +23,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
                   data-testid="checkbox-saturday-delivery"
                 />
               </FormControl>
-              <FormLabel className="font-normal">
+              <FormLabel className="font-normal text-sm leading-none pt-0.5">
                 Saturday Delivery
               </FormLabel>
             </FormItem>
@@ -34,7 +34,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
           control={form.control}
           name="additionalServices.requireSignature"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem className="flex flex-row items-start space-x-2.5 space-y-0">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -42,7 +42,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
                   data-testid="checkbox-require-signature"
                 />
               </FormControl>
-              <FormLabel className="font-normal">
+              <FormLabel className="font-normal text-sm leading-none pt-0.5">
                 Require Signature Confirmation
               </FormLabel>
             </FormItem>
@@ -53,7 +53,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
           control={form.control}
           name="additionalServices.expressMailWaiver"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem className="flex flex-row items-start space-x-2.5 space-y-0">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -61,7 +61,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
                   data-testid="checkbox-express-waiver"
                 />
               </FormControl>
-              <FormLabel className="font-normal">
+              <FormLabel className="font-normal text-sm leading-none pt-0.5">
                 USPS Express Mail - Waiver of Signature
               </FormLabel>
             </FormItem>
@@ -72,7 +72,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
           control={form.control}
           name="additionalServices.insuranceValue"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem className="flex flex-row items-start space-x-2.5 space-y-0">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -80,7 +80,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
                   data-testid="checkbox-insurance"
                 />
               </FormControl>
-              <FormLabel className="font-normal">
+              <FormLabel className="font-normal text-sm leading-none pt-0.5">
                 USPS Insurance/UPS Declared Value
               </FormLabel>
             </FormItem>
@@ -91,7 +91,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
           control={form.control}
           name="additionalServices.returnLabel"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem className="flex flex-row items-start space-x-2.5 space-y-0">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -99,7 +99,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
                   data-testid="checkbox-return-label"
                 />
               </FormControl>
-              <FormLabel className="font-normal">
+              <FormLabel className="font-normal text-sm leading-none pt-0.5">
                 Create A Return Label
               </FormLabel>
             </FormItem>
@@ -110,7 +110,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
           control={form.control}
           name="additionalServices.weekendService"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem className="flex flex-row items-start space-x-2.5 space-y-0">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -118,7 +118,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
                   data-testid="checkbox-weekend-service"
                 />
               </FormControl>
-              <FormLabel className="font-normal">
+              <FormLabel className="font-normal text-sm leading-none pt-0.5">
                 Weekend Service
               </FormLabel>
             </FormItem>
@@ -129,7 +129,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
           control={form.control}
           name="additionalServices.additionalHandling"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem className="flex flex-row items-start space-x-2.5 space-y-0">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -137,7 +137,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
                   data-testid="checkbox-additional-handling"
                 />
               </FormControl>
-              <FormLabel className="font-normal">
+              <FormLabel className="font-normal text-sm leading-none pt-0.5">
                 Additional Handling
               </FormLabel>
             </FormItem>
@@ -148,7 +148,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
           control={form.control}
           name="additionalServices.certifiedMail"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem className="flex flex-row items-start space-x-2.5 space-y-0">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -156,7 +156,7 @@ const AdditionalServices = ({ form }: AdditionalServicesProps) => {
                   data-testid="checkbox-certified-mail"
                 />
               </FormControl>
-              <FormLabel className="font-normal">
+              <FormLabel className="font-normal text-sm leading-none pt-0.5">
                 Certified Mail
               </FormLabel>
             </FormItem>

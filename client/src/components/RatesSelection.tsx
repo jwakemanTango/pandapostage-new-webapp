@@ -14,7 +14,7 @@ interface RatesSelectionProps {
 
 const RatesSelection = ({ rates = [], isLoading = false, onPurchase, isPurchasing = false }: RatesSelectionProps) => {
   const getCarrierLogo = (carrier: string) => {
-    const size = 24;
+    const size = 20;
     
     switch(carrier.toLowerCase()) {
       case 'usps':
@@ -33,33 +33,32 @@ const RatesSelection = ({ rates = [], isLoading = false, onPurchase, isPurchasin
   if (isLoading) {
     return (
       <div>
-        <div className="flex justify-between mb-6">
-          <h3 className="text-lg font-semibold">Available Rates</h3>
+        <div className="flex justify-end mb-4">
           <div className="text-sm text-muted-foreground">Estimated delivery times</div>
         </div>
         
-        <div className="grid grid-cols-12 gap-4 border-b pb-2 mb-4 font-semibold">
+        <div className="grid grid-cols-12 gap-3 border-b pb-2 mb-3 font-semibold text-sm">
           <div className="col-span-5">Service</div>
           <div className="col-span-3 text-right text-destructive">Retail</div>
           <div className="col-span-3 text-right text-chart-2">Your Price</div>
           <div className="col-span-1"></div>
         </div>
         
-        <div className="space-y-4">
+        <div className="space-y-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="grid grid-cols-12 gap-4 items-center py-3 border-b">
+            <div key={i} className="grid grid-cols-12 gap-3 items-center py-2.5 border-b">
               <div className="col-span-5 space-y-1">
-                <Skeleton className="h-5 w-[200px]" />
-                <Skeleton className="h-4 w-[150px]" />
+                <Skeleton className="h-4 w-[180px]" />
+                <Skeleton className="h-3 w-[130px]" />
               </div>
               <div className="col-span-3 text-right">
-                <Skeleton className="h-5 w-[60px] ml-auto" />
+                <Skeleton className="h-4 w-[50px] ml-auto" />
               </div>
               <div className="col-span-3 text-right">
-                <Skeleton className="h-5 w-[60px] ml-auto" />
+                <Skeleton className="h-4 w-[50px] ml-auto" />
               </div>
               <div className="col-span-1 text-right">
-                <Skeleton className="h-10 w-[90px]" />
+                <Skeleton className="h-9 w-[80px]" />
               </div>
             </div>
           ))}
@@ -70,23 +69,23 @@ const RatesSelection = ({ rates = [], isLoading = false, onPurchase, isPurchasin
   
   return (
     <div className="w-full overflow-x-auto">
-      <div className="flex justify-end mb-6">
+      <div className="flex justify-end mb-4">
         <div className="text-sm text-muted-foreground">Estimated delivery times</div>
       </div>
       
       <table className="w-full min-w-full table-auto">
         <thead>
           <tr className="border-b">
-            <th className="text-left pb-2 font-semibold w-5/12">Service</th>
-            <th className="text-right pb-2 font-semibold text-destructive w-2/12">Retail</th>
-            <th className="text-right pb-2 font-semibold text-chart-2 w-2/12">Your Price</th>
-            <th className="text-right pb-2 font-semibold w-3/12"></th>
+            <th className="text-left pb-2 font-semibold text-sm w-5/12">Service</th>
+            <th className="text-right pb-2 font-semibold text-sm text-destructive w-2/12">Retail</th>
+            <th className="text-right pb-2 font-semibold text-sm text-chart-2 w-2/12">Your Price</th>
+            <th className="text-right pb-2 font-semibold text-sm w-3/12"></th>
           </tr>
         </thead>
         <tbody>
           {rates.length === 0 ? (
             <tr>
-              <td colSpan={4} className="text-center py-8 text-muted-foreground">
+              <td colSpan={4} className="text-center py-6 text-muted-foreground text-sm">
                 No rates available for this shipment
               </td>
             </tr>
@@ -97,29 +96,29 @@ const RatesSelection = ({ rates = [], isLoading = false, onPurchase, isPurchasin
                 className="border-b hover-elevate"
                 data-testid={`row-rate-${rate.id}`}
               >
-                <td className="py-3">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 mt-1">
+                <td className="py-2.5">
+                  <div className="flex items-start gap-2.5">
+                    <div className="flex-shrink-0 mt-0.5">
                       {getCarrierLogo(rate.carrier)}
                     </div>
                     <div>
-                      <div className="font-medium" data-testid={`text-rate-service-${rate.id}`}>
+                      <div className="font-medium text-sm" data-testid={`text-rate-service-${rate.id}`}>
                         {rate.carrier} {rate.service}
                       </div>
-                      <div className="text-sm text-muted-foreground">
-                        {rate.deliveryDays && `Estimated delivery: ${rate.deliveryDays} days`}
-                        {rate.deliveryDate && !rate.deliveryDays && `Estimated delivery by: ${rate.deliveryDate}`}
+                      <div className="text-xs text-muted-foreground">
+                        {rate.deliveryDays && `${rate.deliveryDays} days`}
+                        {rate.deliveryDate && !rate.deliveryDays && `By ${rate.deliveryDate}`}
                       </div>
                     </div>
                   </div>
                 </td>
-                <td className="text-right text-destructive font-medium font-mono py-3" data-testid={`text-retail-rate-${rate.id}`}>
+                <td className="text-right text-destructive font-medium font-mono py-2.5 text-sm" data-testid={`text-retail-rate-${rate.id}`}>
                   {rate.retailRate}
                 </td>
-                <td className="text-right text-chart-2 font-semibold font-mono py-3" data-testid={`text-your-rate-${rate.id}`}>
+                <td className="text-right text-chart-2 font-semibold font-mono py-2.5 text-sm" data-testid={`text-your-rate-${rate.id}`}>
                   {rate.rate}
                 </td>
-                <td className="text-right py-3">
+                <td className="text-right py-2.5">
                   <Button 
                     size="sm"
                     className="bg-primary hover:bg-primary/90 whitespace-nowrap"

@@ -171,34 +171,34 @@ export const ShipmentForm = ({
   
   return (
     <Card>
-      <CardContent className="pt-6">
+      <CardContent className="p-5">
         <Form {...form}>
           <form>
             <Accordion 
               type="multiple" 
               value={expandedSections} 
               onValueChange={setExpandedSections}
-              className="mb-6"
+              className="mb-4"
             >
               <AccordionItem value="shipmentDetails">
-                <AccordionTrigger className="text-lg font-semibold" data-testid="accordion-shipment-details">
+                <AccordionTrigger className="text-base font-semibold py-3" data-testid="accordion-shipment-details">
                   Shipment Details
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className="space-y-8 pt-4">
+                  <div className="space-y-5 pt-3">
                     <AddressForm form={form} type="fromAddress" title="From Address" />
-                    <div className="border-t pt-6">
+                    <div className="border-t pt-5">
                       <AddressForm form={form} type="toAddress" title="To Address" />
                     </div>
-                    <div className="border-t pt-6">
+                    <div className="border-t pt-5">
                       <PackageForm form={form} />
                     </div>
-                    <div className="border-t pt-6">
+                    <div className="border-t pt-5">
                       <AdditionalServices form={form} />
                     </div>
                   </div>
                   
-                  <div className="flex justify-end mt-6 pt-6 border-t">
+                  <div className="flex justify-end mt-5 pt-5 border-t">
                     <Button 
                       type="button" 
                       onClick={handleGetRates}
@@ -215,11 +215,11 @@ export const ShipmentForm = ({
 
               {showRatesSection && (
                 <AccordionItem value="rates">
-                  <AccordionTrigger className="text-lg font-semibold" data-testid="accordion-rates">
+                  <AccordionTrigger className="text-base font-semibold py-3" data-testid="accordion-rates">
                     Select Shipping Rate
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="pt-4">
+                    <div className="pt-3">
                       <RatesSelection 
                         rates={rates}
                         isLoading={isLoadingRates}
