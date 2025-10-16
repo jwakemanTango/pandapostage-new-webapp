@@ -2,9 +2,7 @@ import { useState } from "react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Search, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Address } from "@shared/schema";
 
@@ -70,7 +68,6 @@ interface AddressFormProps {
 
 const AddressForm = ({ form, type, title, onAddressSelected }: AddressFormProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [showSearch, setShowSearch] = useState(false);
   
   const { data: addresses } = useQuery<Address[]>({
     queryKey: ["/api/addresses"],
@@ -114,96 +111,43 @@ const AddressForm = ({ form, type, title, onAddressSelected }: AddressFormProps)
     }
   };
 
-  const handleSameAsSender = (checked: boolean) => {
-    if (checked) {
-      const fromAddress = form.getValues("fromAddress");
-      form.setValue("toAddress.name", fromAddress.name);
-      form.setValue("toAddress.company", fromAddress.company);
-      form.setValue("toAddress.phone", fromAddress.phone);
-      form.setValue("toAddress.addressLine1", fromAddress.addressLine1);
-      form.setValue("toAddress.addressLine2", fromAddress.addressLine2);
-      form.setValue("toAddress.city", fromAddress.city);
-      form.setValue("toAddress.state", fromAddress.state);
-      form.setValue("toAddress.zipCode", fromAddress.zipCode);
-      form.setValue("toAddress.country", fromAddress.country);
-    }
-  };
-  
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-base font-semibold">{title}</h3>
-        {type === "toAddress" && (
-          <div className="flex items-center space-x-2">
-            <Checkbox 
-              id="same-as-sender" 
-              onCheckedChange={handleSameAsSender}
-              data-testid="checkbox-same-as-sender"
-            />
-            <label
-              htmlFor="same-as-sender"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-            >
-              Same as sender
-            </label>
-          </div>
-        )}
       </div>
       
       <div className="mb-4">
-        <div className="flex items-center justify-between mb-1.5">
-          <FormLabel className="text-sm font-medium">Select from saved addresses</FormLabel>
-          <Button 
-            type="button" 
-            variant="ghost" 
-            size="sm" 
-            className="text-primary h-auto p-0 text-xs"
-            onClick={() => setShowSearch(!showSearch)}
-            data-testid={`button-manage-addresses-${type}`}
-          >
-            {showSearch ? (
-              <>
-                <X className="h-3.5 w-3.5 mr-1" />
-                <span>Close</span>
-              </>
-            ) : (
-              <>
-                <Search className="h-3.5 w-3.5 mr-1" />
-                <span>Search</span>
-              </>
-            )}
-          </Button>
-        </div>
-        
-        {showSearch && (
-          <div className="mb-2">
-            <Input
-              type="text"
-              placeholder="Search by name, company, city, state, or zip..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full"
-              data-testid={`input-search-address-${type}`}
-            />
-          </div>
-        )}
+        <FormLabel className="text-sm font-medium mb-1.5 block">Select from saved addresses</FormLabel>
         
         <Select onValueChange={handleSavedAddressSelect}>
           <SelectTrigger className="w-full" data-testid={`select-saved-address-${type}`}>
             <SelectValue placeholder="-- Select a saved address --" />
           </SelectTrigger>
           <SelectContent>
-            {filteredAddresses && filteredAddresses.length > 0 ? (
-              filteredAddresses.map((address) => (
-                <SelectItem key={address.id} value={address.id.toString()}>
-                  {address.name}, {address.city}, {address.state}
-                </SelectItem>
-              ))
-            ) : (
-              <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                No addresses found
-              </div>
-            )}
+            <div className="px-2 py-2 border-b">
+              <Input
+                type="text"
+                placeholder="Search by name, company, city, state, or zip..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full h-8"
+                data-testid={`input-search-address-${type}`}
+              />
+            </div>
+            <div className="max-h-[200px] overflow-y-auto">
+              {filteredAddresses && filteredAddresses.length > 0 ? (
+                filteredAddresses.map((address) => (
+                  <SelectItem key={address.id} value={address.id.toString()}>
+                    {address.name}, {address.city}, {address.state}
+                  </SelectItem>
+                ))
+              ) : (
+                <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                  No addresses found
+                </div>
+              )}
+            </div>
           </SelectContent>
         </Select>
       </div>
@@ -334,6 +278,21 @@ const AddressForm = ({ form, type, title, onAddressSelected }: AddressFormProps)
           )}
         />
       </div>
+      
+      {type === "fromAddress" && (
+        <div className="mt-4 flex items-center space-x-2">
+          <Checkbox 
+            id="make-default" 
+            data-testid="checkbox-make-default"
+          />
+          <label
+            htmlFor="make-default"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+          >
+            Make this my default
+          </label>
+        </div>
+      )}
     </div>
   );
 };
