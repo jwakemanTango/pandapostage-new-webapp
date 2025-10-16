@@ -36,6 +36,8 @@ Preferred communication style: Simple, everyday language.
         - Carrier-specific icons from react-icons/si (SiUsps, SiUps, SiFedex)
     - Shared validation patterns and schemas, component composition, and constants for reusability.
     - All package dimension fields (length, width, height) are required with numeric validation.
+    - **Rate Sorting**: Rates are automatically sorted by price (low to high) using numeric parsing to extract values from formatted strings like "$5.20".
+    - **Label Download**: Download Label button opens the label in a new window and triggers the browser's native print dialog for easy printing. Supports PDF, PNG, and ZPL label formats.
 - **State Management**: TanStack Query for server state, React Hook Form for form state, React hooks for local UI state.
 
 ### Backend
