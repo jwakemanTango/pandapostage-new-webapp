@@ -269,18 +269,8 @@ export const ShipmentFormFull = ({
         <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-24 lg:pb-0">
           <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
             <div className="space-y-4">
-              <div className="flex items-center justify-between gap-3 pb-2 border-b">
+              <div className="flex items-center gap-3 pb-2 border-b">
                 <h2 className="text-xl font-semibold">Shipment Details</h2>
-                <Button
-                  type="button"
-                  onClick={handleGetRates}
-                  disabled={isLoadingRates}
-                  className="hidden lg:flex gap-2"
-                  data-testid="button-get-rates-desktop"
-                >
-                  {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {isLoadingRates ? 'Loading...' : 'Get Rates'}
-                </Button>
               </div>
               
               {useCompactAddresses ? (
@@ -328,6 +318,20 @@ export const ShipmentFormFull = ({
                   </div>
                 </>
               )}
+              
+              {/* Desktop Get Rates button at bottom */}
+              <div className="hidden lg:block pt-2">
+                <Button
+                  type="button"
+                  onClick={handleGetRates}
+                  disabled={isLoadingRates}
+                  className="w-full gap-2"
+                  data-testid="button-get-rates-desktop"
+                >
+                  {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {isLoadingRates ? 'Loading...' : 'Get Rates'}
+                </Button>
+              </div>
             </div>
 
             {showLiveSummary && (

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Package, MapPin, CheckCircle2, Circle } from "lucide-react";
+import { Package, MapPin, CheckCircle2, Circle, Truck, DollarSign, Printer } from "lucide-react";
 import { ShipmentFormData } from "@shared/schema";
 import { PandaLogo } from "@/components/PandaLogo";
 
@@ -37,9 +37,9 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment", formErr
     });
 
   const steps = [
-    { id: "shipment", label: "Shipment" },
-    { id: "selectRate", label: "Rate" },
-    { id: "printLabel", label: "Print" }
+    { id: "shipment", label: "Shipment", icon: Truck },
+    { id: "selectRate", label: "Rate", icon: DollarSign },
+    { id: "printLabel", label: "Print", icon: Printer }
   ];
 
   const stepLabels = {
@@ -66,19 +66,19 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment", formErr
           {steps.map((step, index) => {
             const isCompleted = index < currentStepIndex;
             const isCurrent = index === currentStepIndex;
+            const StepIcon = step.icon;
             
             return (
               <div key={step.id} className="flex items-center gap-2.5">
-                {isCompleted ? (
-                  <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
-                ) : isCurrent ? (
-                  <Circle className="h-5 w-5 text-primary fill-primary shrink-0" />
-                ) : (
-                  <Circle className="h-5 w-5 text-muted-foreground shrink-0" />
-                )}
+                <div className={`p-1 rounded-full ${isCurrent ? 'bg-primary text-primary-foreground' : isCompleted ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                  <StepIcon className="h-4 w-4 shrink-0" />
+                </div>
                 <span className={`text-sm ${isCurrent ? 'font-semibold text-foreground' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}`}>
                   {step.label}
                 </span>
+                {isCompleted && (
+                  <CheckCircle2 className="h-4 w-4 text-primary shrink-0 ml-auto" />
+                )}
               </div>
             );
           })}
