@@ -47,19 +47,25 @@ Preferred communication style: Simple, everyday language.
   - Navigation between steps with validation at each stage
   - Label summary screen displays after purchase with preview image, tracking number, and action buttons
   
-- **ShipmentForm-Compact** (`/components/ShipmentForm-Compact/`) - Single-page compact shipment creation
-  - Main component: `index.tsx` - orchestrates single-page form
+- **ShipmentForm-Compact** (`/components/ShipmentForm-Compact/`) - Single-page compact shipment creation with three-view workflow
+  - Main component: `index.tsx` - orchestrates state management and view transitions
   - Extracted child components for better maintainability:
     - `CompactAddressForm.tsx` - Address fields for from/to addresses
     - `CompactPackageForm.tsx` - Package details input
     - `CompactAdditionalServices.tsx` - Service checkboxes
-    - `LabelSummary.tsx` - Post-purchase label display (replaces entire form after purchase)
-  - Compact 3-column responsive grid layout
-  - All form sections visible on one page for faster data entry
-  - Reuses RatesSelection component from ShipmentForm-Steps
-  - After purchase, entire form is replaced with label summary
-  - "Create Another Shipment" button resets and shows form again
-  - Optimized for experienced users who want quick access to all fields
+    - `CompactLiveSummary.tsx` - Shows shipment summary in compact format
+    - `LabelSummary.tsx` - Post-purchase label display with compact styling
+  - Three-view workflow with state management:
+    - **Form View**: Displays all form fields in 3-column grid + "Get Rates" button
+    - **Summary View**: Hides form, shows CompactLiveSummary + Rates side-by-side (2-column) + "Go Back" button
+    - **Label View**: Shows only LabelSummary after purchase
+  - View transitions:
+    - "Get Rates" → Summary view (form data preserved)
+    - "Purchase Label" → Label view
+    - "Go Back" → Form view (data preserved)
+    - "Create Another Shipment" → Form view (data reset)
+  - Compact styling throughout: `text-xs` labels, `h-7` inputs/buttons, `h-3.5 w-3.5` icons
+  - Optimized for experienced users who want efficient data entry and rate comparison
   
 - Component composition pattern ensures code reusability and maintainability
 - Both forms share validation patterns and schemas from `@shared/schema.ts`
