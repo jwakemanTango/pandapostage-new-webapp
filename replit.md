@@ -16,6 +16,10 @@ Preferred communication style: Simple, everyday language.
 - **Default Workflow**: Changed default workflow to 4-Step Flow. Application now loads with the guided 4-step workflow by default. DEBUG toggle renamed to "Compact 3-step flow" for clarity.
 - **Streamlined Page Layout**: Removed "Create Shipment" page title and subtitle for cleaner demo experience. DEBUG button remains visible in top-right corner for toggling development controls.
 - **Package Section Auto-scroll**: In 3-step flow, when addresses are valid but package details have validation errors, the form automatically scrolls to the package section to guide user attention.
+- **Start Over Button**: Added RotateCcw icon-based "Start Over" button to both workflows:
+  - **3-Step Flow**: Button appears in all three views (Shipment Details, Select Rate, Print Label) in section headers. Uses ghost variant on first two steps, outline variant on final step. Text hidden on mobile except label view for space efficiency.
+  - **4-Step Flow**: Button appears in all four steps (Addresses, Packages, Rates, Label) in section headers. Uses ghost variant on steps 1-3, outline variant on final step. Text hidden on mobile except label step.
+  - **Functionality**: Completely resets form state (form.reset()), returns to initial view/step, clears purchased labels, resets completed steps indicator, clears validation errors, and reopens initial collapsibles.
 
 ### Form Validation Improvements
 - **Auto-open Invalid Tab Fix**: Both 3-step and 4-step forms now properly auto-switch to the address tab containing validation errors. When Ship From is valid but Ship To has errors, the form automatically switches to the Ship To tab. Uses explicit formState property access (errors?.fromAddress, errors?.toAddress, errorCount) to ensure React Hook Form reactivity.
