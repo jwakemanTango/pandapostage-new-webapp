@@ -185,22 +185,28 @@ export const ShipmentFormFull = ({
           </Button>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          <CompactLiveSummary formData={form.getValues()} />
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <Card>
+              <CardHeader className="pb-2 pt-3">
+                <CardTitle className="text-sm">Available Shipping Rates</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <RatesSelection
+                  rates={rates}
+                  isLoading={isLoadingRates}
+                  onPurchase={handlePurchaseLabel}
+                  isPurchasing={isPurchasing}
+                />
+              </CardContent>
+            </Card>
+          </div>
           
-          <Card>
-            <CardHeader className="pb-2 pt-3">
-              <CardTitle className="text-sm">Available Shipping Rates</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-2">
-              <RatesSelection
-                rates={rates}
-                isLoading={isLoadingRates}
-                onPurchase={handlePurchaseLabel}
-                isPurchasing={isPurchasing}
-              />
-            </CardContent>
-          </Card>
+          {showLiveSummary && (
+            <div className="w-80 shrink-0">
+              <CompactLiveSummary formData={form.getValues()} currentStep="selectRate" />
+            </div>
+          )}
         </div>
       </div>
     );
