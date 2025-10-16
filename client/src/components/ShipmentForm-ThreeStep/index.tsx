@@ -52,6 +52,8 @@ export const ShipmentFormFull = ({
 
   const form = useForm<ShipmentFormData>({
     resolver: zodResolver(createShipmentSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       fromAddress: {
         name: "",

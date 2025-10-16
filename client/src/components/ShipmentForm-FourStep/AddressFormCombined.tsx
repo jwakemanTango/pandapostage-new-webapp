@@ -25,10 +25,24 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
   // Check for validation errors and switch to that tab
   useEffect(() => {
     const errors = form.formState.errors;
-    if (errors.fromAddress && Object.keys(errors.fromAddress).length > 0) {
-      setActiveTab("from");
-    } else if (errors.toAddress && Object.keys(errors.toAddress).length > 0) {
-      setActiveTab("to");
+    const fromErrors = errors.fromAddress;
+    const toErrors = errors.toAddress;
+    
+    const hasFromErrors = fromErrors && Object.keys(fromErrors).length > 0;
+    const hasToErrors = toErrors && Object.keys(toErrors).length > 0;
+    
+    // Auto-switch to the tab with errors
+    // Only switch if there are actually errors (meaning validation has been triggered)
+    if (hasFromErrors || hasToErrors) {
+      // Prioritize switching to the tab that has errors
+      // If only "to" has errors, switch to "to"
+      if (hasToErrors && !hasFromErrors) {
+        setActiveTab("to");
+      } 
+      // If "from" has errors (with or without "to" errors), switch to "from"
+      else if (hasFromErrors) {
+        setActiveTab("from");
+      }
     }
   }, [form.formState.errors]);
   

@@ -26,13 +26,21 @@ export const CompactAddressFormCombined = ({
   const toErrors = form.formState.errors?.toAddress;
   
   useEffect(() => {
-    // If fromAddress has errors, switch to "from" tab
-    if (fromErrors && Object.keys(fromErrors).length > 0) {
-      setActiveTab("from");
-    } 
-    // If only toAddress has errors (and fromAddress is valid), switch to "to" tab
-    else if (toErrors && Object.keys(toErrors).length > 0) {
-      setActiveTab("to");
+    const hasFromErrors = fromErrors && Object.keys(fromErrors).length > 0;
+    const hasToErrors = toErrors && Object.keys(toErrors).length > 0;
+    
+    // Auto-switch to the tab with errors
+    // Only switch if there are actually errors (meaning validation has been triggered)
+    if (hasFromErrors || hasToErrors) {
+      // Prioritize switching to the tab that has errors
+      // If only "to" has errors, switch to "to"
+      if (hasToErrors && !hasFromErrors) {
+        setActiveTab("to");
+      } 
+      // If "from" has errors (with or without "to" errors), switch to "from"
+      else if (hasFromErrors) {
+        setActiveTab("from");
+      }
     }
   }, [fromErrors, toErrors]);
   
