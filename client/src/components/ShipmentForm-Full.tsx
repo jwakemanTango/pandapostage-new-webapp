@@ -78,6 +78,14 @@ const PACKAGE_TYPES = [
   { value: "custom", label: "Custom Package" },
 ];
 
+const CARRIERS = [
+  { value: "any", label: "Any Carrier" },
+  { value: "usps", label: "USPS" },
+  { value: "ups", label: "UPS" },
+  { value: "fedex", label: "FedEx" },
+  { value: "dhl", label: "DHL" },
+];
+
 interface ShipmentFormFullProps {
   onGetRates?: (data: any) => void;
   onPurchaseLabel?: (data: any) => void;
@@ -190,80 +198,103 @@ export const ShipmentFormFull = ({
 
   const renderAddressSection = (type: "fromAddress" | "toAddress", title: string, icon: React.ReactNode) => (
     <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base flex items-center gap-2">
+      <CardHeader className="pb-2 pt-3">
+        <CardTitle className="text-sm flex items-center gap-2">
           {icon}
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-1.5 pt-2">
         <FormField
           control={form.control}
           name={`${type}.dummy` as any}
           render={() => (
-            <FormItem>
-              <FormLabel className="text-xs">Select Saved Address</FormLabel>
-              <Select onValueChange={(value) => handleSavedAddressSelect(value, type)}>
-                <SelectTrigger className="h-8 text-sm" data-testid={`select-saved-${type}`}>
-                  <SelectValue placeholder="-- Select --" />
-                </SelectTrigger>
-                <SelectContent>
-                  {addresses && addresses.length > 0 ? (
-                    addresses.map((address) => (
-                      <SelectItem key={address.id} value={address.id.toString()}>
-                        {address.name}, {address.city}, {address.state}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                      No saved addresses
-                    </div>
-                  )}
-                </SelectContent>
-              </Select>
+            <FormItem className="space-y-0">
+              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
+                <FormLabel className="text-xs text-right">Saved Address:</FormLabel>
+                <Select onValueChange={(value) => handleSavedAddressSelect(value, type)}>
+                  <SelectTrigger className="h-7 text-xs" data-testid={`select-saved-${type}`}>
+                    <SelectValue placeholder="-- Select --" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {addresses && addresses.length > 0 ? (
+                      addresses.map((address) => (
+                        <SelectItem key={address.id} value={address.id.toString()}>
+                          {address.name}, {address.city}, {address.state}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                        No saved addresses
+                      </div>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
             </FormItem>
           )}
         />
 
-        <div className="grid grid-cols-2 gap-2">
-          <FormField
-            control={form.control}
-            name={`${type}.company`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs">Company</FormLabel>
+        <FormField
+          control={form.control}
+          name={`${type}.company`}
+          render={({ field }) => (
+            <FormItem className="space-y-0">
+              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
+                <FormLabel className="text-xs text-right">Company Name:</FormLabel>
                 <FormControl>
-                  <Input placeholder="Company Name" className="h-8 text-sm" {...field} data-testid={`input-${type}-company`} />
+                  <Input placeholder="Company Name" className="h-7 text-xs" {...field} data-testid={`input-${type}-company`} />
                 </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name={`${type}.name`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs">Contact Name</FormLabel>
+              </div>
+              <FormMessage className="text-xs ml-[108px]" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name={`${type}.name`}
+          render={({ field }) => (
+            <FormItem className="space-y-0">
+              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
+                <FormLabel className="text-xs text-right">Contact Name: *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Full Name" className="h-8 text-sm" {...field} data-testid={`input-${type}-name`} />
+                  <Input placeholder="Full Name" className="h-7 text-xs" {...field} data-testid={`input-${type}-name`} />
                 </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-        </div>
+              </div>
+              <FormMessage className="text-xs ml-[108px]" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name={`${type}.phone`}
+          render={({ field }) => (
+            <FormItem className="space-y-0">
+              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
+                <FormLabel className="text-xs text-right">Phone Number: *</FormLabel>
+                <FormControl>
+                  <Input placeholder="(555) 123-4567" className="h-7 text-xs" {...field} data-testid={`input-${type}-phone`} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-xs ml-[108px]" />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}
           name={`${type}.addressLine1`}
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs">Address Line 1</FormLabel>
-              <FormControl>
-                <Input placeholder="Street Address" className="h-8 text-sm" {...field} data-testid={`input-${type}-address1`} />
-              </FormControl>
-              <FormMessage className="text-xs" />
+            <FormItem className="space-y-0">
+              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
+                <FormLabel className="text-xs text-right">Address Line 1: *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Street Address" className="h-7 text-xs" {...field} data-testid={`input-${type}-address1`} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-xs ml-[108px]" />
             </FormItem>
           )}
         />
@@ -272,12 +303,30 @@ export const ShipmentFormFull = ({
           control={form.control}
           name={`${type}.addressLine2`}
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs">Address Line 2</FormLabel>
-              <FormControl>
-                <Input placeholder="Apt, Suite, etc." className="h-8 text-sm" {...field} data-testid={`input-${type}-address2`} />
-              </FormControl>
-              <FormMessage className="text-xs" />
+            <FormItem className="space-y-0">
+              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
+                <FormLabel className="text-xs text-right">Address Line 2:</FormLabel>
+                <FormControl>
+                  <Input placeholder="Apt, Suite, etc." className="h-7 text-xs" {...field} data-testid={`input-${type}-address2`} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-xs ml-[108px]" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name={`${type}.city`}
+          render={({ field }) => (
+            <FormItem className="space-y-0">
+              <div className="grid grid-cols-[100px_1fr] items-center gap-2">
+                <FormLabel className="text-xs text-right">City: *</FormLabel>
+                <FormControl>
+                  <Input placeholder="City" className="h-7 text-xs" {...field} data-testid={`input-${type}-city`} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-xs ml-[108px]" />
             </FormItem>
           )}
         />
@@ -285,67 +334,42 @@ export const ShipmentFormFull = ({
         <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
-            name={`${type}.city`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs">City</FormLabel>
-                <FormControl>
-                  <Input placeholder="City" className="h-8 text-sm" {...field} data-testid={`input-${type}-city`} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name={`${type}.state`}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs">State</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="h-8 text-sm" data-testid={`select-${type}-state`}>
-                      <SelectValue placeholder="-- Select --" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {US_STATES.map((state) => (
-                      <SelectItem key={state.value} value={state.value}>
-                        {state.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="text-xs" />
+              <FormItem className="space-y-0">
+                <div className="grid grid-cols-[100px_1fr] items-center gap-2">
+                  <FormLabel className="text-xs text-right">State: *</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="h-7 text-xs" data-testid={`select-${type}-state`}>
+                        <SelectValue placeholder="--" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {US_STATES.map((state) => (
+                        <SelectItem key={state.value} value={state.value}>
+                          {state.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <FormMessage className="text-xs ml-[108px]" />
               </FormItem>
             )}
           />
-        </div>
-
-        <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name={`${type}.zipCode`}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs">Zip Code</FormLabel>
-                <FormControl>
-                  <Input placeholder="12345" className="h-8 text-sm" {...field} data-testid={`input-${type}-zip`} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name={`${type}.phone`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs">Phone</FormLabel>
-                <FormControl>
-                  <Input placeholder="(555) 123-4567" className="h-8 text-sm" {...field} data-testid={`input-${type}-phone`} />
-                </FormControl>
-                <FormMessage className="text-xs" />
+              <FormItem className="space-y-0">
+                <div className="grid grid-cols-[80px_1fr] items-center gap-2">
+                  <FormLabel className="text-xs text-right">Zip Code: *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="12345" className="h-7 text-xs" {...field} data-testid={`input-${type}-zip`} />
+                  </FormControl>
+                </div>
+                <FormMessage className="text-xs ml-[88px]" />
               </FormItem>
             )}
           />
@@ -356,57 +380,86 @@ export const ShipmentFormFull = ({
 
   return (
     <Form {...form}>
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {renderAddressSection("fromAddress", "Ship From", <MapPin className="h-4 w-4" />)}
-          {renderAddressSection("toAddress", "Ship To", <MapPin className="h-4 w-4" />)}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <Card className="lg:col-span-2">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
-                <PackageIcon className="h-4 w-4" />
+      <div className="space-y-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          {renderAddressSection("fromAddress", "Ship From", <MapPin className="h-3.5 w-3.5" />)}
+          {renderAddressSection("toAddress", "Ship To", <MapPin className="h-3.5 w-3.5" />)}
+          
+          <Card>
+            <CardHeader className="pb-2 pt-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <PackageIcon className="h-3.5 w-3.5" />
                 Package Details
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-1.5 pt-2">
               <FormField
                 control={form.control}
                 name="packages.0.packageType"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs">Package Type</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="h-8 text-sm" data-testid="select-package-type">
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {PACKAGE_TYPES.map((type) => (
-                          <SelectItem key={type.value} value={type.value}>
-                            {type.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage className="text-xs" />
+                  <FormItem className="space-y-0">
+                    <div className="grid grid-cols-[120px_1fr] items-center gap-2">
+                      <FormLabel className="text-xs text-right">Package Type: *</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="h-7 text-xs" data-testid="select-package-type">
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {PACKAGE_TYPES.map((type) => (
+                            <SelectItem key={type.value} value={type.value}>
+                              {type.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <FormMessage className="text-xs ml-[128px]" />
                   </FormItem>
                 )}
               />
 
-              <div className="grid grid-cols-3 gap-2">
+              <FormField
+                control={form.control}
+                name="packages.0.carrier"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <div className="grid grid-cols-[120px_1fr] items-center gap-2">
+                      <FormLabel className="text-xs text-right">Carrier:</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value || "any"}>
+                        <FormControl>
+                          <SelectTrigger className="h-7 text-xs" data-testid="select-carrier">
+                            <SelectValue placeholder="Select carrier" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {CARRIERS.map((carrier) => (
+                            <SelectItem key={carrier.value} value={carrier.value}>
+                              {carrier.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <FormMessage className="text-xs ml-[128px]" />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-2 gap-2">
                 <FormField
                   control={form.control}
                   name="packages.0.weightLbs"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs">Weight (lbs)</FormLabel>
-                      <FormControl>
-                        <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-weight-lbs" />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
+                    <FormItem className="space-y-0">
+                      <div className="grid grid-cols-[120px_1fr] items-center gap-2">
+                        <FormLabel className="text-xs text-right">Weight (lbs): *</FormLabel>
+                        <FormControl>
+                          <Input type="text" placeholder="0" className="h-7 text-xs" {...field} data-testid="input-weight-lbs" />
+                        </FormControl>
+                      </div>
+                      <FormMessage className="text-xs ml-[128px]" />
                     </FormItem>
                   )}
                 />
@@ -414,12 +467,14 @@ export const ShipmentFormFull = ({
                   control={form.control}
                   name="packages.0.weightOz"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs">Weight (oz)</FormLabel>
-                      <FormControl>
-                        <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-weight-oz" />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
+                    <FormItem className="space-y-0">
+                      <div className="grid grid-cols-[80px_1fr] items-center gap-2">
+                        <FormLabel className="text-xs text-right">Weight (oz):</FormLabel>
+                        <FormControl>
+                          <Input type="text" placeholder="0" className="h-7 text-xs" {...field} data-testid="input-weight-oz" />
+                        </FormControl>
+                      </div>
+                      <FormMessage className="text-xs ml-[88px]" />
                     </FormItem>
                   )}
                 />
@@ -430,12 +485,14 @@ export const ShipmentFormFull = ({
                   control={form.control}
                   name="packages.0.length"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs">Length (in)</FormLabel>
-                      <FormControl>
-                        <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-length" />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
+                    <FormItem className="space-y-0">
+                      <div className="grid grid-cols-[80px_1fr] items-center gap-2">
+                        <FormLabel className="text-xs text-right">Length (in):</FormLabel>
+                        <FormControl>
+                          <Input type="text" placeholder="0" className="h-7 text-xs" {...field} data-testid="input-length" />
+                        </FormControl>
+                      </div>
+                      <FormMessage className="text-xs ml-[88px]" />
                     </FormItem>
                   )}
                 />
@@ -443,12 +500,14 @@ export const ShipmentFormFull = ({
                   control={form.control}
                   name="packages.0.width"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs">Width (in)</FormLabel>
-                      <FormControl>
-                        <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-width" />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
+                    <FormItem className="space-y-0">
+                      <div className="grid grid-cols-[70px_1fr] items-center gap-2">
+                        <FormLabel className="text-xs text-right">Width (in):</FormLabel>
+                        <FormControl>
+                          <Input type="text" placeholder="0" className="h-7 text-xs" {...field} data-testid="input-width" />
+                        </FormControl>
+                      </div>
+                      <FormMessage className="text-xs ml-[78px]" />
                     </FormItem>
                   )}
                 />
@@ -456,29 +515,33 @@ export const ShipmentFormFull = ({
                   control={form.control}
                   name="packages.0.height"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs">Height (in)</FormLabel>
-                      <FormControl>
-                        <Input type="text" placeholder="0" className="h-8 text-sm" {...field} data-testid="input-height" />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
+                    <FormItem className="space-y-0">
+                      <div className="grid grid-cols-[70px_1fr] items-center gap-2">
+                        <FormLabel className="text-xs text-right">Height (in):</FormLabel>
+                        <FormControl>
+                          <Input type="text" placeholder="0" className="h-7 text-xs" {...field} data-testid="input-height" />
+                        </FormControl>
+                      </div>
+                      <FormMessage className="text-xs ml-[78px]" />
                     </FormItem>
                   )}
                 />
               </div>
             </CardContent>
           </Card>
+        </div>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Additional Services</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
+        <Card>
+          <CardHeader className="pb-2 pt-3">
+            <CardTitle className="text-sm">Additional Services</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-1">
               <FormField
                 control={form.control}
                 name="additionalServices.saturdayDelivery"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                  <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -496,7 +559,7 @@ export const ShipmentFormFull = ({
                 control={form.control}
                 name="additionalServices.requireSignature"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                  <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -514,7 +577,7 @@ export const ShipmentFormFull = ({
                 control={form.control}
                 name="additionalServices.insuranceValue"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                  <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -532,7 +595,7 @@ export const ShipmentFormFull = ({
                 control={form.control}
                 name="additionalServices.returnLabel"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                  <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -550,7 +613,7 @@ export const ShipmentFormFull = ({
                 control={form.control}
                 name="additionalServices.weekendService"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                  <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -568,7 +631,7 @@ export const ShipmentFormFull = ({
                 control={form.control}
                 name="additionalServices.certifiedMail"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                  <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -582,11 +645,11 @@ export const ShipmentFormFull = ({
                   </FormItem>
                 )}
               />
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center pt-2">
           <Button
             type="button"
             onClick={handleGetRates}
@@ -602,10 +665,10 @@ export const ShipmentFormFull = ({
 
         {ratesAvailable && (
           <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Available Shipping Rates</CardTitle>
+            <CardHeader className="pb-2 pt-3">
+              <CardTitle className="text-sm">Available Shipping Rates</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-2">
               <RatesSelection
                 rates={rates}
                 isLoading={isLoadingRates}
