@@ -25,12 +25,14 @@ Preferred communication style: Simple, everyday language.
         - Consistent font sizing (text-sm labels, h-9 text-sm controls) for comfortable readability
         - Mobile-first responsive breakpoints with proper spacing (pb-20 for fixed button clearance)
     - **Custom Packages Preset System**: Quick-fill buttons for common package configurations (both flows):
-        - Small Box: FedEx, parcel, 1lb, 8x6x4
-        - Medium Box: FedEx, parcel, 5lb, 12x10x8
-        - Large Box: FedEx, large_box, 10lb, 18x14x12
-        - USPS-Letter: USPS, letter envelope, 0lb 1oz, 12x12x1
-        - UPS Parcel: UPS, parcel, 1lb, 8x8x4
+        - Small Box: Any Carrier, parcel, 1lb, 8x6x4 (Box icon)
+        - Medium Box: Any Carrier, parcel, 5lb, 12x10x8 (Box icon)
+        - Large Box: Any Carrier, large_box, 10lb, 18x14x12 (Box icon)
+        - USPS-Letter: USPS, letter envelope, 0lb 1oz, 12x12x1 (USPS icon)
+        - UPS Parcel: UPS, parcel, 1lb, 8x8x4 (UPS icon)
         - Visual separator (border) between Custom Packages and Package Details fields
+        - Buttons use flex-wrap layout to stay within container boundaries
+        - Carrier-specific icons from react-icons/si (SiUsps, SiUps, SiFedex)
     - Shared validation patterns and schemas, component composition, and constants for reusability.
     - All package dimension fields (length, width, height) are required with numeric validation.
 - **State Management**: TanStack Query for server state, React Hook Form for form state, React hooks for local UI state.
