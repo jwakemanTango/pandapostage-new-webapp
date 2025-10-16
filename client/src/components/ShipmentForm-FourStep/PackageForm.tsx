@@ -30,9 +30,11 @@ type EditingPackage = {
 }
 
 const PACKAGE_PRESETS = [
-  { name: "Small Box", carrier: "any", packageType: "parcel", weight: "1", dimensions: { length: "8", width: "6", height: "4" } },
-  { name: "Medium Box", carrier: "any", packageType: "parcel", weight: "5", dimensions: { length: "12", width: "10", height: "8" } },
-  { name: "Large Box", carrier: "any", packageType: "large_box", weight: "10", dimensions: { length: "18", width: "14", height: "12" } },
+  { name: "Small Box", carrier: "fedex", packageType: "parcel", weightLbs: "1", weightOz: "0", dimensions: { length: "8", width: "6", height: "4" } },
+  { name: "Medium Box", carrier: "fedex", packageType: "parcel", weightLbs: "5", weightOz: "0", dimensions: { length: "12", width: "10", height: "8" } },
+  { name: "Large Box", carrier: "fedex", packageType: "large_box", weightLbs: "10", weightOz: "0", dimensions: { length: "18", width: "14", height: "12" } },
+  { name: "USPS-Letter", carrier: "usps", packageType: "letter", weightLbs: "0", weightOz: "1", dimensions: { length: "12", width: "12", height: "1" } },
+  { name: "UPS Parcel", carrier: "ups", packageType: "parcel", weightLbs: "1", weightOz: "0", dimensions: { length: "8", width: "8", height: "4" } },
 ];
 
 const defaultPackage: PackageItem = {
@@ -77,7 +79,8 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
   const handlePresetSelect = (preset: typeof PACKAGE_PRESETS[0]) => {
     form.setValue("packages.0.carrier", preset.carrier);
     form.setValue("packages.0.packageType", preset.packageType);
-    form.setValue("packages.0.weightLbs", preset.weight);
+    form.setValue("packages.0.weightLbs", preset.weightLbs);
+    form.setValue("packages.0.weightOz", preset.weightOz);
     form.setValue("packages.0.length", preset.dimensions.length);
     form.setValue("packages.0.width", preset.dimensions.width);
     form.setValue("packages.0.height", preset.dimensions.height);
@@ -167,7 +170,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
 
       {!showMultiPackage && !isEditing && (
         <>
-          <div className="mb-4">
+          <div className="mb-4 pb-4 border-b">
             <FormLabel className="text-sm font-medium mb-2 block">Custom Packages</FormLabel>
             <div className="flex gap-2">
               {PACKAGE_PRESETS.map((preset) => (
@@ -178,7 +181,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                   size="sm"
                   onClick={() => handlePresetSelect(preset)}
                   className="gap-1.5"
-                  data-testid={`button-preset-${preset.name.toLowerCase().replace(' ', '-')}`}
+                  data-testid={`button-preset-${preset.name.toLowerCase().replace(/\s+/g, '-')}`}
                 >
                   <Box className="h-3.5 w-3.5" />
                   {preset.name}
@@ -187,7 +190,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 pt-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -317,7 +320,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                 name={`packages.0.length`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium">Length (in)</FormLabel>
+                    <FormLabel className="text-sm font-medium">Length (in) *</FormLabel>
                     <FormControl>
                       <Input type="text" placeholder="0" {...field} data-testid="input-length" />
                     </FormControl>
@@ -330,7 +333,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                 name={`packages.0.width`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium">Width (in)</FormLabel>
+                    <FormLabel className="text-sm font-medium">Width (in) *</FormLabel>
                     <FormControl>
                       <Input type="text" placeholder="0" {...field} data-testid="input-width" />
                     </FormControl>
@@ -343,7 +346,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                 name={`packages.0.height`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium">Height (in)</FormLabel>
+                    <FormLabel className="text-sm font-medium">Height (in) *</FormLabel>
                     <FormControl>
                       <Input type="text" placeholder="0" {...field} data-testid="input-height" />
                     </FormControl>
@@ -540,7 +543,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
           
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <FormLabel className="text-sm font-medium">Length (in)</FormLabel>
+              <FormLabel className="text-sm font-medium">Length (in) *</FormLabel>
               <Input 
                 type="text" 
                 placeholder="0" 
@@ -551,7 +554,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
               />
             </div>
             <div>
-              <FormLabel className="text-sm font-medium">Width (in)</FormLabel>
+              <FormLabel className="text-sm font-medium">Width (in) *</FormLabel>
               <Input 
                 type="text" 
                 placeholder="0" 
@@ -562,7 +565,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
               />
             </div>
             <div>
-              <FormLabel className="text-sm font-medium">Height (in)</FormLabel>
+              <FormLabel className="text-sm font-medium">Height (in) *</FormLabel>
               <Input 
                 type="text" 
                 placeholder="0" 

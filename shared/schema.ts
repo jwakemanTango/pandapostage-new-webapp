@@ -22,9 +22,12 @@ export const packageSchema = z.object({
     .refine(val => /^\d+$/.test(val), "Weight must be a whole number"),
   weightOz: z.string().optional()
     .refine(val => !val || /^\d+$/.test(val), "Ounces must be a whole number"),
-  length: z.string().optional(),
-  width: z.string().optional(),
-  height: z.string().optional(),
+  length: z.string().min(1, "Length is required")
+    .refine(val => /^\d+$/.test(val), "Length must be a whole number"),
+  width: z.string().min(1, "Width is required")
+    .refine(val => /^\d+$/.test(val), "Width must be a whole number"),
+  height: z.string().min(1, "Height is required")
+    .refine(val => /^\d+$/.test(val), "Height must be a whole number"),
   carrier: z.string().optional(),
 });
 
