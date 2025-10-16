@@ -319,40 +319,40 @@ export const ShipmentForm = ({
                 {purchasedLabel && (
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-4">
-                        <div className="border rounded-lg p-4 space-y-3">
-                          <div>
-                            <p className="text-xs text-muted-foreground mb-1">Carrier & Service</p>
-                            <p className="font-semibold">{purchasedLabel.carrier} - {purchasedLabel.service}</p>
-                          </div>
-                          
-                          <div className="flex gap-8">
+                      <div className="flex flex-col">
+                        <div className="flex-1 space-y-4">
+                          <div className="border rounded-lg p-4 space-y-3">
                             <div>
-                              <p className="text-xs text-muted-foreground mb-1">Rate</p>
-                              <p className="font-semibold text-lg">${purchasedLabel.rate}</p>
+                              <p className="text-xs text-muted-foreground mb-1">Carrier & Service</p>
+                              <p className="font-semibold">{purchasedLabel.carrier} - {purchasedLabel.service}</p>
                             </div>
-                            {purchasedLabel.deliveryDays && (
+                            
+                            <div className="flex gap-8">
                               <div>
-                                <p className="text-xs text-muted-foreground mb-1">Delivery Time</p>
-                                <p className="font-semibold">{purchasedLabel.deliveryDays} business days</p>
+                                <p className="text-xs text-muted-foreground mb-1">Rate</p>
+                                <p className="font-semibold text-lg">${purchasedLabel.rate}</p>
+                              </div>
+                              {purchasedLabel.deliveryDays && (
+                                <div>
+                                  <p className="text-xs text-muted-foreground mb-1">Delivery Time</p>
+                                  <p className="font-semibold">{purchasedLabel.deliveryDays} business days</p>
+                                </div>
+                              )}
+                            </div>
+
+                            <div>
+                              <p className="text-xs text-muted-foreground mb-1">Tracking Number</p>
+                              <p className="font-mono font-semibold">1Z999AA10123456784</p>
+                            </div>
+
+                            {purchasedLabel.deliveryDate && (
+                              <div>
+                                <p className="text-xs text-muted-foreground mb-1">Estimated Delivery</p>
+                                <p className="font-medium">{purchasedLabel.deliveryDate}</p>
                               </div>
                             )}
                           </div>
 
-                          <div>
-                            <p className="text-xs text-muted-foreground mb-1">Tracking Number</p>
-                            <p className="font-mono font-semibold">1Z999AA10123456784</p>
-                          </div>
-
-                          {purchasedLabel.deliveryDate && (
-                            <div>
-                              <p className="text-xs text-muted-foreground mb-1">Estimated Delivery</p>
-                              <p className="font-medium">{purchasedLabel.deliveryDate}</p>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="space-y-6">
                           <div className="space-y-2">
                             <Button className="w-full gap-2" data-testid="button-download-label">
                               <Download className="h-4 w-4" />
@@ -367,19 +367,19 @@ export const ShipmentForm = ({
                               View Receipt
                             </Button>
                           </div>
-                          
-                          <div className="border-t pt-6">
-                            <Button 
-                              onClick={handleCreateAnother}
-                              size="lg"
-                              className="w-full gap-3 h-14 text-base font-semibold"
-                              style={{ backgroundColor: 'rgb(255, 113, 97)', color: 'white' }}
-                              data-testid="button-create-another"
-                            >
-                              <ArrowLeft className="h-5 w-5" />
-                              Create Another Shipment
-                            </Button>
-                          </div>
+                        </div>
+                        
+                        <div className="mt-6 pt-6 border-t">
+                          <Button 
+                            onClick={handleCreateAnother}
+                            size="lg"
+                            className="w-full gap-3 h-14 text-base font-semibold"
+                            style={{ backgroundColor: '#005392', color: 'rgb(255, 113, 97)' }}
+                            data-testid="button-create-another"
+                          >
+                            <ArrowLeft className="h-5 w-5" />
+                            Create Another Shipment
+                          </Button>
                         </div>
                       </div>
 
