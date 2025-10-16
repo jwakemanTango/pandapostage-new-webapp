@@ -398,21 +398,23 @@ export const ShipmentForm = ({
             </Button>
           )}
           
-          <Button
-            type="button"
-            onClick={handleNext}
-            disabled={isLoadingRates || (currentStep === 3 && !ratesAvailable)}
-            className="flex-1 gap-2"
-            size="lg"
-            data-testid={currentStep === 2 ? "button-get-rates" : "button-next"}
-          >
-            {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin" />}
-            {currentStep === 2 
-              ? (isLoadingRates ? 'Loading Rates...' : 'Get Rates')
-              : 'Next'
-            }
-            {!isLoadingRates && currentStep !== 2 && <ArrowRight className="h-4 w-4" />}
-          </Button>
+          {currentStep !== 3 && (
+            <Button
+              type="button"
+              onClick={handleNext}
+              disabled={isLoadingRates}
+              className="flex-1 gap-2"
+              size="lg"
+              data-testid={currentStep === 2 ? "button-get-rates" : "button-next"}
+            >
+              {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin" />}
+              {currentStep === 2 
+                ? (isLoadingRates ? 'Loading Rates...' : 'Get Rates')
+                : 'Next'
+              }
+              {!isLoadingRates && currentStep !== 2 && <ArrowRight className="h-4 w-4" />}
+            </Button>
+          )}
         </div>
       </div>
     );
