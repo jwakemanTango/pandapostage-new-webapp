@@ -38,10 +38,13 @@ Preferred communication style: Simple, everyday language.
   - Step-by-step wizard interface with collapsible sections
   - Live summary component that updates as users fill forms
   - Navigation between steps with validation at each stage
+  - Label summary screen displays after purchase with preview image, tracking number, and action buttons
 - **ShipmentForm-Full** - Single-page compact shipment creation view
   - All form sections displayed on one page for faster data entry
-  - Compact layout with side-by-side address inputs
-  - Grid-based responsive design for efficiency
+  - Compact layout with 3-column responsive grid (Ship From, Ship To, Package Details + Additional Services)
+  - Inline labels for space efficiency
+  - Label summary screen displays after purchase with same functionality as multi-step form
+  - "Create Another Shipment" button resets form to initial state
   - Same functionality as multi-step form but optimized for experienced users
 - Separated concerns: AddressForm, PackageForm, RatesSelection, AdditionalServices
 - Reusable form components with consistent validation patterns
