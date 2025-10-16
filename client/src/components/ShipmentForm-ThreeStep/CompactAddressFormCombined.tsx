@@ -118,7 +118,7 @@ export const CompactAddressFormCombined = ({
           render={({ field }) => (
             <FormItem className="space-y-1">
               <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] items-start sm:items-center gap-1.5 sm:gap-2">
-                <FormLabel className="text-sm sm:text-right font-medium">Street Address: *</FormLabel>
+                <FormLabel className="text-sm sm:text-right font-medium">Address Line 1: *</FormLabel>
                 <FormControl>
                   <Input placeholder="123 Main St" className="h-9 text-sm" {...field} data-testid={`input-${type}-address1`} />
                 </FormControl>
