@@ -179,6 +179,7 @@ export const ShipmentForm = ({
     setCompletedSteps([]);
     setPurchasedLabel(null);
     setRatesAvailable(false);
+    setFromAddressOpen(true);
   };
 
   const renderStepContent = () => {
