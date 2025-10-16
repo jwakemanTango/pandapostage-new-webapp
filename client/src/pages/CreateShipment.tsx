@@ -11,7 +11,7 @@ import { Settings2 } from "lucide-react";
 type FormView = "four-step" | "three-step";
 
 const CreateShipment = () => {
-  const [formView, setFormView] = useState<FormView>("four-step");
+  const [formView, setFormView] = useState<FormView>("three-step");
   const [useCompactAddresses, setUseCompactAddresses] = useState(true);
   const [showLiveSummary, setShowLiveSummary] = useState(true);
   const [showLabelPreview, setShowLabelPreview] = useState(true);
@@ -132,7 +132,7 @@ const CreateShipment = () => {
           <div className="flex flex-wrap items-center gap-3 sm:gap-6 p-3 bg-muted/30 rounded-lg border mb-3 sm:mb-4">
             <div className="flex items-center gap-3" data-testid="view-toggle">
               <Label htmlFor="view-toggle" className="text-xs sm:text-sm font-medium whitespace-nowrap">
-                {formView === "four-step" ? "4-Step View" : "3-Step View"}
+                {formView === "four-step" ? "4-Step Flow" : "3-Step Flow"}
               </Label>
               <Switch
                 id="view-toggle"
@@ -146,7 +146,7 @@ const CreateShipment = () => {
             
             <div className="flex items-center gap-2">
               <Label htmlFor="compact-addresses-toggle" className="text-xs sm:text-sm whitespace-nowrap">
-                Compact Addresses
+                Combine Address Forms
               </Label>
               <Switch
                 id="compact-addresses-toggle"
@@ -160,27 +160,13 @@ const CreateShipment = () => {
             
             <div className="flex items-center gap-2">
               <Label htmlFor="show-summary-toggle" className="text-xs sm:text-sm whitespace-nowrap">
-                Show Summary
+                Show Sidebar Summary
               </Label>
               <Switch
                 id="show-summary-toggle"
                 checked={showLiveSummary}
                 onCheckedChange={setShowLiveSummary}
                 data-testid="switch-show-summary-global"
-              />
-            </div>
-            
-            <div className="hidden sm:block h-5 w-px bg-border" />
-            
-            <div className="flex items-center gap-2">
-              <Label htmlFor="label-preview-toggle" className="text-xs sm:text-sm whitespace-nowrap">
-                Show Label Preview
-              </Label>
-              <Switch
-                id="label-preview-toggle"
-                checked={showLabelPreview}
-                onCheckedChange={setShowLabelPreview}
-                data-testid="switch-label-preview-global"
               />
             </div>
             
@@ -195,6 +181,20 @@ const CreateShipment = () => {
                 checked={showBannerSummary}
                 onCheckedChange={setShowBannerSummary}
                 data-testid="switch-banner-summary-global"
+              />
+            </div>
+            
+            <div className="hidden sm:block h-5 w-px bg-border" />
+            
+            <div className="flex items-center gap-2">
+              <Label htmlFor="label-preview-toggle" className="text-xs sm:text-sm whitespace-nowrap">
+                Show Label Preview
+              </Label>
+              <Switch
+                id="label-preview-toggle"
+                checked={showLabelPreview}
+                onCheckedChange={setShowLabelPreview}
+                data-testid="switch-label-preview-global"
               />
             </div>
           </div>
