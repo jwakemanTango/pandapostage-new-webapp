@@ -352,9 +352,9 @@ export const ShipmentForm = ({
                           <div className="border-t pt-6">
                             <Button 
                               onClick={handleCreateAnother}
-                              variant="default"
                               size="lg"
-                              className="w-full gap-2"
+                              className="w-full gap-3 h-14 text-base font-semibold"
+                              style={{ backgroundColor: 'rgb(255, 113, 97)', color: 'white' }}
                               data-testid="button-create-another"
                             >
                               <ArrowLeft className="h-5 w-5" />
