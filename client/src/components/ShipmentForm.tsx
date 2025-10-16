@@ -301,11 +301,11 @@ export const ShipmentForm = ({
 
                       <div className="border rounded-lg p-4 bg-card">
                         <p className="text-xs text-muted-foreground mb-3">Label Preview</p>
-                        <div className="border rounded-md overflow-hidden bg-white max-h-64">
+                        <div className="border rounded-md overflow-hidden bg-white">
                           <img 
                             src={labelPreviewUrl} 
                             alt="Shipping Label Preview" 
-                            className="w-full h-full object-contain"
+                            className="w-full h-auto"
                             data-testid="img-label-preview"
                           />
                         </div>
