@@ -3,7 +3,7 @@ import logoUrl from "@assets/panda-logo_1760601059590.png";
 export const PandaLogo = ({ className, compact = false }: { className?: string; compact?: boolean }) => {
   if (compact) {
     return (
-      <div className={`bg-primary inline-flex ${className || ''}`}>
+      <div className={`bg-primary inline-flex p-2 ${className || ''}`}>
         <img 
           src={logoUrl} 
           alt="PandaPostage" 
@@ -15,7 +15,7 @@ export const PandaLogo = ({ className, compact = false }: { className?: string; 
   
   return (
     <div className={`flex items-center gap-3 ${className || ''}`}>
-      <div className="bg-primary">
+      <div className="bg-primary p-2">
         <img 
           src={logoUrl} 
           alt="PandaPostage" 
