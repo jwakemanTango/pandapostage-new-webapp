@@ -16,7 +16,7 @@ const CreateShipment = () => {
   const [useCompactAddresses, setUseCompactAddresses] = useState(true);
   const [showLiveSummary, setShowLiveSummary] = useState(true);
   const [showLabelPreview, setShowLabelPreview] = useState(false);
-  const [showBannerSummary, setShowBannerSummary] = useState(false);
+  const [showBannerSummary, setShowBannerSummary] = useState(true);
   const [showDebugPanel, setShowDebugPanel] = useState(false);
   const [rates, setRates] = useState<Rate[]>([]);
   const [isLoadingRates, setIsLoadingRates] = useState(false);

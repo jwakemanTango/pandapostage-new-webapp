@@ -169,26 +169,30 @@ export const ShipmentFormFull = ({
     return (
       <>
         {showBannerSummary && (
-          <BannerLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
+          <div className="lg:block">
+            <BannerLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
+          </div>
         )}
-        <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 pb-2 border-b">
-              <h2 className="text-xl font-semibold">Print Label</h2>
-            </div>
+        <div className="space-y-3 lg:space-y-4">
+          <div className="flex items-center gap-3 pb-2 border-b">
+            <h2 className="text-xl font-semibold">Print Label</h2>
+          </div>
           
-          <LabelSummary 
-            purchasedLabel={purchasedLabel}
-            onCreateAnother={handleCreateAnother}
-            showLabelPreview={showLabelPreview}
-          />
-        </div>
-        
-          {showLiveSummary && (
-            <div className="hidden lg:block sticky top-0 self-start">
-              <CompactLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
+          <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
+            <div>
+              <LabelSummary 
+                purchasedLabel={purchasedLabel}
+                onCreateAnother={handleCreateAnother}
+                showLabelPreview={showLabelPreview}
+              />
             </div>
-          )}
+            
+            {showLiveSummary && (
+              <div className="hidden lg:block sticky top-0 self-start">
+                <CompactLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
+              </div>
+            )}
+          </div>
         </div>
       </>
     );
@@ -198,7 +202,9 @@ export const ShipmentFormFull = ({
     return (
       <div className="flex flex-col h-full lg:h-auto">
         {showBannerSummary && (
-          <BannerLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} />
+          <div className="lg:block">
+            <BannerLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} />
+          </div>
         )}
         <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-20 lg:pb-0">
           <div className="space-y-3 lg:space-y-4">
@@ -264,14 +270,18 @@ export const ShipmentFormFull = ({
     <Form {...form}>
       <div className="flex flex-col h-full lg:h-auto">
         {showBannerSummary && (
-          <BannerLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} />
+          <div className="lg:block">
+            <BannerLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} />
+          </div>
         )}
         <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-24 lg:pb-0">
-          <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 pb-2 border-b">
-                <h2 className="text-xl font-semibold">Shipment Details</h2>
-              </div>
+          <div className="space-y-3 lg:space-y-4">
+            <div className="flex items-center gap-3 pb-2 border-b">
+              <h2 className="text-xl font-semibold">Shipment Details</h2>
+            </div>
+            
+            <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
+              <div className="space-y-4">
               
               {useCompactAddresses ? (
                 /* Compact Layout: Combined Address on left, Package/Services stacked on right */
@@ -318,27 +328,28 @@ export const ShipmentFormFull = ({
                   </div>
                 </>
               )}
-              
-              {/* Desktop Get Rates button at bottom */}
-              <div className="hidden lg:block pt-2">
-                <Button
-                  type="button"
-                  onClick={handleGetRates}
-                  disabled={isLoadingRates}
-                  className="w-full gap-2"
-                  data-testid="button-get-rates-desktop"
-                >
-                  {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {isLoadingRates ? 'Loading...' : 'Get Rates'}
-                </Button>
+                
+                {/* Desktop Get Rates button at bottom */}
+                <div className="hidden lg:block pt-2">
+                  <Button
+                    type="button"
+                    onClick={handleGetRates}
+                    disabled={isLoadingRates}
+                    className="w-full gap-2"
+                    data-testid="button-get-rates-desktop"
+                  >
+                    {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {isLoadingRates ? 'Loading...' : 'Get Rates'}
+                  </Button>
+                </div>
               </div>
-            </div>
 
-            {showLiveSummary && (
-              <div className="hidden lg:block sticky top-0 self-start">
-                <CompactLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} />
-              </div>
-            )}
+              {showLiveSummary && (
+                <div className="hidden lg:block sticky top-0 self-start">
+                  <CompactLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
         

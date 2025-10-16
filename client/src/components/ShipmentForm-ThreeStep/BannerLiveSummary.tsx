@@ -39,7 +39,7 @@ export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErro
   };
 
   return (
-    <div className="sticky top-0 z-20 shadow-md bg-card border-b w-full">
+    <div className="sticky top-0 z-20 shadow-md bg-card border-b w-full block">
       <div className="container mx-auto px-3 sm:px-5 max-w-[1400px]">
         <button
           type="button"

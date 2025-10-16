@@ -395,11 +395,13 @@ export const ShipmentForm = ({
   return (
     <>
       {showBannerSummary && (
-        <BannerLiveSummary 
-          formData={formValues} 
-          currentStep={getBannerStep()} 
-          formErrors={form.formState.errors} 
-        />
+        <div className="lg:block">
+          <BannerLiveSummary 
+            formData={formValues} 
+            currentStep={getBannerStep()} 
+            formErrors={form.formState.errors} 
+          />
+        </div>
       )}
       <div className={`grid grid-cols-1 gap-6 ${showLiveSummary ? 'lg:grid-cols-[1fr_380px]' : ''}`}>
         <div className="space-y-6">
