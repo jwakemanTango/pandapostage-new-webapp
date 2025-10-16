@@ -131,7 +131,13 @@ const AddressForm = ({ form, type, title, onAddressSelected }: AddressFormProps)
                 placeholder="Search by name, company, city, state, or zip..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={(e) => e.stopPropagation()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab') {
+                    // Allow Tab to move focus to dropdown items
+                    return;
+                  }
+                  e.stopPropagation();
+                }}
                 className="w-full h-8"
                 data-testid={`input-search-address-${type}`}
               />
