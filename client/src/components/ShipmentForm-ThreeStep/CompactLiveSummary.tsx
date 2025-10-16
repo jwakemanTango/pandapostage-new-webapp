@@ -7,14 +7,18 @@ import { PandaLogo } from "@/components/PandaLogo";
 interface CompactLiveSummaryProps {
   formData: ShipmentFormData;
   currentStep?: "shipment" | "selectRate" | "printLabel";
+  formErrors?: any;
 }
 
-export const CompactLiveSummary = ({ formData, currentStep = "shipment" }: CompactLiveSummaryProps) => {
+export const CompactLiveSummary = ({ formData, currentStep = "shipment", formErrors }: CompactLiveSummaryProps) => {
   const { fromAddress, toAddress, packages, additionalServices } = formData || {};
   
   const hasFromAddress = fromAddress?.name && fromAddress?.city && fromAddress?.state;
   const hasToAddress = toAddress?.name && toAddress?.city && toAddress?.state;
   const hasPackages = packages && packages.length > 0 && packages[0]?.weightLbs;
+  
+  const hasFromAddressErrors = formErrors?.fromAddress && Object.keys(formErrors.fromAddress).length > 0;
+  const hasToAddressErrors = formErrors?.toAddress && Object.keys(formErrors.toAddress).length > 0;
   
   const selectedServices = Object.entries(additionalServices || {})
     .filter(([_, value]) => value === true)
@@ -72,10 +76,10 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment" }: Compa
         </div>
 
         <div className="space-y-3">
-          <div>
+          <div className={`${hasFromAddressErrors ? 'border-l-2 border-destructive pl-2 -ml-2' : ''}`}>
             <div className="flex items-center gap-1.5 mb-1.5">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-              <h4 className="font-semibold text-sm">From Address</h4>
+              <MapPin className={`h-4 w-4 ${hasFromAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`} />
+              <h4 className={`font-semibold text-sm ${hasFromAddressErrors ? 'text-destructive' : ''}`}>From Address</h4>
             </div>
             {hasFromAddress ? (
               <div className="text-sm space-y-0.5 pl-5">
@@ -86,14 +90,16 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment" }: Compa
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground pl-5">Not entered</p>
+              <p className={`text-sm pl-5 ${hasFromAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`}>
+                {hasFromAddressErrors ? 'Invalid or incomplete' : 'Not entered'}
+              </p>
             )}
           </div>
 
-          <div>
+          <div className={`${hasToAddressErrors ? 'border-l-2 border-destructive pl-2 -ml-2' : ''}`}>
             <div className="flex items-center gap-1.5 mb-1.5">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-              <h4 className="font-semibold text-sm">To Address</h4>
+              <MapPin className={`h-4 w-4 ${hasToAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`} />
+              <h4 className={`font-semibold text-sm ${hasToAddressErrors ? 'text-destructive' : ''}`}>To Address</h4>
             </div>
             {hasToAddress ? (
               <div className="text-sm space-y-0.5 pl-5">
@@ -104,7 +110,9 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment" }: Compa
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground pl-5">Not entered</p>
+              <p className={`text-sm pl-5 ${hasToAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`}>
+                {hasToAddressErrors ? 'Invalid or incomplete' : 'Not entered'}
+              </p>
             )}
           </div>
 

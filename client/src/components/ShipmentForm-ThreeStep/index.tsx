@@ -175,7 +175,7 @@ export const ShipmentFormFull = ({
         
         {showLiveSummary && (
           <div className="w-80 shrink-0">
-            <CompactLiveSummary formData={form.getValues()} currentStep="printLabel" />
+            <CompactLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} />
           </div>
         )}
       </div>
@@ -217,7 +217,7 @@ export const ShipmentFormFull = ({
           
           {showLiveSummary && (
             <div className="w-80 shrink-0">
-              <CompactLiveSummary formData={form.getValues()} currentStep="selectRate" />
+              <CompactLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} />
             </div>
           )}
         </div>
@@ -291,7 +291,7 @@ export const ShipmentFormFull = ({
 
         {showLiveSummary && (
           <div className="w-80 shrink-0">
-            <CompactLiveSummary formData={formValues} currentStep="shipment" />
+            <CompactLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} />
           </div>
         )}
       </div>

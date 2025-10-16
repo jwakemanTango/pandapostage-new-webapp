@@ -11,6 +11,7 @@ interface LiveSummaryProps {
   completedSteps: number[];
   purchasedLabel?: Rate | null;
   onStepClick: (step: number) => void;
+  formErrors?: any;
 }
 
 export const LiveSummary = ({ 
@@ -18,13 +19,17 @@ export const LiveSummary = ({
   currentStep, 
   completedSteps,
   purchasedLabel,
-  onStepClick 
+  onStepClick,
+  formErrors 
 }: LiveSummaryProps) => {
   const { fromAddress, toAddress, packages, additionalServices } = formData || {};
   
   const hasFromAddress = fromAddress?.name && fromAddress?.city && fromAddress?.state;
   const hasToAddress = toAddress?.name && toAddress?.city && toAddress?.state;
   const hasPackages = packages && packages.length > 0 && packages[0]?.weightLbs;
+  
+  const hasFromAddressErrors = formErrors?.fromAddress && Object.keys(formErrors.fromAddress).length > 0;
+  const hasToAddressErrors = formErrors?.toAddress && Object.keys(formErrors.toAddress).length > 0;
   
   const selectedServices = Object.entries(additionalServices || {})
     .filter(([_, value]) => value === true)
@@ -136,10 +141,10 @@ export const LiveSummary = ({
         </div>
 
         <div className="border-t pt-4 space-y-4">
-          <div>
+          <div className={`${hasFromAddressErrors ? 'border-l-2 border-destructive pl-2 -ml-2' : ''}`}>
             <div className="flex items-center gap-2 mb-2">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-              <h4 className="font-semibold text-sm">From Address</h4>
+              <MapPin className={`h-4 w-4 ${hasFromAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`} />
+              <h4 className={`font-semibold text-sm ${hasFromAddressErrors ? 'text-destructive' : ''}`}>From Address</h4>
             </div>
             {hasFromAddress ? (
               <div className="text-sm space-y-0.5 pl-6">
@@ -150,14 +155,16 @@ export const LiveSummary = ({
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground pl-6">Not yet entered</p>
+              <p className={`text-sm pl-6 ${hasFromAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`}>
+                {hasFromAddressErrors ? 'Invalid or incomplete' : 'Not yet entered'}
+              </p>
             )}
           </div>
 
-          <div>
+          <div className={`${hasToAddressErrors ? 'border-l-2 border-destructive pl-2 -ml-2' : ''}`}>
             <div className="flex items-center gap-2 mb-2">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-              <h4 className="font-semibold text-sm">To Address</h4>
+              <MapPin className={`h-4 w-4 ${hasToAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`} />
+              <h4 className={`font-semibold text-sm ${hasToAddressErrors ? 'text-destructive' : ''}`}>To Address</h4>
             </div>
             {hasToAddress ? (
               <div className="text-sm space-y-0.5 pl-6">
@@ -168,7 +175,9 @@ export const LiveSummary = ({
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground pl-6">Not yet entered</p>
+              <p className={`text-sm pl-6 ${hasToAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`}>
+                {hasToAddressErrors ? 'Invalid or incomplete' : 'Not yet entered'}
+              </p>
             )}
           </div>
 

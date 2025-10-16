@@ -400,6 +400,7 @@ export const ShipmentForm = ({
             completedSteps={completedSteps}
             purchasedLabel={purchasedLabel}
             onStepClick={goToStep}
+            formErrors={form.formState.errors}
           />
         </div>
       )}
