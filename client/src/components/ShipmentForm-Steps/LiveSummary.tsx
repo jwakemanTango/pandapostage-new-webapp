@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Package, MapPin, CheckCircle2, DollarSign, ChevronRight, Lock } from "lucide-react";
 import { ShipmentFormData, Rate } from "@shared/schema";
 import { cn } from "@/lib/utils";
-import { PandaLogo } from "./PandaLogo";
+import { PandaLogo } from "@/components/PandaLogo";
 
 interface LiveSummaryProps {
   formData: ShipmentFormData;

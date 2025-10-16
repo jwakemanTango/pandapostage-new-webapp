@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { ShipmentFormFull } from "@/components/ShipmentForm-Full";
+import { ShipmentFormFull } from "@/components/ShipmentForm-Compact";
 import { Rate } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
