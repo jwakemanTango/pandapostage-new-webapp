@@ -40,6 +40,14 @@ const PACKAGE_TYPES = [
   { value: "custom", label: "Custom Package" },
 ];
 
+const CARRIERS = [
+  { value: "any", label: "Any Carrier" },
+  { value: "usps", label: "USPS" },
+  { value: "ups", label: "UPS" },
+  { value: "fedex", label: "FedEx" },
+  { value: "dhl", label: "DHL" },
+];
+
 const PACKAGE_PRESETS = [
   { name: "Small Box", weight: "1", dimensions: { length: "8", width: "6", height: "4" } },
   { name: "Medium Box", weight: "5", dimensions: { length: "12", width: "10", height: "8" } },
@@ -59,6 +67,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
   const [editingPackage, setEditingPackage] = useState<EditingPackage | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showMultiPackage, setShowMultiPackage] = useState(false);
+  const [selectedCarrier, setSelectedCarrier] = useState("any");
 
   const { fields, append, remove, update } = useFieldArray({
     control: form.control,
@@ -191,30 +200,48 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
           </div>
 
           <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name={`packages.0.packageType`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-medium">Package Type</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger data-testid="select-package-type">
-                        <SelectValue placeholder="Select package type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {PACKAGE_TYPES.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name={`packages.0.packageType`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Package Type</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger data-testid="select-package-type">
+                          <SelectValue placeholder="Select package type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {PACKAGE_TYPES.map((type) => (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <div>
+                <FormLabel className="text-sm font-medium">Preferred Carrier <span className="text-muted-foreground font-normal text-xs">(optional)</span></FormLabel>
+                <Select onValueChange={setSelectedCarrier} value={selectedCarrier}>
+                  <SelectTrigger data-testid="select-carrier" className="mt-1.5">
+                    <SelectValue placeholder="Select carrier" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CARRIERS.map((carrier) => (
+                      <SelectItem key={carrier.value} value={carrier.value}>
+                        {carrier.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             
             <div>
               <FormLabel className="text-sm font-medium">Weight</FormLabel>
