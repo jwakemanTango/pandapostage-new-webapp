@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Package, MapPin, CheckCircle2, DollarSign, ChevronRight, Lock } from "lucide-react";
 import { ShipmentFormData, Rate } from "@shared/schema";
 import { cn } from "@/lib/utils";
+import { PandaLogo } from "./PandaLogo";
 
 interface LiveSummaryProps {
   formData: ShipmentFormData;
@@ -74,7 +75,10 @@ export const LiveSummary = ({
   return (
     <Card className="sticky top-6">
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg">Shipment Progress</CardTitle>
+        <div className="flex items-center gap-2">
+          <PandaLogo compact className="h-6" />
+          <CardTitle className="text-lg">Shipment Progress</CardTitle>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
