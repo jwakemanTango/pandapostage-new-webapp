@@ -269,45 +269,47 @@ export const ShipmentForm = ({
                   </p>
                 </div>
 
-                <div className="border rounded-lg p-4 bg-card">
-                  <p className="text-xs text-muted-foreground mb-3">Label Preview</p>
-                  <div className="border rounded-md overflow-hidden bg-white">
-                    <img 
-                      src={labelPreviewUrl} 
-                      alt="Shipping Label Preview" 
-                      className="w-full h-auto"
-                      data-testid="img-label-preview"
-                    />
-                  </div>
-                </div>
-
                 {purchasedLabel && (
                   <div className="space-y-4">
-                    <div className="border rounded-lg p-4 space-y-3">
-                      <div>
-                        <p className="text-xs text-muted-foreground mb-1">Carrier & Service</p>
-                        <p className="font-semibold">{purchasedLabel.carrier} - {purchasedLabel.service}</p>
-                      </div>
-                      
-                      <div className="flex gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="border rounded-lg p-4 space-y-3">
                         <div>
-                          <p className="text-xs text-muted-foreground mb-1">Rate</p>
-                          <p className="font-semibold text-lg">${purchasedLabel.rate}</p>
+                          <p className="text-xs text-muted-foreground mb-1">Carrier & Service</p>
+                          <p className="font-semibold">{purchasedLabel.carrier} - {purchasedLabel.service}</p>
                         </div>
-                        {purchasedLabel.deliveryDays && (
+                        
+                        <div className="flex gap-8">
                           <div>
-                            <p className="text-xs text-muted-foreground mb-1">Delivery Time</p>
-                            <p className="font-semibold">{purchasedLabel.deliveryDays} business days</p>
+                            <p className="text-xs text-muted-foreground mb-1">Rate</p>
+                            <p className="font-semibold text-lg">${purchasedLabel.rate}</p>
+                          </div>
+                          {purchasedLabel.deliveryDays && (
+                            <div>
+                              <p className="text-xs text-muted-foreground mb-1">Delivery Time</p>
+                              <p className="font-semibold">{purchasedLabel.deliveryDays} business days</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {purchasedLabel.deliveryDate && (
+                          <div>
+                            <p className="text-xs text-muted-foreground mb-1">Estimated Delivery</p>
+                            <p className="font-medium">{purchasedLabel.deliveryDate}</p>
                           </div>
                         )}
                       </div>
 
-                      {purchasedLabel.deliveryDate && (
-                        <div>
-                          <p className="text-xs text-muted-foreground mb-1">Estimated Delivery</p>
-                          <p className="font-medium">{purchasedLabel.deliveryDate}</p>
+                      <div className="border rounded-lg p-4 bg-card">
+                        <p className="text-xs text-muted-foreground mb-3">Label Preview</p>
+                        <div className="border rounded-md overflow-hidden bg-white max-h-64">
+                          <img 
+                            src={labelPreviewUrl} 
+                            alt="Shipping Label Preview" 
+                            className="w-full h-full object-contain"
+                            data-testid="img-label-preview"
+                          />
                         </div>
-                      )}
+                      </div>
                     </div>
 
                     <div className="flex gap-3">
