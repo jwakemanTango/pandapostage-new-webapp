@@ -13,9 +13,10 @@ Preferred communication style: Simple, everyday language.
 - **UI Framework**: Shadcn UI (built on Radix UI), Tailwind CSS with custom design tokens, CSS variables for theming (light/dark mode), and a "New York" style design system.
 - **Design Philosophy**: Professional, business-application aesthetic, functional UI focused on efficiency, progressive disclosure, visual hierarchy through spacing/typography, and monospace fonts for data.
 - **Form Architecture**:
-    - DEBUG button in top-right corner toggles visibility of development controls (4-Step View, Compact Addresses, Show Summary, Show Label Preview, Show Banner Summary).
+    - DEBUG button in top-right corner toggles visibility of development controls (3-Step Flow, 4-Step Flow, Combine Address Forms, Show Sidebar Summary, Show Banner Summary, Show Label Preview).
+    - Default view: 3-Step Flow (can be changed to 4-Step Flow via DEBUG panel).
     - `ShipmentForm-FourStep`: Multi-step guided workflow with progressive disclosure.
-    - `ShipmentForm-ThreeStep`: Single-page compact workflow optimized for experienced users, featuring:
+    - `ShipmentForm-ThreeStep`: Single-page compact workflow optimized for experienced users (default), featuring:
         - Three distinct views (Form, Summary, Label) with clear step labels ("Shipment Details", "Select Rate", "Print Label")
         - Mobile-optimized layout with vertical field stacking, hidden summary on mobile, and fixed bottom navigation
         - BannerLiveSummary component: full-width, sticky-top collapsible banner with centered step progress indicators (Truck, DollarSign, Printer icons), company name display (with city/state fallback), and package count. No corner radius for seamless full-width design.
@@ -23,7 +24,15 @@ Preferred communication style: Simple, everyday language.
         - Stacked field labels for weight and dimensions in CompactPackageForm for cleaner, more compact presentation
         - Consistent font sizing (text-sm labels, h-9 text-sm controls) for comfortable readability
         - Mobile-first responsive breakpoints with proper spacing (pb-20 for fixed button clearance)
+    - **Custom Packages Preset System**: Quick-fill buttons for common package configurations (both flows):
+        - Small Box: FedEx, parcel, 1lb, 8x6x4
+        - Medium Box: FedEx, parcel, 5lb, 12x10x8
+        - Large Box: FedEx, large_box, 10lb, 18x14x12
+        - USPS-Letter: USPS, letter envelope, 0lb 1oz, 12x12x1
+        - UPS Parcel: UPS, parcel, 1lb, 8x8x4
+        - Visual separator (border) between Custom Packages and Package Details fields
     - Shared validation patterns and schemas, component composition, and constants for reusability.
+    - All package dimension fields (length, width, height) are required with numeric validation.
 - **State Management**: TanStack Query for server state, React Hook Form for form state, React hooks for local UI state.
 
 ### Backend
