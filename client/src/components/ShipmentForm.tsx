@@ -10,7 +10,7 @@ import PackageForm from "./PackageForm";
 import RatesSelection from "./RatesSelection";
 import AdditionalServices from "./AdditionalServices";
 import { LiveSummary } from "./LiveSummary";
-import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight, Download, Mail, Receipt, Plus, ChevronDown } from "lucide-react";
+import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight, Download, Mail, Receipt, ChevronDown } from "lucide-react";
 import labelPreviewUrl from "@assets/label_1760604447339.png";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -333,7 +333,7 @@ export const ShipmentForm = ({
                           )}
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                           <div className="space-y-2">
                             <Button className="w-full gap-2" data-testid="button-download-label">
                               <Download className="h-4 w-4" />
@@ -349,14 +349,15 @@ export const ShipmentForm = ({
                             </Button>
                           </div>
                           
-                          <div className="border-t pt-4">
+                          <div className="border-t pt-6">
                             <Button 
                               onClick={handleCreateAnother}
                               variant="default"
+                              size="lg"
                               className="w-full gap-2"
                               data-testid="button-create-another"
                             >
-                              <Plus className="h-4 w-4" />
+                              <ArrowLeft className="h-5 w-5" />
                               Create Another Shipment
                             </Button>
                           </div>
