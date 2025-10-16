@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Address } from "@shared/schema";
 
@@ -67,12 +68,28 @@ interface AddressFormProps {
 }
 
 const AddressForm = ({ form, type, title }: AddressFormProps) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  
   const { data: addresses } = useQuery<Address[]>({
     queryKey: ["/api/addresses"],
   });
   
   const filteredAddresses = addresses?.filter(address => {
-    return type === "fromAddress" ? address.type === "sender" : address.type === "recipient";
+    const typeMatches = type === "fromAddress" ? address.type === "sender" : address.type === "recipient";
+    
+    if (!typeMatches) return false;
+    
+    if (!searchTerm) return true;
+    
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      address.name.toLowerCase().includes(searchLower) ||
+      address.city.toLowerCase().includes(searchLower) ||
+      address.state.toLowerCase().includes(searchLower) ||
+      address.zipCode.includes(searchTerm) ||
+      (address.company && address.company.toLowerCase().includes(searchLower))
+    );
   });
   
   const handleSavedAddressSelect = (addressId: string) => {
@@ -135,22 +152,52 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
             variant="ghost" 
             size="sm" 
             className="text-primary h-auto p-0 text-xs"
+            onClick={() => setShowSearch(!showSearch)}
             data-testid={`button-manage-addresses-${type}`}
           >
-            <Search className="h-3.5 w-3.5 mr-1" />
-            <span>Manage</span>
+            {showSearch ? (
+              <>
+                <X className="h-3.5 w-3.5 mr-1" />
+                <span>Close</span>
+              </>
+            ) : (
+              <>
+                <Search className="h-3.5 w-3.5 mr-1" />
+                <span>Search</span>
+              </>
+            )}
           </Button>
         </div>
+        
+        {showSearch && (
+          <div className="mb-2">
+            <Input
+              type="text"
+              placeholder="Search by name, company, city, state, or zip..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full"
+              data-testid={`input-search-address-${type}`}
+            />
+          </div>
+        )}
+        
         <Select onValueChange={handleSavedAddressSelect}>
           <SelectTrigger className="w-full" data-testid={`select-saved-address-${type}`}>
             <SelectValue placeholder="-- Select a saved address --" />
           </SelectTrigger>
           <SelectContent>
-            {filteredAddresses?.map((address) => (
-              <SelectItem key={address.id} value={address.id.toString()}>
-                {address.name}, {address.city}, {address.state}
-              </SelectItem>
-            ))}
+            {filteredAddresses && filteredAddresses.length > 0 ? (
+              filteredAddresses.map((address) => (
+                <SelectItem key={address.id} value={address.id.toString()}>
+                  {address.name}, {address.city}, {address.state}
+                </SelectItem>
+              ))
+            ) : (
+              <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                No addresses found
+              </div>
+            )}
           </SelectContent>
         </Select>
       </div>

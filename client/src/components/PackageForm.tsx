@@ -20,6 +20,7 @@ type PackageItem = {
   length: string;
   width: string;
   height: string;
+  carrier?: string;
 }
 
 type EditingPackage = {
@@ -60,14 +61,14 @@ const defaultPackage: PackageItem = {
   weightOz: "0",
   length: "",
   width: "",
-  height: ""
+  height: "",
+  carrier: "any"
 };
 
 const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
   const [editingPackage, setEditingPackage] = useState<EditingPackage | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showMultiPackage, setShowMultiPackage] = useState(false);
-  const [selectedCarrier, setSelectedCarrier] = useState("any");
 
   const { fields, append, remove, update } = useFieldArray({
     control: form.control,
@@ -110,7 +111,8 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
         weightOz: pkg.weightOz || "0",
         length: pkg.length || "",
         width: pkg.width || "",
-        height: pkg.height || ""
+        height: pkg.height || "",
+        carrier: pkg.carrier || "any"
       } 
     });
     setIsEditing(true);
@@ -226,21 +228,30 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                 )}
               />
               
-              <div>
-                <FormLabel className="text-sm font-medium">Preferred Carrier <span className="text-muted-foreground font-normal text-xs">(optional)</span></FormLabel>
-                <Select onValueChange={setSelectedCarrier} value={selectedCarrier}>
-                  <SelectTrigger data-testid="select-carrier" className="mt-1.5">
-                    <SelectValue placeholder="Select carrier" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CARRIERS.map((carrier) => (
-                      <SelectItem key={carrier.value} value={carrier.value}>
-                        {carrier.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <FormField
+                control={form.control}
+                name={`packages.0.carrier`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Preferred Carrier <span className="text-muted-foreground font-normal text-xs">(optional)</span></FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value || "any"}>
+                      <FormControl>
+                        <SelectTrigger data-testid="select-carrier">
+                          <SelectValue placeholder="Select carrier" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {CARRIERS.map((carrier) => (
+                          <SelectItem key={carrier.value} value={carrier.value}>
+                            {carrier.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
             
             <div>
@@ -454,23 +465,44 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
         <div className="space-y-4 p-4 border rounded-md bg-card">
           <h4 className="font-semibold text-sm">Edit Package #{editingPackage.index + 1}</h4>
           
-          <div>
-            <FormLabel className="text-sm font-medium">Package Type</FormLabel>
-            <Select 
-              onValueChange={(value) => updatePackageField('packageType', value)} 
-              value={editingPackage.data.packageType}
-            >
-              <SelectTrigger data-testid="select-edit-package-type" className="mt-1.5">
-                <SelectValue placeholder="Select package type" />
-              </SelectTrigger>
-              <SelectContent>
-                {PACKAGE_TYPES.map((type) => (
-                  <SelectItem key={type.value} value={type.value}>
-                    {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <FormLabel className="text-sm font-medium">Package Type</FormLabel>
+              <Select 
+                onValueChange={(value) => updatePackageField('packageType', value)} 
+                value={editingPackage.data.packageType}
+              >
+                <SelectTrigger data-testid="select-edit-package-type" className="mt-1.5">
+                  <SelectValue placeholder="Select package type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PACKAGE_TYPES.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <FormLabel className="text-sm font-medium">Preferred Carrier</FormLabel>
+              <Select 
+                onValueChange={(value) => updatePackageField('carrier', value)} 
+                value={editingPackage.data.carrier || "any"}
+              >
+                <SelectTrigger data-testid="select-edit-carrier" className="mt-1.5">
+                  <SelectValue placeholder="Select carrier" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CARRIERS.map((carrier) => (
+                    <SelectItem key={carrier.value} value={carrier.value}>
+                      {carrier.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div>

@@ -65,6 +65,7 @@ export const ShipmentForm = ({
           length: "",
           width: "",
           height: "",
+          carrier: "any",
         }
       ],
       rateSelection: {

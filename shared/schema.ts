@@ -24,6 +24,7 @@ export const packageSchema = z.object({
   length: z.string().optional(),
   width: z.string().optional(),
   height: z.string().optional(),
+  carrier: z.string().optional(),
 });
 
 // Rate selection schema
