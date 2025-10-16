@@ -1,13 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { MapPin } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Address } from "@shared/schema";
 import { US_STATES } from "@/lib/constants";
+import { Truck, Package } from "lucide-react";
 
 interface CompactAddressFormCombinedProps {
   form: any;
@@ -20,33 +19,20 @@ export const CompactAddressFormCombined = ({
   addresses,
   onSavedAddressSelect
 }: CompactAddressFormCombinedProps) => {
-  const [showFromAddress, setShowFromAddress] = useState(true);
+  const [activeTab, setActiveTab] = useState<"from" | "to">("from");
   
-  const type = showFromAddress ? "fromAddress" : "toAddress";
-  const title = showFromAddress ? "Ship From" : "Ship To";
-
-  return (
-    <Card>
-      <CardHeader className="pb-2 pt-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <MapPin className="h-3.5 w-3.5" />
-            {title}
-          </CardTitle>
-          <div className="flex items-center gap-2">
-            <Label htmlFor="compact-address-toggle" className="text-xs">
-              {showFromAddress ? "From" : "To"}
-            </Label>
-            <Switch
-              id="compact-address-toggle"
-              checked={!showFromAddress}
-              onCheckedChange={(checked) => setShowFromAddress(!checked)}
-              data-testid="switch-compact-address-toggle"
-              className="scale-75"
-            />
-          </div>
-        </div>
-      </CardHeader>
+  // Check for validation errors and switch to that tab
+  useEffect(() => {
+    const errors = form.formState.errors;
+    if (errors.fromAddress && Object.keys(errors.fromAddress).length > 0) {
+      setActiveTab("from");
+    } else if (errors.toAddress && Object.keys(errors.toAddress).length > 0) {
+      setActiveTab("to");
+    }
+  }, [form.formState.errors]);
+  
+  const renderAddressFields = (type: "fromAddress" | "toAddress") => {
+    return (
       <CardContent className="space-y-1.5 pt-2" key={type}>
         <FormField
           control={form.control}
@@ -217,6 +203,31 @@ export const CompactAddressFormCombined = ({
           )}
         />
       </CardContent>
+    );
+  };
+
+  return (
+    <Card>
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "from" | "to")}>
+        <TabsList className="w-full grid grid-cols-2 h-8">
+          <TabsTrigger value="from" className="gap-1.5 text-xs h-6" data-testid="tab-ship-from">
+            <Truck className="h-3 w-3" />
+            Ship From
+          </TabsTrigger>
+          <TabsTrigger value="to" className="gap-1.5 text-xs h-6" data-testid="tab-ship-to">
+            <Package className="h-3 w-3" />
+            Ship To
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="from" className="mt-0">
+          {renderAddressFields("fromAddress")}
+        </TabsContent>
+        
+        <TabsContent value="to" className="mt-0">
+          {renderAddressFields("toAddress")}
+        </TabsContent>
+      </Tabs>
     </Card>
   );
 };

@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { Address } from "@shared/schema";
 import { US_STATES } from "@/lib/constants";
+import { Truck, Package } from "lucide-react";
 
 interface AddressFormCombinedProps {
   form: any;
@@ -14,34 +14,44 @@ interface AddressFormCombinedProps {
 }
 
 const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedProps) => {
-  const [showFromAddress, setShowFromAddress] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  
-  const type = showFromAddress ? "fromAddress" : "toAddress";
-  const title = showFromAddress ? "Ship From" : "Ship To";
+  const [activeTab, setActiveTab] = useState<"from" | "to">("from");
+  const [searchTermFrom, setSearchTermFrom] = useState("");
+  const [searchTermTo, setSearchTermTo] = useState("");
   
   const { data: addresses } = useQuery<Address[]>({
     queryKey: ["/api/addresses"],
   });
   
-  const filteredAddresses = addresses?.filter(address => {
-    const typeMatches = showFromAddress ? address.type === "sender" : address.type === "recipient";
-    
-    if (!typeMatches) return false;
-    
-    if (!searchTerm) return true;
-    
-    const searchLower = searchTerm.toLowerCase();
-    return (
-      address.name.toLowerCase().includes(searchLower) ||
-      address.city.toLowerCase().includes(searchLower) ||
-      address.state.toLowerCase().includes(searchLower) ||
-      address.zipCode.includes(searchTerm) ||
-      (address.company && address.company.toLowerCase().includes(searchLower))
-    );
-  });
+  // Check for validation errors and switch to that tab
+  useEffect(() => {
+    const errors = form.formState.errors;
+    if (errors.fromAddress && Object.keys(errors.fromAddress).length > 0) {
+      setActiveTab("from");
+    } else if (errors.toAddress && Object.keys(errors.toAddress).length > 0) {
+      setActiveTab("to");
+    }
+  }, [form.formState.errors]);
   
-  const handleSavedAddressSelect = async (addressId: string) => {
+  const getFilteredAddresses = (type: "from" | "to", searchTerm: string) => {
+    return addresses?.filter(address => {
+      const typeMatches = type === "from" ? address.type === "sender" : address.type === "recipient";
+      
+      if (!typeMatches) return false;
+      
+      if (!searchTerm) return true;
+      
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        address.name.toLowerCase().includes(searchLower) ||
+        address.city.toLowerCase().includes(searchLower) ||
+        address.state.toLowerCase().includes(searchLower) ||
+        address.zipCode.includes(searchTerm) ||
+        (address.company && address.company.toLowerCase().includes(searchLower))
+      );
+    });
+  };
+  
+  const handleSavedAddressSelect = async (addressId: string, type: "fromAddress" | "toAddress") => {
     const selectedAddress = addresses?.find(address => address.id === parseInt(addressId));
     
     if (selectedAddress) {
@@ -66,66 +76,53 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
       }
     }
   };
-
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-base font-semibold">{title}</h3>
-        <div className="flex items-center gap-2">
-          <Label htmlFor="address-toggle" className="text-sm">
-            {showFromAddress ? "From" : "To"}
-          </Label>
-          <Switch
-            id="address-toggle"
-            checked={!showFromAddress}
-            onCheckedChange={(checked) => setShowFromAddress(!checked)}
-            data-testid="switch-address-toggle"
-          />
+  
+  const renderAddressFields = (type: "fromAddress" | "toAddress", searchTerm: string, setSearchTerm: (value: string) => void) => {
+    const filteredAddresses = getFilteredAddresses(type === "fromAddress" ? "from" : "to", searchTerm);
+    
+    return (
+      <div className="space-y-4">
+        <div>
+          <FormLabel className="text-sm font-medium mb-1.5 block">Select from saved addresses</FormLabel>
+          
+          <Select onValueChange={(value) => handleSavedAddressSelect(value, type)}>
+            <SelectTrigger className="w-full" data-testid={`select-saved-address-${type}`}>
+              <SelectValue placeholder="-- Select a saved address --" />
+            </SelectTrigger>
+            <SelectContent>
+              <div className="px-2 py-2 border-b">
+                <Input
+                  type="text"
+                  placeholder="Search by name, company, city, state, or zip..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Tab') {
+                      return;
+                    }
+                    e.stopPropagation();
+                  }}
+                  className="w-full h-8"
+                  data-testid={`input-search-address-${type}`}
+                />
+              </div>
+              <div className="max-h-[200px] overflow-y-auto">
+                {filteredAddresses && filteredAddresses.length > 0 ? (
+                  filteredAddresses.map((address) => (
+                    <SelectItem key={address.id} value={address.id.toString()}>
+                      {address.name}, {address.city}, {address.state}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                    No saved addresses found
+                  </div>
+                )}
+              </div>
+            </SelectContent>
+          </Select>
         </div>
-      </div>
-      
-      <div className="mb-4">
-        <FormLabel className="text-sm font-medium mb-1.5 block">Select from saved addresses</FormLabel>
-        
-        <Select onValueChange={handleSavedAddressSelect}>
-          <SelectTrigger className="w-full" data-testid={`select-saved-address-${type}`}>
-            <SelectValue placeholder="-- Select a saved address --" />
-          </SelectTrigger>
-          <SelectContent>
-            <div className="px-2 py-2 border-b">
-              <Input
-                type="text"
-                placeholder="Search by name, company, city, state, or zip..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Tab') {
-                    return;
-                  }
-                  e.stopPropagation();
-                }}
-                className="w-full h-8"
-                data-testid={`input-search-address-${type}`}
-              />
-            </div>
-            <div className="max-h-[200px] overflow-y-auto">
-              {filteredAddresses && filteredAddresses.length > 0 ? (
-                filteredAddresses.map((address) => (
-                  <SelectItem key={address.id} value={address.id.toString()}>
-                    {address.name}, {address.city}, {address.state}
-                  </SelectItem>
-                ))
-              ) : (
-                <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                  No saved addresses found
-                </div>
-              )}
-            </div>
-          </SelectContent>
-        </Select>
-      </div>
 
-      <div className="space-y-4" key={type}>
         <FormField
           control={form.control}
           name={`${type}.company`}
@@ -251,6 +248,31 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
           )}
         />
       </div>
+    );
+  };
+
+  return (
+    <div>
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "from" | "to")}>
+        <TabsList className="w-full grid grid-cols-2">
+          <TabsTrigger value="from" className="gap-2" data-testid="tab-ship-from">
+            <Truck className="h-4 w-4" />
+            Ship From
+          </TabsTrigger>
+          <TabsTrigger value="to" className="gap-2" data-testid="tab-ship-to">
+            <Package className="h-4 w-4" />
+            Ship To
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="from" className="mt-4">
+          {renderAddressFields("fromAddress", searchTermFrom, setSearchTermFrom)}
+        </TabsContent>
+        
+        <TabsContent value="to" className="mt-4">
+          {renderAddressFields("toAddress", searchTermTo, setSearchTermTo)}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
