@@ -1,14 +1,15 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Package, MapPin } from "lucide-react";
+import { Package, MapPin, CheckCircle2, Circle } from "lucide-react";
 import { ShipmentFormData } from "@shared/schema";
 import { PandaLogo } from "@/components/PandaLogo";
 
 interface CompactLiveSummaryProps {
   formData: ShipmentFormData;
+  currentStep?: "shipment" | "selectRate" | "printLabel";
 }
 
-export const CompactLiveSummary = ({ formData }: CompactLiveSummaryProps) => {
+export const CompactLiveSummary = ({ formData, currentStep = "shipment" }: CompactLiveSummaryProps) => {
   const { fromAddress, toAddress, packages, additionalServices } = formData || {};
   
   const hasFromAddress = fromAddress?.name && fromAddress?.city && fromAddress?.state;
@@ -31,6 +32,14 @@ export const CompactLiveSummary = ({ formData }: CompactLiveSummaryProps) => {
       return serviceLabels[key] || key;
     });
 
+  const steps = [
+    { id: "shipment", label: "Shipment" },
+    { id: "selectRate", label: "Select Rate" },
+    { id: "printLabel", label: "Print Label" }
+  ];
+
+  const currentStepIndex = steps.findIndex(step => step.id === currentStep);
+
   return (
     <Card className="sticky top-6">
       <CardHeader className="py-3.5 px-8 flex flex-col items-center rounded-t-xl" style={{ backgroundColor: '#005392' }}>
@@ -38,6 +47,29 @@ export const CompactLiveSummary = ({ formData }: CompactLiveSummaryProps) => {
       </CardHeader>
       <CardContent className="space-y-3 pt-4">
         <h3 className="text-sm font-semibold text-center">Shipment Summary</h3>
+
+        {/* Step Progress Indicators */}
+        <div className="space-y-1.5 pb-2 border-b">
+          {steps.map((step, index) => {
+            const isCompleted = index < currentStepIndex;
+            const isCurrent = index === currentStepIndex;
+            
+            return (
+              <div key={step.id} className="flex items-center gap-2">
+                {isCompleted ? (
+                  <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                ) : isCurrent ? (
+                  <Circle className="h-3.5 w-3.5 text-primary fill-primary shrink-0" />
+                ) : (
+                  <Circle className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                )}
+                <span className={`text-xs ${isCurrent ? 'font-semibold text-foreground' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  {step.label}
+                </span>
+              </div>
+            );
+          })}
+        </div>
 
         <div className="space-y-3">
           <div>

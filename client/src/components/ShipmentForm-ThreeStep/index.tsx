@@ -162,10 +162,20 @@ export const ShipmentFormFull = ({
 
   if (viewState === "label" && purchasedLabel) {
     return (
-      <LabelSummary 
-        purchasedLabel={purchasedLabel}
-        onCreateAnother={handleCreateAnother}
-      />
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <LabelSummary 
+            purchasedLabel={purchasedLabel}
+            onCreateAnother={handleCreateAnother}
+          />
+        </div>
+        
+        {showLiveSummary && (
+          <div className="w-80 shrink-0">
+            <CompactLiveSummary formData={form.getValues()} currentStep="printLabel" />
+          </div>
+        )}
+      </div>
     );
   }
 
