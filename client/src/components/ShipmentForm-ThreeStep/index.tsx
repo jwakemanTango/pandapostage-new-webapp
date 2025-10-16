@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,8 @@ export const ShipmentFormFull = ({
   const [viewState, setViewState] = useState<ViewState>("form");
   const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
   const [useCompactAddresses, setUseCompactAddresses] = useState(false);
+  const [showLiveSummary, setShowLiveSummary] = useState(true);
+  const [formValues, setFormValues] = useState<ShipmentFormData>(form.getValues());
 
   const { data: addresses } = useQuery<Address[]>({
     queryKey: ["/api/addresses"],
@@ -95,6 +97,14 @@ export const ShipmentFormFull = ({
       }
     },
   });
+
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      setFormValues(value as ShipmentFormData);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const handleGetRates = async () => {
     const isValid = await form.trigger(["fromAddress", "toAddress", "packages"]);
@@ -195,69 +205,89 @@ export const ShipmentFormFull = ({
 
   return (
     <Form {...form}>
-      <div className="space-y-3">
-        <div className="flex justify-end mb-2">
-          <div className="flex items-center gap-2">
-            <Label htmlFor="compact-addresses-three-step" className="text-xs">
-              Compact Addresses
-            </Label>
-            <Switch
-              id="compact-addresses-three-step"
-              checked={useCompactAddresses}
-              onCheckedChange={setUseCompactAddresses}
-              data-testid="switch-compact-addresses-three-step"
-              className="scale-75"
-            />
+      <div className="flex gap-4">
+        <div className="flex-1 space-y-3">
+          <div className="flex justify-between items-center mb-2">
+            <div className="flex items-center gap-3">
+              <Label htmlFor="compact-addresses-three-step" className="text-xs">
+                Compact Addresses
+              </Label>
+              <Switch
+                id="compact-addresses-three-step"
+                checked={useCompactAddresses}
+                onCheckedChange={setUseCompactAddresses}
+                data-testid="switch-compact-addresses-three-step"
+                className="scale-75"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="show-summary-three-step" className="text-xs">
+                Show Summary
+              </Label>
+              <Switch
+                id="show-summary-three-step"
+                checked={showLiveSummary}
+                onCheckedChange={setShowLiveSummary}
+                data-testid="switch-show-summary-three-step"
+                className="scale-75"
+              />
+            </div>
           </div>
-        </div>
 
-        <div className={`grid gap-3 ${useCompactAddresses ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 lg:grid-cols-3'}`}>
-          {useCompactAddresses ? (
-            <CompactAddressFormCombined
-              form={form}
-              addresses={addresses}
-              onSavedAddressSelect={handleSavedAddressSelect}
-            />
-          ) : (
-            <>
-              <CompactAddressForm
+          <div className={`grid gap-3 ${useCompactAddresses ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 lg:grid-cols-3'}`}>
+            {useCompactAddresses ? (
+              <CompactAddressFormCombined
                 form={form}
-                type="fromAddress"
-                title="Ship From"
-                icon={<MapPin className="h-3.5 w-3.5" />}
                 addresses={addresses}
                 onSavedAddressSelect={handleSavedAddressSelect}
               />
-              
-              <CompactAddressForm
-                form={form}
-                type="toAddress"
-                title="Ship To"
-                icon={<MapPin className="h-3.5 w-3.5" />}
-                addresses={addresses}
-                onSavedAddressSelect={handleSavedAddressSelect}
-              />
-            </>
-          )}
-          
-          <div className="space-y-3">
-            <CompactPackageForm form={form} />
-            <CompactAdditionalServices form={form} />
+            ) : (
+              <>
+                <CompactAddressForm
+                  form={form}
+                  type="fromAddress"
+                  title="Ship From"
+                  icon={<MapPin className="h-3.5 w-3.5" />}
+                  addresses={addresses}
+                  onSavedAddressSelect={handleSavedAddressSelect}
+                />
+                
+                <CompactAddressForm
+                  form={form}
+                  type="toAddress"
+                  title="Ship To"
+                  icon={<MapPin className="h-3.5 w-3.5" />}
+                  addresses={addresses}
+                  onSavedAddressSelect={handleSavedAddressSelect}
+                />
+              </>
+            )}
+            
+            <div className="space-y-3">
+              <CompactPackageForm form={form} />
+              <CompactAdditionalServices form={form} />
+            </div>
+          </div>
+
+          <div className="flex justify-center pt-2">
+            <Button
+              type="button"
+              onClick={handleGetRates}
+              disabled={isLoadingRates}
+              className="w-full lg:w-auto min-w-[200px] h-9 text-sm"
+              data-testid="button-get-rates"
+            >
+              {isLoadingRates && <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" />}
+              {isLoadingRates ? 'Loading Rates...' : 'Get Rates'}
+            </Button>
           </div>
         </div>
 
-        <div className="flex justify-center pt-2">
-          <Button
-            type="button"
-            onClick={handleGetRates}
-            disabled={isLoadingRates}
-            className="w-full lg:w-auto min-w-[200px] h-9 text-sm"
-            data-testid="button-get-rates"
-          >
-            {isLoadingRates && <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" />}
-            {isLoadingRates ? 'Loading Rates...' : 'Get Rates'}
-          </Button>
-        </div>
+        {showLiveSummary && (
+          <div className="w-80 shrink-0">
+            <CompactLiveSummary formData={formValues} />
+          </div>
+        )}
       </div>
     </Form>
   );
