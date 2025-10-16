@@ -15,7 +15,7 @@ import AdditionalServices from "./AdditionalServices";
 import { LiveSummary } from "./LiveSummary";
 import { LabelSummary } from "./LabelSummary";
 import { BannerLiveSummary } from "../ShipmentForm-ThreeStep/BannerLiveSummary";
-import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight, ChevronDown, PackageOpen, Navigation } from "lucide-react";
+import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight, ChevronDown, PackageOpen, Navigation, RotateCcw } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ShipmentFormProps {
@@ -217,17 +217,39 @@ export const ShipmentForm = ({
     setFromAddressOpen(true);
   };
 
+  const handleStartOver = () => {
+    form.reset();
+    setCurrentStep(1);
+    setCompletedSteps([]);
+    setPurchasedLabel(null);
+    setRatesAvailable(false);
+    setFromAddressOpen(true);
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
         return (
           <Card className="bg-gradient-to-br from-background to-muted/20">
             <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <MapPin className="h-5 w-5 text-primary" />
+              <div className="flex items-center justify-between gap-3 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <MapPin className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold">Shipping Addresses</h3>
                 </div>
-                <h3 className="text-lg font-semibold">Shipping Addresses</h3>
+                <Button
+                  type="button"
+                  onClick={handleStartOver}
+                  variant="ghost"
+                  size="sm"
+                  className="gap-2"
+                  data-testid="button-start-over"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Start Over</span>
+                </Button>
               </div>
               
               <Form {...form}>
@@ -278,11 +300,24 @@ export const ShipmentForm = ({
         return (
           <Card className="bg-gradient-to-br from-background to-muted/20">
             <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Package className="h-5 w-5 text-primary" />
+              <div className="flex items-center justify-between gap-3 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Package className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold">Package & Services</h3>
                 </div>
-                <h3 className="text-lg font-semibold">Package & Services</h3>
+                <Button
+                  type="button"
+                  onClick={handleStartOver}
+                  variant="ghost"
+                  size="sm"
+                  className="gap-2"
+                  data-testid="button-start-over"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Start Over</span>
+                </Button>
               </div>
               
               <Form {...form}>
@@ -301,11 +336,24 @@ export const ShipmentForm = ({
         return (
           <Card className="bg-gradient-to-br from-background to-muted/20">
             <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <DollarSign className="h-5 w-5 text-primary" />
+              <div className="flex items-center justify-between gap-3 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <DollarSign className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold">Select Shipping Rate</h3>
                 </div>
-                <h3 className="text-lg font-semibold">Select Shipping Rate</h3>
+                <Button
+                  type="button"
+                  onClick={handleStartOver}
+                  variant="ghost"
+                  size="sm"
+                  className="gap-2"
+                  data-testid="button-start-over"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Start Over</span>
+                </Button>
               </div>
               <RatesSelection 
                 rates={rates}
@@ -321,11 +369,24 @@ export const ShipmentForm = ({
         return (
           <Card className="bg-gradient-to-br from-background to-muted/20">
             <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Printer className="h-5 w-5 text-primary" />
+              <div className="flex items-center justify-between gap-3 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Printer className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold">Label Purchased</h3>
                 </div>
-                <h3 className="text-lg font-semibold">Label Purchased</h3>
+                <Button
+                  type="button"
+                  onClick={handleStartOver}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  data-testid="button-start-over"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  Start Over
+                </Button>
               </div>
               
               {purchasedLabel && (

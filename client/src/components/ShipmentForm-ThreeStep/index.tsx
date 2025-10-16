@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createShipmentSchema, ShipmentFormData, Rate, Address } from "@shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, MapPin, ArrowLeft } from "lucide-react";
+import { Loader2, MapPin, ArrowLeft, RotateCcw } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { CompactAddressForm } from "./CompactAddressForm";
 import { CompactAddressFormCombined } from "./CompactAddressFormCombined";
@@ -161,6 +161,12 @@ export const ShipmentFormFull = ({
     form.reset();
   };
 
+  const handleStartOver = () => {
+    setPurchasedLabel(null);
+    setViewState("form");
+    form.reset();
+  };
+
   const handleSavedAddressSelect = (addressId: string, type: "fromAddress" | "toAddress") => {
     const address = addresses?.find(a => a.id.toString() === addressId);
     if (address) {
@@ -188,8 +194,19 @@ export const ShipmentFormFull = ({
           </div>
         )}
         <div className="space-y-3 lg:space-y-4">
-          <div className="flex items-center gap-3 pb-2 border-b">
+          <div className="flex items-center justify-between gap-3 pb-2 border-b">
             <h2 className="text-xl font-semibold">Print Label</h2>
+            <Button
+              type="button"
+              onClick={handleStartOver}
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              data-testid="button-start-over"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Start Over
+            </Button>
           </div>
           
           <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
@@ -224,17 +241,30 @@ export const ShipmentFormFull = ({
           <div className="space-y-3 lg:space-y-4">
             <div className="flex items-center justify-between gap-3 pb-2 border-b">
               <h2 className="text-xl font-semibold">Select Rate</h2>
-              <Button
-                type="button"
-                onClick={handleGoBack}
-                variant="outline"
-                size="sm"
-                className="gap-2 hidden lg:flex"
-                data-testid="button-go-back"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                Go Back
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  onClick={handleStartOver}
+                  variant="ghost"
+                  size="sm"
+                  className="gap-2"
+                  data-testid="button-start-over"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Start Over</span>
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleGoBack}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 hidden lg:flex"
+                  data-testid="button-go-back"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  Go Back
+                </Button>
+              </div>
             </div>
             
             <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
@@ -290,8 +320,19 @@ export const ShipmentFormFull = ({
         )}
         <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-24 lg:pb-0">
           <div className="space-y-3 lg:space-y-4">
-            <div className="flex items-center gap-3 pb-2 border-b">
+            <div className="flex items-center justify-between gap-3 pb-2 border-b">
               <h2 className="text-xl font-semibold">Shipment Details</h2>
+              <Button
+                type="button"
+                onClick={handleStartOver}
+                variant="ghost"
+                size="sm"
+                className="gap-2"
+                data-testid="button-start-over"
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Start Over</span>
+              </Button>
             </div>
             
             <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? 'lg:grid-cols-[1fr_320px]' : ''}`}>
