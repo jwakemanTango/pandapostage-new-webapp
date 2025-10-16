@@ -5,7 +5,8 @@ import { createInsertSchema } from "drizzle-zod";
 export const shipmentAddressSchema = z.object({
   name: z.string().min(2, "Name is required"),
   company: z.string().optional(),
-  phone: z.string().min(10, "Valid phone number is required"),
+  phone: z.string().min(1, "Phone is required")
+    .refine(val => val.replace(/\D/g, '').length >= 10, "Valid phone number is required"),
   addressLine1: z.string().min(3, "Address is required"),
   addressLine2: z.string().optional(),
   city: z.string().min(2, "City is required"),
