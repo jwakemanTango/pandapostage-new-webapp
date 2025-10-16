@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Package, MapPin, CheckCircle2, Circle, Truck, DollarSign, Printer } from "lucide-react";
+import { ChevronDown, ChevronUp, Package, MapPin, Truck, DollarSign, Printer } from "lucide-react";
 import { ShipmentFormData } from "@shared/schema";
 
 interface BannerLiveSummaryProps {
@@ -42,44 +40,45 @@ export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErro
   };
 
   return (
-    <Card className="sticky top-0 z-20 shadow-md">
-      <CardContent className="py-3 px-4">
-        <div className="space-y-2">
-          {/* Step Progress - Centered */}
-          <div className="flex items-center justify-center gap-6">
-            {steps.map((step, index) => {
-              const isCompleted = index < currentStepIndex;
-              const isCurrent = index === currentStepIndex;
-              const StepIcon = step.icon;
-              
-              return (
-                <div key={step.id} className="flex items-center gap-2">
-                  <div className={`p-1.5 rounded-full ${isCurrent ? 'bg-primary text-primary-foreground' : isCompleted ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
-                    <StepIcon className="h-4 w-4 shrink-0" />
+    <div className="sticky top-0 z-20 shadow-md bg-card border-b w-full">
+      <div className="container mx-auto px-3 sm:px-5 max-w-[1400px]">
+        <div className="py-3 px-4">
+          <div className="space-y-2">
+            {/* Step Progress - Centered */}
+            <div className="flex items-center justify-center gap-6">
+              {steps.map((step, index) => {
+                const isCompleted = index < currentStepIndex;
+                const isCurrent = index === currentStepIndex;
+                const StepIcon = step.icon;
+                
+                return (
+                  <div key={step.id} className="flex items-center gap-2">
+                    <div className={`p-1.5 rounded-full ${isCurrent ? 'bg-primary text-primary-foreground' : isCompleted ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                      <StepIcon className="h-4 w-4 shrink-0" />
+                    </div>
+                    <span className={`text-xs hidden md:inline ${isCurrent ? 'font-semibold text-foreground' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}`}>
+                      {step.label}
+                    </span>
                   </div>
-                  <span className={`text-xs hidden md:inline ${isCurrent ? 'font-semibold text-foreground' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}`}>
-                    {step.label}
-                  </span>
-                </div>
-              );
-            })}
-            
-            {/* Collapse Toggle */}
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="shrink-0 h-8 w-8 ml-auto"
-              data-testid="button-toggle-banner-summary"
-            >
-              {isCollapsed ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronUp className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
+                );
+              })}
+              
+              {/* Collapse Toggle */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsCollapsed(!isCollapsed)}
+                className="shrink-0 h-8 w-8 ml-auto"
+                data-testid="button-toggle-banner-summary"
+              >
+                {isCollapsed ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronUp className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
 
           {/* Shipment Info (when not collapsed) */}
           {!isCollapsed && (
@@ -121,8 +120,9 @@ export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErro
               )}
             </div>
           )}
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
