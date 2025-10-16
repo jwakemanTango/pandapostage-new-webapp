@@ -23,6 +23,8 @@ interface ShipmentFormFullProps {
   rates?: Rate[];
   isLoadingRates?: boolean;
   isPurchasing?: boolean;
+  useCompactAddresses?: boolean;
+  showLiveSummary?: boolean;
 }
 
 type ViewState = "form" | "summary" | "label";
@@ -32,12 +34,12 @@ export const ShipmentFormFull = ({
   onPurchaseLabel,
   rates = [],
   isLoadingRates = false,
-  isPurchasing = false
+  isPurchasing = false,
+  useCompactAddresses = false,
+  showLiveSummary = true
 }: ShipmentFormFullProps) => {
   const [viewState, setViewState] = useState<ViewState>("form");
   const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
-  const [useCompactAddresses, setUseCompactAddresses] = useState(false);
-  const [showLiveSummary, setShowLiveSummary] = useState(true);
 
   const { data: addresses } = useQuery<Address[]>({
     queryKey: ["/api/addresses"],
@@ -208,33 +210,6 @@ export const ShipmentFormFull = ({
     <Form {...form}>
       <div className="flex gap-4">
         <div className="flex-1 space-y-3">
-          <div className="flex justify-between items-center mb-2">
-            <div className="flex items-center gap-3">
-              <Label htmlFor="compact-addresses-three-step" className="text-xs">
-                Compact Addresses
-              </Label>
-              <Switch
-                id="compact-addresses-three-step"
-                checked={useCompactAddresses}
-                onCheckedChange={setUseCompactAddresses}
-                data-testid="switch-compact-addresses-three-step"
-                className="scale-75"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <Label htmlFor="show-summary-three-step" className="text-xs">
-                Show Summary
-              </Label>
-              <Switch
-                id="show-summary-three-step"
-                checked={showLiveSummary}
-                onCheckedChange={setShowLiveSummary}
-                data-testid="switch-show-summary-three-step"
-                className="scale-75"
-              />
-            </div>
-          </div>
-
           <div className={`grid gap-3 ${useCompactAddresses ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 lg:grid-cols-3'}`}>
             {useCompactAddresses ? (
               <CompactAddressFormCombined
