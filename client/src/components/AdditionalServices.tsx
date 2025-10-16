@@ -8,9 +8,9 @@ interface AdditionalServicesProps {
 const AdditionalServices = ({ form }: AdditionalServicesProps) => {
   return (
     <div>
-      <h3 className="text-base font-semibold mb-3">Additional Services</h3>
+      <h3 className="text-base font-semibold mb-4">Additional Services</h3>
       
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         <FormField
           control={form.control}
           name="additionalServices.saturdayDelivery"

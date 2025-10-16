@@ -179,7 +179,7 @@ export const ShipmentForm = ({
   
   return (
     <Card>
-      <CardContent className="p-5">
+      <CardContent className="p-6">
         <Form {...form}>
           <form>
             <Accordion 
@@ -193,25 +193,21 @@ export const ShipmentForm = ({
                   Shipment Details
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className="pt-3">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      <div className="space-y-5">
+                  <div className="pt-4">
+                    <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-8">
+                      <div className="space-y-6">
                         <AddressForm form={form} type="fromAddress" title="From Address" />
-                        <div className="border-t pt-5">
-                          <AddressForm form={form} type="toAddress" title="To Address" />
-                        </div>
+                        <AddressForm form={form} type="toAddress" title="To Address" />
                       </div>
                       
-                      <div className="space-y-5">
+                      <div className="space-y-6">
                         <PackageForm form={form} />
-                        <div className="border-t pt-5">
-                          <AdditionalServices form={form} />
-                        </div>
+                        <AdditionalServices form={form} />
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex justify-end mt-5 pt-5 border-t">
+                  <div className="flex justify-end mt-6 pt-6 border-t">
                     <Button 
                       type="button" 
                       onClick={handleGetRates}
@@ -232,7 +228,7 @@ export const ShipmentForm = ({
                     Select Shipping Rate
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="pt-3">
+                    <div className="pt-4">
                       <RatesSelection 
                         rates={rates}
                         isLoading={isLoadingRates}

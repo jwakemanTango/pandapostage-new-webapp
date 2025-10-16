@@ -92,11 +92,11 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
   
   return (
     <div>
-      <h3 className="text-base font-semibold mb-3">{title}</h3>
+      <h3 className="text-base font-semibold mb-4">{title}</h3>
       
-      <div className="mb-3">
+      <div className="mb-4">
         <div className="flex items-center justify-between mb-1.5">
-          <FormLabel className="text-sm">Select from saved addresses</FormLabel>
+          <FormLabel className="text-sm font-medium">Select from saved addresses</FormLabel>
           <Button 
             type="button" 
             variant="link" 
@@ -122,28 +122,15 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
         </Select>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={form.control}
           name={`${type}.name`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm">Name</FormLabel>
+              <FormLabel className="text-sm font-medium">Name</FormLabel>
               <FormControl>
                 <Input placeholder="Full Name" {...field} data-testid={`input-${type}-name`} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name={`${type}.company`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-sm">Company <span className="text-muted-foreground text-xs">(optional)</span></FormLabel>
-              <FormControl>
-                <Input placeholder="Company" {...field} data-testid={`input-${type}-company`} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -154,7 +141,7 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
           name={`${type}.phone`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm">Phone</FormLabel>
+              <FormLabel className="text-sm font-medium">Phone</FormLabel>
               <FormControl>
                 <Input placeholder="(555) 555-5555" {...field} data-testid={`input-${type}-phone`} />
               </FormControl>
@@ -164,13 +151,29 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
         />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+      <div className="mt-4">
+        <FormField
+          control={form.control}
+          name={`${type}.company`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium">Company <span className="text-muted-foreground font-normal text-xs">(optional)</span></FormLabel>
+              <FormControl>
+                <Input placeholder="Company" {...field} data-testid={`input-${type}-company`} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <FormField
           control={form.control}
           name={`${type}.addressLine1`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm">Address Line 1</FormLabel>
+              <FormLabel className="text-sm font-medium">Address Line 1</FormLabel>
               <FormControl>
                 <Input placeholder="Street address, P.O. box" {...field} data-testid={`input-${type}-address1`} />
               </FormControl>
@@ -183,9 +186,9 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
           name={`${type}.addressLine2`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm">Address Line 2 <span className="text-muted-foreground text-xs">(optional)</span></FormLabel>
+              <FormLabel className="text-sm font-medium">Address Line 2 <span className="text-muted-foreground font-normal text-xs">(optional)</span></FormLabel>
               <FormControl>
-                <Input placeholder="Apt, suite, unit, building" {...field} data-testid={`input-${type}-address2`} />
+                <Input placeholder="Apt, suite, unit" {...field} data-testid={`input-${type}-address2`} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -193,13 +196,13 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
         />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <FormField
           control={form.control}
           name={`${type}.city`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm">City</FormLabel>
+              <FormLabel className="text-sm font-medium">City</FormLabel>
               <FormControl>
                 <Input {...field} data-testid={`input-${type}-city`} />
               </FormControl>
@@ -212,7 +215,7 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
           name={`${type}.state`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm">State</FormLabel>
+              <FormLabel className="text-sm font-medium">State</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger data-testid={`select-${type}-state`}>
@@ -236,7 +239,7 @@ const AddressForm = ({ form, type, title }: AddressFormProps) => {
           name={`${type}.zipCode`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm">ZIP Code</FormLabel>
+              <FormLabel className="text-sm font-medium">ZIP Code</FormLabel>
               <FormControl>
                 <Input {...field} data-testid={`input-${type}-zip`} />
               </FormControl>
