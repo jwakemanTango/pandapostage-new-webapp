@@ -10,7 +10,7 @@ import PackageForm from "./PackageForm";
 import RatesSelection from "./RatesSelection";
 import AdditionalServices from "./AdditionalServices";
 import { LiveSummary } from "./LiveSummary";
-import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight } from "lucide-react";
+import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight, Download, Mail, Receipt, Plus } from "lucide-react";
 import labelPreviewUrl from "@assets/label_1760604447339.png";
 
 interface ShipmentFormProps {
@@ -272,31 +272,62 @@ export const ShipmentForm = ({
                 {purchasedLabel && (
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="border rounded-lg p-4 space-y-3">
-                        <div>
-                          <p className="text-xs text-muted-foreground mb-1">Carrier & Service</p>
-                          <p className="font-semibold">{purchasedLabel.carrier} - {purchasedLabel.service}</p>
-                        </div>
-                        
-                        <div className="flex gap-8">
+                      <div className="space-y-4">
+                        <div className="border rounded-lg p-4 space-y-3">
                           <div>
-                            <p className="text-xs text-muted-foreground mb-1">Rate</p>
-                            <p className="font-semibold text-lg">${purchasedLabel.rate}</p>
+                            <p className="text-xs text-muted-foreground mb-1">Carrier & Service</p>
+                            <p className="font-semibold">{purchasedLabel.carrier} - {purchasedLabel.service}</p>
                           </div>
-                          {purchasedLabel.deliveryDays && (
+                          
+                          <div className="flex gap-8">
                             <div>
-                              <p className="text-xs text-muted-foreground mb-1">Delivery Time</p>
-                              <p className="font-semibold">{purchasedLabel.deliveryDays} business days</p>
+                              <p className="text-xs text-muted-foreground mb-1">Rate</p>
+                              <p className="font-semibold text-lg">${purchasedLabel.rate}</p>
+                            </div>
+                            {purchasedLabel.deliveryDays && (
+                              <div>
+                                <p className="text-xs text-muted-foreground mb-1">Delivery Time</p>
+                                <p className="font-semibold">{purchasedLabel.deliveryDays} business days</p>
+                              </div>
+                            )}
+                          </div>
+
+                          <div>
+                            <p className="text-xs text-muted-foreground mb-1">Tracking Number</p>
+                            <p className="font-mono font-semibold">1Z999AA10123456784</p>
+                          </div>
+
+                          {purchasedLabel.deliveryDate && (
+                            <div>
+                              <p className="text-xs text-muted-foreground mb-1">Estimated Delivery</p>
+                              <p className="font-medium">{purchasedLabel.deliveryDate}</p>
                             </div>
                           )}
                         </div>
 
-                        {purchasedLabel.deliveryDate && (
-                          <div>
-                            <p className="text-xs text-muted-foreground mb-1">Estimated Delivery</p>
-                            <p className="font-medium">{purchasedLabel.deliveryDate}</p>
-                          </div>
-                        )}
+                        <div className="space-y-2">
+                          <Button className="w-full gap-2" data-testid="button-download-label">
+                            <Download className="h-4 w-4" />
+                            Download Label
+                          </Button>
+                          <Button variant="outline" className="w-full gap-2" data-testid="button-email-label">
+                            <Mail className="h-4 w-4" />
+                            Email Label
+                          </Button>
+                          <Button variant="outline" className="w-full gap-2" data-testid="button-view-receipt">
+                            <Receipt className="h-4 w-4" />
+                            View Receipt
+                          </Button>
+                          <Button 
+                            onClick={handleCreateAnother}
+                            variant="outline"
+                            className="w-full gap-2"
+                            data-testid="button-create-another"
+                          >
+                            <Plus className="h-4 w-4" />
+                            Create Another Shipment
+                          </Button>
+                        </div>
                       </div>
 
                       <div className="border rounded-lg p-4 bg-card">
@@ -311,29 +342,8 @@ export const ShipmentForm = ({
                         </div>
                       </div>
                     </div>
-
-                    <div className="flex gap-3">
-                      <Button className="flex-1 gap-2" data-testid="button-download-label">
-                        <Printer className="h-4 w-4" />
-                        Download Label
-                      </Button>
-                      <Button variant="outline" className="flex-1" data-testid="button-email-label">
-                        Email Label
-                      </Button>
-                    </div>
                   </div>
                 )}
-
-                <div className="border-t pt-6">
-                  <Button 
-                    onClick={handleCreateAnother}
-                    variant="outline"
-                    className="w-full"
-                    data-testid="button-create-another"
-                  >
-                    Create Another Shipment
-                  </Button>
-                </div>
               </div>
             </CardContent>
           </Card>
