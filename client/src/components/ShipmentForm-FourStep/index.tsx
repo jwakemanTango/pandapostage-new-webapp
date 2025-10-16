@@ -23,6 +23,8 @@ interface ShipmentFormProps {
   rates?: Rate[];
   isLoadingRates?: boolean;
   isPurchasing?: boolean;
+  useCompactAddresses?: boolean;
+  showLiveSummary?: boolean;
 }
 
 export const ShipmentForm = ({ 
@@ -30,15 +32,15 @@ export const ShipmentForm = ({
   onPurchaseLabel,
   rates = [],
   isLoadingRates = false,
-  isPurchasing = false
+  isPurchasing = false,
+  useCompactAddresses = false,
+  showLiveSummary = true
 }: ShipmentFormProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
   const [ratesAvailable, setRatesAvailable] = useState(false);
   const [fromAddressOpen, setFromAddressOpen] = useState(true);
-  const [useCompactAddresses, setUseCompactAddresses] = useState(false);
-  const [showLiveSummary, setShowLiveSummary] = useState(true);
   
   
   const form = useForm<ShipmentFormData>({
@@ -214,37 +216,11 @@ export const ShipmentForm = ({
         return (
           <Card className="bg-gradient-to-br from-background to-muted/20">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <MapPin className="h-5 w-5 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Shipping Addresses</h3>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <MapPin className="h-5 w-5 text-primary" />
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="compact-addresses" className="text-sm">
-                      Compact Addresses
-                    </Label>
-                    <Switch
-                      id="compact-addresses"
-                      checked={useCompactAddresses}
-                      onCheckedChange={setUseCompactAddresses}
-                      data-testid="switch-compact-addresses"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="show-summary-four-step" className="text-sm">
-                      Show Summary
-                    </Label>
-                    <Switch
-                      id="show-summary-four-step"
-                      checked={showLiveSummary}
-                      onCheckedChange={setShowLiveSummary}
-                      data-testid="switch-show-summary-four-step"
-                    />
-                  </div>
-                </div>
+                <h3 className="text-lg font-semibold">Shipping Addresses</h3>
               </div>
               
               <Form {...form}>
