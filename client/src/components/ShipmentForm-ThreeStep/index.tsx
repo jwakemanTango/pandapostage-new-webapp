@@ -187,11 +187,9 @@ export const ShipmentFormFull = ({
 
   if (viewState === "label" && purchasedLabel) {
     return (
-      <div className="space-y-3 lg:space-y-4">
+      <>
         {showBannerSummary && (
-          <div className="mb-4">
-            <BannerLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} workflow="3-step" />
-          </div>
+          <BannerLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} workflow="3-step" />
         )}
         <div className="space-y-3 lg:space-y-4">
           <div className="flex items-center justify-between gap-3 pb-2 border-b">
@@ -225,19 +223,17 @@ export const ShipmentFormFull = ({
             )}
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (viewState === "summary") {
     return (
       <div className="flex flex-col h-full lg:h-auto">
+        {showBannerSummary && (
+          <BannerLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} workflow="3-step" />
+        )}
         <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-20 lg:pb-0">
-          {showBannerSummary && (
-            <div className="mb-4">
-              <BannerLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} workflow="3-step" />
-            </div>
-          )}
           <div className="space-y-3 lg:space-y-4">
             <div className="flex items-center justify-between gap-3 pb-2 border-b">
               <h2 className="text-xl font-semibold">Select Rate</h2>
@@ -313,12 +309,10 @@ export const ShipmentFormFull = ({
   return (
     <Form {...form}>
       <div className="flex flex-col h-full lg:h-auto">
+        {showBannerSummary && (
+          <BannerLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} workflow="3-step" />
+        )}
         <div className="flex-1 lg:flex-none overflow-y-auto lg:overflow-visible pb-24 lg:pb-0">
-          {showBannerSummary && (
-            <div className="mb-4">
-              <BannerLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} workflow="3-step" />
-            </div>
-          )}
           <div className="space-y-3 lg:space-y-4">
             <div className="flex items-center justify-between gap-3 pb-2 border-b">
               <h2 className="text-xl font-semibold">Shipment Details</h2>
