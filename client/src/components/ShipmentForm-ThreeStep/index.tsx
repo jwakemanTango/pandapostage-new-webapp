@@ -189,7 +189,7 @@ export const ShipmentFormFull = ({
     return (
       <>
         {showBannerSummary && (
-          <div className="lg:block mb-4">
+          <div className="mb-4">
             <BannerLiveSummary formData={form.getValues()} currentStep="printLabel" formErrors={form.formState.errors} workflow="3-step" />
           </div>
         )}
@@ -233,7 +233,7 @@ export const ShipmentFormFull = ({
     return (
       <div className="flex flex-col h-full lg:h-auto">
         {showBannerSummary && (
-          <div className="lg:block mb-4">
+          <div className="mb-4">
             <BannerLiveSummary formData={form.getValues()} currentStep="selectRate" formErrors={form.formState.errors} workflow="3-step" />
           </div>
         )}
@@ -314,7 +314,7 @@ export const ShipmentFormFull = ({
     <Form {...form}>
       <div className="flex flex-col h-full lg:h-auto">
         {showBannerSummary && (
-          <div className="lg:block mb-4">
+          <div className="mb-4">
             <BannerLiveSummary formData={formValues} currentStep="shipment" formErrors={form.formState.errors} workflow="3-step" />
           </div>
         )}
