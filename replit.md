@@ -31,6 +31,12 @@ Preferred communication style: Simple, everyday language.
 - **Clear Errors on Saved Address Selection**: Selecting a saved address from the dropdown now immediately clears all validation errors for that address section (Ship From or Ship To) in both 3-step and 4-step flows.
 - **Clear Errors on Custom Package Selection**: Clicking any custom package preset button (Small Box, Medium Box, Large Box, USPS-Letter, UPS Parcel) now immediately clears all package validation errors in both workflows, similar to saved address behavior.
 - **Phone Validation**: Requires at least 10 digits. Valid formats: "(555) 123-4567", "555-123-4567", "5551234567".
+- **Package Validation Error Indicators**: All summary components (CompactLiveSummary, BannerLiveSummary, LiveSummary) now display validation error indicators for package details, matching the existing address error pattern:
+  - Red border-left-2 indicator on package section when errors exist
+  - Package icon and section title turn destructive red
+  - Shows "Invalid or incomplete" message when package data is invalid or missing
+  - Error detection checks for any package with validation errors in the packages array
+  - Errors clear immediately when valid package data is entered
 
 ## System Architecture
 
@@ -59,6 +65,7 @@ Preferred communication style: Simple, everyday language.
         - USPS-Letter: USPS, letter envelope, 0lb 1oz, 12x12x1 (USPS icon)
         - UPS Parcel: UPS, parcel, 1lb, 8x8x4 (UPS icon)
         - Visual separator (border) between Custom Packages and Package Details fields
+        - Additional visual separator between Carrier/Package Type fields and Weight/Dimension fields for improved visual hierarchy
         - Buttons use flex-wrap layout to stay within container boundaries
         - Carrier-specific icons from react-icons/si (SiUsps, SiUps, SiFedex)
     - Shared validation patterns and schemas, component composition, and constants for reusability.
