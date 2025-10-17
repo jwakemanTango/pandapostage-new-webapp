@@ -211,7 +211,7 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
             control={form.control}
             name={`${type}.city`}
@@ -250,21 +250,21 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
               </FormItem>
             )}
           />
-        </div>
 
-        <FormField
-          control={form.control}
-          name={`${type}.zipCode`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>ZIP Code *</FormLabel>
-              <FormControl>
-                <Input placeholder="12345" {...field} data-testid={`input-${type}-zip`} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name={`${type}.zipCode`}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ZIP Code *</FormLabel>
+                <FormControl>
+                  <Input placeholder="12345" {...field} data-testid={`input-${type}-zip`} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
       </div>
     );
   };

@@ -160,6 +160,7 @@ export const ShipmentForm = ({
     }
     
     setCurrentStep(currentStep + 1);
+    window.scrollTo(0, 0);
   };
 
   const handleBack = () => {
@@ -171,6 +172,8 @@ export const ShipmentForm = ({
       if (newStep === 1) {
         setFromAddressOpen(true);
       }
+      
+      window.scrollTo(0, 0);
     }
   };
 
@@ -186,6 +189,8 @@ export const ShipmentForm = ({
       if (step === 1) {
         setFromAddressOpen(true);
       }
+      
+      window.scrollTo(0, 0);
     }
   };
 
@@ -459,16 +464,14 @@ export const ShipmentForm = ({
   return (
     <>
       {showBannerSummary && (
-        <div className="mb-4">
-          <BannerLiveSummary 
-            formData={formValues} 
-            currentStep={getBannerStep()} 
-            formErrors={form.formState.errors}
-            workflow="4-step"
-          />
-        </div>
+        <BannerLiveSummary 
+          formData={formValues} 
+          currentStep={getBannerStep()} 
+          formErrors={form.formState.errors}
+          workflow="4-step"
+        />
       )}
-      <div className={`grid grid-cols-1 gap-6 ${showLiveSummary ? 'lg:grid-cols-[1fr_380px]' : ''}`}>
+      <div className={`grid grid-cols-1 gap-6 ${showLiveSummary ? 'lg:grid-cols-[1fr_380px]' : ''} pt-4`}>
         <div className="space-y-6">
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
             {renderStepContent()}
