@@ -143,6 +143,8 @@ export const CompactPackageForm = ({ form }: CompactPackageFormProps) => {
           />
         </div>
 
+        <div className="border-t my-3"></div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <FormField
             control={form.control}

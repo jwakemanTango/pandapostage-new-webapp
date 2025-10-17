@@ -272,6 +272,8 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
               />
             </div>
             
+            <div className="border-t my-4"></div>
+
             <div>
               <FormLabel className="text-sm font-medium">Weight</FormLabel>
               <div className="flex gap-4 mt-1.5">
@@ -522,6 +524,8 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
               </Select>
             </div>
           </div>
+
+          <div className="border-t my-4"></div>
 
           <div>
             <FormLabel className="text-sm font-medium">Weight</FormLabel>

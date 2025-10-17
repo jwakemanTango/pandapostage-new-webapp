@@ -19,6 +19,8 @@ export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErro
   
   const hasFromAddressErrors = formErrors?.fromAddress && Object.keys(formErrors.fromAddress).length > 0;
   const hasToAddressErrors = formErrors?.toAddress && Object.keys(formErrors.toAddress).length > 0;
+  const hasPackageErrors = formErrors?.packages && formErrors.packages.length > 0 && 
+    formErrors.packages.some((pkg: any) => pkg && Object.keys(pkg).length > 0);
 
   const steps3 = [
     { id: "shipment", label: "Shipment", icon: Truck },
@@ -118,14 +120,22 @@ export const BannerLiveSummary = ({ formData, currentStep = "shipment", formErro
               </div>
 
               {/* Package Info */}
-              {packages && packages.length > 0 && (
+              {(packages && packages.length > 0) || hasPackageErrors ? (
                 <div className="flex items-center gap-2 min-w-0">
-                  <Package className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                  <Package className={`h-3.5 w-3.5 shrink-0 ${hasPackageErrors ? 'text-destructive' : 'text-muted-foreground'}`} />
                   <div className="text-xs truncate">
-                    <span className="font-medium">{packages.length} {packages.length === 1 ? 'package' : 'packages'}</span>
+                    {hasPackages ? (
+                      <span className={`font-medium ${hasPackageErrors ? 'text-destructive' : ''}`}>
+                        {packages.length} {packages.length === 1 ? 'package' : 'packages'}
+                      </span>
+                    ) : (
+                      <span className={hasPackageErrors ? 'text-destructive' : 'text-muted-foreground'}>
+                        Package: {hasPackageErrors ? 'Invalid' : 'Not set'}
+                      </span>
+                    )}
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
           )}
           </div>

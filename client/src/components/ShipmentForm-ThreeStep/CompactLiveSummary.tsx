@@ -19,6 +19,8 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment", formErr
   
   const hasFromAddressErrors = formErrors?.fromAddress && Object.keys(formErrors.fromAddress).length > 0;
   const hasToAddressErrors = formErrors?.toAddress && Object.keys(formErrors.toAddress).length > 0;
+  const hasPackageErrors = formErrors?.packages && formErrors.packages.length > 0 && 
+    formErrors.packages.some((pkg: any) => pkg && Object.keys(pkg).length > 0);
   
   const selectedServices = Object.entries(additionalServices || {})
     .filter(([_, value]) => value === true)
@@ -125,12 +127,12 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment", formErr
             )}
           </div>
 
-          {hasPackages && (
-            <div>
-              <div className="flex items-center gap-1.5 mb-1.5">
-                <Package className="h-4 w-4 text-muted-foreground" />
-                <h4 className="font-semibold text-sm">Package Details</h4>
-              </div>
+          <div className={`${hasPackageErrors ? 'border-l-2 border-destructive pl-2 -ml-2' : ''}`}>
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <Package className={`h-4 w-4 ${hasPackageErrors ? 'text-destructive' : 'text-muted-foreground'}`} />
+              <h4 className={`font-semibold text-sm ${hasPackageErrors ? 'text-destructive' : ''}`}>Package Details</h4>
+            </div>
+            {hasPackages ? (
               <div className="text-sm space-y-1.5 pl-5">
                 {packages?.map((pkg, index) => (
                   <div key={index} className="space-y-0.5">
@@ -146,8 +148,12 @@ export const CompactLiveSummary = ({ formData, currentStep = "shipment", formErr
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <p className={`text-sm pl-5 ${hasPackageErrors ? 'text-destructive' : 'text-muted-foreground'}`}>
+                {hasPackageErrors ? 'Invalid or incomplete' : 'Not entered'}
+              </p>
+            )}
+          </div>
 
           {selectedServices.length > 0 && (
             <div>
