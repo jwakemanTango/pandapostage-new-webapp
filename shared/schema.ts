@@ -74,6 +74,7 @@ export const rateSchema = z.object({
   retailRate: z.string().optional(),
   labelUrl: z.string().optional(),
   labelFormat: z.enum(['pdf', 'png', 'zpl']).optional(),
+  trackingNumber: z.string().optional(),
   currency: z.string().optional(),
   estimatedDelivery: z.string().optional(),
   carrierAccountId: z.string().optional(),

@@ -62,7 +62,7 @@ export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview
                 
                 <div className="grid grid-cols-[90px_1fr] items-center gap-2">
                   <p className="text-sm text-muted-foreground">Rate:</p>
-                  <p className="text-sm font-semibold">${purchasedLabel.rate}</p>
+                  <p className="text-sm font-semibold">{purchasedLabel.rate}</p>
                 </div>
 
                 {purchasedLabel.deliveryDays && (
@@ -74,7 +74,7 @@ export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview
 
                 <div className="grid grid-cols-[90px_1fr] items-center gap-2">
                   <p className="text-sm text-muted-foreground">Tracking:</p>
-                  <p className="text-sm font-mono font-semibold">1Z999AA10123456784</p>
+                  <p className="text-sm font-mono font-semibold">{purchasedLabel.trackingNumber || 'N/A'}</p>
                 </div>
 
                 {purchasedLabel.deliveryDate && (
@@ -118,7 +118,7 @@ export const LabelSummary = ({ purchasedLabel, onCreateAnother, showLabelPreview
               <p className="text-sm text-muted-foreground mb-2">Label Preview</p>
               <div className="border rounded-sm overflow-hidden bg-white">
                 <img 
-                  src={labelPreviewUrl} 
+                  src={purchasedLabel.labelUrl || labelPreviewUrl} 
                   alt="Shipping Label Preview" 
                   className="w-full h-auto"
                   data-testid="img-label-preview"
