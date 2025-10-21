@@ -20,7 +20,7 @@ import RatesSelection from "../ShipmentForm-FourStep/RatesSelection";
 
 interface ShipmentFormFullProps {
   onGetRates?: (data: any) => void;
-  onPurchaseLabel?: (data: any) => void;
+  onPurchaseLabel?: (data: any) => Promise<any> | any | void;
   rates?: Rate[];
   isLoadingRates?: boolean;
   isPurchasing?: boolean;
@@ -44,7 +44,7 @@ export const ShipmentFormFull = ({
   showBannerSummary = false
 }: ShipmentFormFullProps) => {
   const [viewState, setViewState] = useState<ViewState>("form");
-  const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
+  const [purchasedLabel, setPurchasedLabel] = useState<any | null>(null);
   const packageSectionRef = useRef<HTMLDivElement>(null);
 
   const { data: addresses } = useQuery<Address[]>({
@@ -148,10 +148,28 @@ export const ShipmentFormFull = ({
     window.scrollTo(0, 0);
   };
 
-  const handlePurchaseLabel = (rate: Rate) => {
-    setPurchasedLabel(rate);
+  const handlePurchaseLabel = async (rate: Rate) => {
+    const data = rate as any;
+
+    try {
+      const result = onPurchaseLabel?.(data);
+
+      if (result && typeof (result as any).then === "function") {
+        const purchased = await result;
+        if (purchased) {
+          setPurchasedLabel(purchased as any);
+        }
+      } else if (result && typeof result === "object") {
+        setPurchasedLabel(result as any);
+      } else {
+        // No returned purchase object — don't set from rate
+      }
+    } catch (err) {
+      console.error("Purchase failed", err);
+      return;
+    }
+
     setViewState("label");
-    onPurchaseLabel?.(rate);
     window.scrollTo(0, 0);
   };
 

@@ -17,7 +17,7 @@ const CreateShipment = () => {
   const [formView, setFormView] = useState<FormView>("four-step");
   const [useCompactAddresses, setUseCompactAddresses] = useState(true);
   const [showLiveSummary, setShowLiveSummary] = useState(true);
-  const [showLabelPreview, setShowLabelPreview] = useState(false);
+  const [showLabelPreview, setShowLabelPreview] = useState(true);
   const [showBannerSummary, setShowBannerSummary] = useState(true);
   const [showDebugPanel, setShowDebugPanel] = useState(false);
   const [rates, setRates] = useState<Rate[]>([]);
@@ -72,9 +72,9 @@ const CreateShipment = () => {
     getRatesMutation.mutate(data);
   };
 
-  const handlePurchaseLabel = (data: any) => {
+  const handlePurchaseLabel = async (data: any) => {
     console.log("Purchasing label:", data);
-    
+
     // Build the purchase request - data should have provider/shipmentId/rateId at top level
     const purchaseRequest = {
       provider: data.provider,
@@ -82,8 +82,15 @@ const CreateShipment = () => {
       rateId: data.rateId,
       reference: data.reference,
     };
-    
-    purchaseLabelMutation.mutate(purchaseRequest);
+
+    // Use mutateAsync so callers can await the network result
+    try {
+      const result = await purchaseLabelMutation.mutateAsync(purchaseRequest);
+      return result;
+    } catch (err) {
+      // Re-throw so the caller can handle the error (ShipmentForm will catch and abort advancing)
+      throw err;
+    }
   };
 
   return (

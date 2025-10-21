@@ -5,7 +5,7 @@ import { Rate } from "@shared/schema";
 import labelPreviewUrl from "@assets/label_1760604447339.png";
 
 interface LabelSummaryProps {
-  purchasedLabel: Rate;
+  purchasedLabel: any;
   onCreateAnother: () => void;
   showLabelPreview?: boolean;
 }

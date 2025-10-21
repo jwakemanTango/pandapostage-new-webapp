@@ -20,7 +20,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 
 interface ShipmentFormProps {
   onGetRates?: (data: any) => void;
-  onPurchaseLabel?: (data: any) => void;
+  // Parent may perform the purchase and return the purchased label object synchronously or as a Promise
+  onPurchaseLabel?: (data: any) => Promise<any> | any | void;
   rates?: Rate[];
   isLoadingRates?: boolean;
   isPurchasing?: boolean;
@@ -43,7 +44,7 @@ export const ShipmentForm = ({
 }: ShipmentFormProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const [purchasedLabel, setPurchasedLabel] = useState<Rate | null>(null);
+  const [purchasedLabel, setPurchasedLabel] = useState<any | null>(null);
   const [ratesAvailable, setRatesAvailable] = useState(false);
   const [fromAddressOpen, setFromAddressOpen] = useState(true);
   
@@ -196,20 +197,39 @@ export const ShipmentForm = ({
     }
   };
 
-  const handlePurchase = (rate: Rate) => {
-    setPurchasedLabel(rate);
-    
+  const handlePurchase = async (rate: Rate) => {
+
     const data = form.getValues();
-    onPurchaseLabel?.({
+    const payload = {
       ...data,
       ...rate,
       rateSelection: {
         service: rate.service,
         rate: rate.rate,
-        carrierId: rate.carrierId
+        carrierId: rate.carrierId,
+      },
+    };
+    try {
+      const result = onPurchaseLabel?.(payload);
+
+      if (result && typeof (result as any).then === "function") {
+        // Parent returned a Promise — await the purchased label
+        const purchased = await result;
+        if (purchased) {
+          setPurchasedLabel(purchased as any);
+        }
+      } else if (result && typeof result === "object") {
+        // Parent returned a value synchronously
+        setPurchasedLabel(result as any);
+      } else {
+        // Parent didn't return an object — don't set purchasedLabel to the raw rate
       }
-    });
-    
+    } catch (err) {
+      console.error("Purchase handler failed", err);
+      // If purchase failed, bail out and don't advance the workflow
+      return;
+    }
+
     if (!completedSteps.includes(3)) {
       setCompletedSteps([...completedSteps, 3]);
     }
