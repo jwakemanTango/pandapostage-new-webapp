@@ -4,12 +4,14 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import CreateShipment from "@/pages/CreateShipment";
+import LabelSummaryExample from "@/pages/examples/LabelSummary";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={CreateShipment} />
+      <Route path="/examples/label-summary" component={LabelSummaryExample} />
       <Route component={NotFound} />
     </Switch>
   );

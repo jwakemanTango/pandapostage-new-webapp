@@ -44,3 +44,18 @@ Preferred communication style: Simple, everyday language.
 - **drizzle-kit**: Database migration and schema management.
 - **esbuild**: Fast server bundling.
 - **Google Fonts**: Inter, Roboto Mono.
+
+## Example Components
+
+**Location**: `client/src/pages/examples/`
+
+### LabelSummary Example
+**Route**: `/examples/label-summary`
+
+Demonstrates the LabelSummary component with real EasyPost API response data, showing:
+- Purchased label display with carrier, service, and pricing details
+- Tracking number from actual API response (USPS format)
+- Label preview using real S3-hosted label URL
+- Delivery time estimation (4 business days)
+- Both "with preview" and "without preview" variations
+- Raw API response data for reference (rate selection and purchase responses)

@@ -1,0 +1,63 @@
+{
+    "rates": [
+        {
+            "provider": "EasyPost",
+            "carrier": "USPS",
+            "service": "GroundAdvantage",
+            "total": 8.54,
+            "currency": "USD",
+            "estimatedDays": 4,
+            "estimatedDelivery": "2025-10-25T11:54:36.3411999Z",
+            "rateId": "rate_fa79a04204ca48edaa052ac2eb841573",
+            "shipmentId": "shp_f1de7249dae8463fb3370476254e32ff",
+            "carrierAccountId": "ca_24f2cb44189240e7a259155dcd33dd79",
+            "billingType": "easypost",
+            "reference": null,
+            "retailRate": 11.55,
+            "listRate": 9.77,
+            "accountRate": 8.54
+        },
+        {
+            "provider": "EasyPost",
+            "carrier": "USPS",
+            "service": "Priority",
+            "total": 12.59,
+            "currency": "USD",
+            "estimatedDays": 2,
+            "estimatedDelivery": "2025-10-23T11:54:36.3411957Z",
+            "rateId": "rate_ab247921d480432aacb845126ae84870",
+            "shipmentId": "shp_f1de7249dae8463fb3370476254e32ff",
+            "carrierAccountId": "ca_24f2cb44189240e7a259155dcd33dd79",
+            "billingType": "easypost",
+            "reference": null,
+            "retailRate": 15.35,
+            "listRate": 12.75,
+            "accountRate": 12.59
+        },
+        {
+            "provider": "EasyPost",
+            "carrier": "USPS",
+            "service": "Express",
+            "total": 47.20,
+            "currency": "USD",
+            "estimatedDays": 2,
+            "estimatedDelivery": "2025-10-23T11:54:36.3411892Z",
+            "rateId": "rate_fda6503b9f2b40f28533a505f70ebc30",
+            "shipmentId": "shp_f1de7249dae8463fb3370476254e32ff",
+            "carrierAccountId": "ca_24f2cb44189240e7a259155dcd33dd79",
+            "billingType": "easypost",
+            "reference": null,
+            "retailRate": 55.30,
+            "listRate": 47.20,
+            "accountRate": 47.20
+        }
+    ],
+    "messages": [
+        {
+            "provider": "EasyPost",
+            "carrier": "UPSDAP",
+            "message": "account_number: none is not an allowed value",
+            "type": "rate_error"
+        }
+    ]
+}
