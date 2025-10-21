@@ -188,7 +188,7 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
           name={`${type}.addressLine1`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Street Address *</FormLabel>
+              <FormLabel>Address Line 1*</FormLabel>
               <FormControl>
                 <Input placeholder="123 Main St" {...field} data-testid={`input-${type}-address1`} />
               </FormControl>

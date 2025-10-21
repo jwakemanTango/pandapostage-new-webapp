@@ -1,26 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { createShipmentSchema, ShipmentFormData, Rate } from "@shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import AddressForm from "./AddressForm";
 import AddressFormCombined from "./AddressFormCombined";
 import PackageForm from "./PackageForm";
-import RatesSelection from "./RatesSelection";
+import RatesSelection from "../RatesSelection";
 import AdditionalServices from "./AdditionalServices";
 import { LiveSummary } from "./LiveSummary";
-import { LabelSummary } from "./LabelSummary";
-import { BannerLiveSummary } from "../ShipmentForm-ThreeStep/BannerLiveSummary";
-import { MapPin, Package, DollarSign, Printer, Loader2, ArrowLeft, ArrowRight, ChevronDown, PackageOpen, Navigation, RotateCcw } from "lucide-react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { LabelSummary } from "../LabelSummary";
+import { BannerLiveSummary } from "../BannerLiveSummary";
+import {
+  MapPin,
+  Package,
+  DollarSign,
+  Printer,
+  Loader2,
+  ArrowLeft,
+  ArrowRight,
+  Mail,
+  Receipt,
+  Plus,
+} from "lucide-react";
+import { printShippingLabel } from "@/utils/printLabel";
 
 interface ShipmentFormProps {
   onGetRates?: (data: any) => void;
-  // Parent may perform the purchase and return the purchased label object synchronously or as a Promise
   onPurchaseLabel?: (data: any) => Promise<any> | any | void;
   rates?: Rate[];
   isLoadingRates?: boolean;
@@ -31,8 +38,8 @@ interface ShipmentFormProps {
   showBannerSummary?: boolean;
 }
 
-export const ShipmentForm = ({ 
-  onGetRates, 
+export const ShipmentForm = ({
+  onGetRates,
   onPurchaseLabel,
   rates = [],
   isLoadingRates = false,
@@ -40,392 +47,263 @@ export const ShipmentForm = ({
   useCompactAddresses = false,
   showLiveSummary = true,
   showLabelPreview = true,
-  showBannerSummary = false
+  showBannerSummary = false,
 }: ShipmentFormProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [purchasedLabel, setPurchasedLabel] = useState<any | null>(null);
-  const [ratesAvailable, setRatesAvailable] = useState(false);
-  const [fromAddressOpen, setFromAddressOpen] = useState(true);
-  
-  
+  const [selectedRate, setSelectedRate] = useState<Rate | null>(null);
+
   const form = useForm<ShipmentFormData>({
     resolver: zodResolver(createShipmentSchema),
     mode: "onChange",
-    reValidateMode: "onChange",
     defaultValues: {
-      fromAddress: {
-        name: "",
-        company: "",
-        phone: "",
-        addressLine1: "",
-        addressLine2: "",
-        city: "",
-        state: "",
-        zipCode: "",
-        country: "US",
-      },
-      toAddress: {
-        name: "",
-        company: "",
-        phone: "",
-        addressLine1: "",
-        addressLine2: "",
-        city: "",
-        state: "",
-        zipCode: "",
-        country: "US",
-      },
-      packages: [
-        {
-          packageType: "parcel",
-          weightLbs: "",
-          weightOz: "0",
-          length: "",
-          width: "",
-          height: "",
-          carrier: "any",
-        }
-      ],
-      rateSelection: {
-        service: "",
-        rate: "",
-        carrierId: undefined,
-      },
-      additionalServices: {
-        saturdayDelivery: false,
-        requireSignature: false,
-        expressMailWaiver: false,
-        insuranceValue: false,
-        returnLabel: false,
-        weekendService: false,
-        additionalHandling: false,
-        certifiedMail: false,
-      }
+      fromAddress: { country: "US" },
+      toAddress: { country: "US" },
+      packages: [{ packageType: "parcel", carrier: "any" }],
     },
   });
 
-  const [formValues, setFormValues] = useState<ShipmentFormData>(form.getValues());
-  
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      setFormValues(value as ShipmentFormData);
-      
-      if (currentStep === 1 || currentStep === 2) {
-        setRatesAvailable(false);
-      }
-    });
-    
-    return () => subscription.unsubscribe();
-  }, [currentStep]);
-
-  const validateStep = async (step: number): Promise<boolean> => {
-    if (step === 1) {
-      return await form.trigger(["fromAddress", "toAddress"]);
-    } else if (step === 2) {
-      return await form.trigger("packages");
-    }
-    return true;
-  };
-
   const handleNext = async () => {
-    const isValid = await validateStep(currentStep);
-    
-    if (!isValid) {
-      // If step 1 validation fails in non-compact mode, check if fromAddress is invalid and force it open
-      if (currentStep === 1 && !useCompactAddresses) {
-        const fromAddressValid = await form.trigger("fromAddress");
-        if (!fromAddressValid) {
-          setFromAddressOpen(true);
-        }
-      }
-      return;
-    }
+    const valid =
+      currentStep === 1
+        ? await form.trigger(["fromAddress", "toAddress"])
+        : currentStep === 2
+          ? await form.trigger("packages")
+          : true;
+    if (!valid) return;
 
     if (currentStep === 2) {
-      const fromAddress = form.getValues("fromAddress");
-      const toAddress = form.getValues("toAddress");
-      const packages = form.getValues("packages");
-      const additionalServices = form.getValues("additionalServices");
-      
       onGetRates?.({
-        fromAddress,
-        toAddress,
-        packages,
-        additionalServices
+        fromAddress: form.getValues("fromAddress"),
+        toAddress: form.getValues("toAddress"),
+        packages: form.getValues("packages"),
+        additionalServices: form.getValues("additionalServices"),
       });
-      
-      setRatesAvailable(true);
     }
 
-    if (!completedSteps.includes(currentStep)) {
+    if (!completedSteps.includes(currentStep))
       setCompletedSteps([...completedSteps, currentStep]);
-    }
-    
     setCurrentStep(currentStep + 1);
     window.scrollTo(0, 0);
   };
 
   const handleBack = () => {
-    if (currentStep > 1) {
-      const newStep = currentStep - 1;
-      setCurrentStep(newStep);
-      
-      // Reopen From Address section when going back to step 1
-      if (newStep === 1) {
-        setFromAddressOpen(true);
-      }
-      
-      window.scrollTo(0, 0);
-    }
-  };
-
-  const goToStep = (step: number) => {
-    if (step === 3 && purchasedLabel) {
-      return;
-    }
-    
-    if (step <= Math.max(...completedSteps, 0) + 1) {
-      setCurrentStep(step);
-      
-      // Reopen From Address section when navigating to step 1
-      if (step === 1) {
-        setFromAddressOpen(true);
-      }
-      
-      window.scrollTo(0, 0);
-    }
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
   const handlePurchase = async (rate: Rate) => {
-
-    const data = form.getValues();
-    const payload = {
-      ...data,
-      ...rate,
-      rateSelection: {
-        service: rate.service,
-        rate: rate.rate,
-        carrierId: rate.carrierId,
-      },
-    };
     try {
-      const result = onPurchaseLabel?.(payload);
+      const purchasePayload = {
+        provider: rate.provider || rate.carrier || "unknown",
+        shipmentId: rate.shipmentId,
+        rateId: rate.id || rate.rateId,
+      };
 
-      if (result && typeof (result as any).then === "function") {
-        // Parent returned a Promise — await the purchased label
-        const purchased = await result;
-        if (purchased) {
-          setPurchasedLabel(purchased as any);
-        }
-      } else if (result && typeof result === "object") {
-        // Parent returned a value synchronously
-        setPurchasedLabel(result as any);
-      } else {
-        // Parent didn't return an object — don't set purchasedLabel to the raw rate
+      if (
+        !purchasePayload.provider ||
+        !purchasePayload.shipmentId ||
+        !purchasePayload.rateId
+      ) {
+        console.error("Missing required purchase fields:", purchasePayload);
+        throw new Error("Missing required fields for purchase");
+      }
+
+      const result = await onPurchaseLabel?.(purchasePayload);
+
+      if (result) {
+        setPurchasedLabel(result);
+        setCompletedSteps([...completedSteps, 3]);
+        setCurrentStep(4);
       }
     } catch (err) {
-      console.error("Purchase handler failed", err);
-      // If purchase failed, bail out and don't advance the workflow
-      return;
+      console.error("Purchase failed:", err);
     }
-
-    if (!completedSteps.includes(3)) {
-      setCompletedSteps([...completedSteps, 3]);
-    }
-    setCurrentStep(4);
   };
 
-  const handleCreateAnother = () => {
-    form.reset();
-    setCurrentStep(1);
-    setCompletedSteps([]);
-    setPurchasedLabel(null);
-    setRatesAvailable(false);
-    setFromAddressOpen(true);
-  };
+  const renderStepNavigation = () => {
+    const baseFooterClasses =
+      "sticky bottom-0 bg-background/95 backdrop-blur-sm border-t p-4";
+    const footerInner =
+      "w-full flex flex-col sm:flex-row gap-3";
 
-  const handleStartOver = () => {
-    form.reset();
-    setCurrentStep(1);
-    setCompletedSteps([]);
-    setPurchasedLabel(null);
-    setRatesAvailable(false);
-    setFromAddressOpen(true);
-  };
-
-  const renderStepContent = () => {
     switch (currentStep) {
       case 1:
         return (
-          <Card className="bg-gradient-to-br from-background to-muted/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between gap-3 mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <MapPin className="h-5 w-5 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Shipping Addresses</h3>
-                </div>
+          <>
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-primary" /> Shipping Addresses
+                </h3>
+                <AddressFormCombined form={form} />
+              </CardContent>
+            </Card>
+
+            <div className={baseFooterClasses}>
+              <div className={footerInner}>
                 <Button
                   type="button"
-                  onClick={handleStartOver}
-                  variant="ghost"
-                  size="sm"
-                  className="gap-2"
-                  data-testid="button-start-over"
+                  onClick={handleNext}
+                  className="w-full gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-11"
+                  size="lg"
                 >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Start Over</span>
+                  Next
+                  <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
-              
-              <Form {...form}>
-                <form className="space-y-6">
-                  {useCompactAddresses ? (
-                    <AddressFormCombined 
-                      form={form}
-                      onAddressSelected={() => setFromAddressOpen(false)}
-                    />
-                  ) : (
-                    <>
-                      <Collapsible open={fromAddressOpen} onOpenChange={setFromAddressOpen}>
-                        <CollapsibleTrigger className="flex items-center justify-between w-full group" data-testid="button-toggle-from-address">
-                          <div className="flex items-center gap-2">
-                            <PackageOpen className="h-4 w-4 text-muted-foreground" />
-                            <h3 className="text-base font-semibold">From Address</h3>
-                          </div>
-                          <ChevronDown className={`h-4 w-4 transition-transform ${fromAddressOpen ? '' : '-rotate-90'}`} />
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="pt-4">
-                          <AddressForm 
-                            form={form} 
-                            type="fromAddress" 
-                            title="" 
-                            isOpen={fromAddressOpen}
-                            onOpenChange={setFromAddressOpen}
-                            onAddressSelected={() => setFromAddressOpen(false)}
-                          />
-                        </CollapsibleContent>
-                      </Collapsible>
-                      
-                      <div className="border-t pt-6">
-                        <div className="flex items-center gap-2 mb-4">
-                          <Navigation className="h-4 w-4 text-muted-foreground" />
-                          <h3 className="text-base font-semibold">To Address</h3>
-                        </div>
-                        <AddressForm form={form} type="toAddress" title="" />
-                      </div>
-                    </>
-                  )}
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
+            </div>
+          </>
         );
 
       case 2:
         return (
-          <Card className="bg-gradient-to-br from-background to-muted/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between gap-3 mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <Package className="h-5 w-5 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Package & Services</h3>
+          <>
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Package className="h-5 w-5 text-primary" /> Package & Services
+                </h3>
+                <PackageForm form={form} />
+                <div className="border-t pt-5">
+                  <AdditionalServices form={form} />
                 </div>
+              </CardContent>
+            </Card>
+
+            <div className={baseFooterClasses}>
+              <div className={footerInner}>
                 <Button
                   type="button"
-                  onClick={handleStartOver}
-                  variant="ghost"
-                  size="sm"
-                  className="gap-2"
-                  data-testid="button-start-over"
+                  variant="outline"
+                  onClick={handleBack}
+                  className="w-full sm:w-auto flex-1 gap-2 h-11"
                 >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Start Over</span>
+                  <ArrowLeft className="h-4 w-4" /> Back
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleNext}
+                  disabled={isLoadingRates}
+                  className="w-full sm:w-auto flex-1 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-11"
+                  size="lg"
+                >
+                  {isLoadingRates ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" /> Loading Rates...
+                    </>
+                  ) : (
+                    <>
+                      Get Rates
+                      <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
                 </Button>
               </div>
-              
-              <Form {...form}>
-                <form className="space-y-5">
-                  <PackageForm form={form} />
-                  <div className="border-t pt-5">
-                    <AdditionalServices form={form} />
-                  </div>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
+            </div>
+          </>
         );
 
       case 3:
         return (
-          <Card className="bg-gradient-to-br from-background to-muted/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between gap-3 mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <DollarSign className="h-5 w-5 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Select Shipping Rate</h3>
-                </div>
+          <>
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <DollarSign className="h-5 w-5 text-primary" /> Select Shipping Rate
+                </h3>
+                <RatesSelection
+                  rates={rates}
+                  isLoading={isLoadingRates}
+                  onSelectRate={setSelectedRate}
+                  selectedRateId={selectedRate?.id}
+                />
+              </CardContent>
+            </Card>
+
+            <div className={baseFooterClasses}>
+              <div className={footerInner}>
                 <Button
                   type="button"
-                  onClick={handleStartOver}
-                  variant="ghost"
-                  size="sm"
-                  className="gap-2"
-                  data-testid="button-start-over"
+                  variant="outline"
+                  onClick={handleBack}
+                  className="w-full sm:w-auto flex-1 gap-2 h-11"
                 >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Start Over</span>
+                  <ArrowLeft className="h-4 w-4" /> Back
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => handlePurchase(selectedRate!)}
+                  disabled={!selectedRate || isPurchasing}
+                  className="w-full sm:w-auto flex-1 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-11"
+                  size="lg"
+                >
+                  {isPurchasing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" /> Purchasing...
+                    </>
+                  ) : (
+                    "Buy Label"
+                  )}
                 </Button>
               </div>
-              <RatesSelection 
-                rates={rates}
-                isLoading={isLoadingRates}
-                onPurchase={handlePurchase}
-                isPurchasing={isPurchasing}
-              />
-            </CardContent>
-          </Card>
+            </div>
+          </>
         );
 
       case 4:
         return (
-          <Card className="bg-gradient-to-br from-background to-muted/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between gap-3 mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <Printer className="h-5 w-5 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Label Purchased</h3>
+          <>
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Printer className="h-5 w-5 text-primary" /> Label Purchased
+                </h3>
+                {purchasedLabel && (
+                  <LabelSummary
+                    purchasedLabel={purchasedLabel}
+                    formData={form.getValues()}
+                    onCreateAnother={() => window.location.reload()}
+                    showLabelPreview={showLabelPreview}
+                    hidePrintButton={typeof window !== "undefined" && window.innerWidth < 1024}
+                  />
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Sticky footer — visible only on mobile/tablet */}
+            {purchasedLabel && (
+              <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm border-t p-4 sm:hidden">
+                <div className="w-full flex flex-col gap-3">
+                  {/* Primary CTA - Print Label */}
+                  <Button
+                    onClick={() =>
+                      printShippingLabel(
+                        purchasedLabel.labelUrl,
+                        purchasedLabel.trackingNumber,
+                        4,
+                        6,
+                        purchasedLabel.fileType
+                      )
+                    }
+                    className="w-full gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-11"
+                  >
+                    <Printer className="h-4 w-4" />
+                    Print Label
+                  </Button>
+
+                  {/* Secondary CTA - Create Another Shipment */}
+                  <Button
+                    onClick={() => window.location.reload()}
+                    className="w-full gap-2 bg-slate-600 hover:bg-slate-700 text-white font-medium h-11"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Create Another Shipment
+                  </Button>
                 </div>
-                <Button
-                  type="button"
-                  onClick={handleStartOver}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  data-testid="button-start-over"
-                >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  Start Over
-                </Button>
               </div>
-              
-              {purchasedLabel && (
-                <LabelSummary 
-                  purchasedLabel={purchasedLabel}
-                  onCreateAnother={handleCreateAnother}
-                  showLabelPreview={showLabelPreview}
-                />
-              )}
-            </CardContent>
-          </Card>
+            )}
+          </>
         );
 
       default:
@@ -433,88 +311,52 @@ export const ShipmentForm = ({
     }
   };
 
-  const renderNavigationButtons = () => {
-    if (currentStep === 4) {
-      return null;
-    }
+  // Automatically hide sidebar on step 4
+  const shouldShowLiveSummary = showLiveSummary && currentStep !== 4;
 
-    return (
-      <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm border-t lg:relative lg:bg-transparent lg:border-0 p-4 lg:p-0 -mx-4 lg:mx-0">
-        <div className="flex gap-3">
-          {currentStep > 1 && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleBack}
-              className="gap-2"
-              size="lg"
-              data-testid="button-back"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </Button>
-          )}
-          
-          {currentStep !== 3 && (
-            <Button
-              type="button"
-              onClick={handleNext}
-              disabled={isLoadingRates}
-              className="flex-1 gap-2"
-              size="lg"
-              data-testid={currentStep === 2 ? "button-get-rates" : "button-next"}
-            >
-              {isLoadingRates && <Loader2 className="h-4 w-4 animate-spin" />}
-              {currentStep === 2 
-                ? (isLoadingRates ? 'Loading Rates...' : 'Get Rates')
-                : 'Next'
-              }
-              {!isLoadingRates && currentStep !== 2 && <ArrowRight className="h-4 w-4" />}
-            </Button>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const getBannerStep = (): "addresses" | "packages" | "rates" | "label" => {
-    if (currentStep === 1) return "addresses";
-    if (currentStep === 2) return "packages";
-    if (currentStep === 3) return "rates";
-    return "label";
-  };
-  
   return (
     <>
       {showBannerSummary && (
-        <BannerLiveSummary 
-          formData={formValues} 
-          currentStep={getBannerStep()} 
+        <BannerLiveSummary
+          formData={form.getValues()}
+          currentStep={
+            currentStep === 1
+              ? "addresses"
+              : currentStep === 2
+                ? "packages"
+                : currentStep === 3
+                  ? "rates"
+                  : "label"
+          }
           formErrors={form.formState.errors}
           workflow="4-step"
         />
       )}
-      <div className={`grid grid-cols-1 gap-6 ${showLiveSummary ? 'lg:grid-cols-[1fr_380px]' : ''} pt-4`}>
-        <div className="space-y-6">
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-            {renderStepContent()}
-          </div>
-          {renderNavigationButtons()}
-        </div>
 
-        {showLiveSummary && (
-          <div className="hidden lg:block">
-            <LiveSummary 
-              formData={formValues}
-              currentStep={currentStep}
-              completedSteps={completedSteps}
-              purchasedLabel={purchasedLabel}
-              onStepClick={goToStep}
-              formErrors={form.formState.errors}
-            />
+      <Form {...form}>
+        <div
+          className={`grid grid-cols-1 gap-6 ${shouldShowLiveSummary ? "lg:grid-cols-[1fr_380px]" : ""
+            } pt-4`}
+        >
+          <div className="space-y-6">
+            {renderStepNavigation()}
           </div>
-        )}
-      </div>
+
+          {shouldShowLiveSummary && (
+            <div className="hidden lg:block">
+              <LiveSummary
+                formData={form.getValues()}
+                currentStep={currentStep}
+                completedSteps={completedSteps}
+                purchasedLabel={purchasedLabel}
+                onStepClick={(s) => setCurrentStep(s)}
+                formErrors={form.formState.errors}
+              />
+            </div>
+          )}
+        </div>
+      </Form>
+
     </>
   );
 };

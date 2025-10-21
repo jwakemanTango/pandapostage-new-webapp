@@ -1,4 +1,4 @@
-import { LabelSummary } from "@/components/ShipmentForm-FourStep/LabelSummary";
+import { LabelSummary } from "@/components/LabelSummary";
 import { Rate } from "@shared/schema";
 
 /**

@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package, MapPin, CheckCircle2, DollarSign, ChevronRight, Lock } from "lucide-react";
 import { ShipmentFormData, Rate } from "@shared/schema";
@@ -14,25 +14,29 @@ interface LiveSummaryProps {
   formErrors?: any;
 }
 
-export const LiveSummary = ({ 
-  formData, 
-  currentStep, 
+export const LiveSummary = ({
+  formData,
+  currentStep,
   completedSteps,
   purchasedLabel,
   onStepClick,
-  formErrors 
+  formErrors,
 }: LiveSummaryProps) => {
   const { fromAddress, toAddress, packages, additionalServices } = formData || {};
-  
+
   const hasFromAddress = fromAddress?.name && fromAddress?.city && fromAddress?.state;
   const hasToAddress = toAddress?.name && toAddress?.city && toAddress?.state;
   const hasPackages = packages && packages.length > 0 && packages[0]?.weightLbs;
-  
-  const hasFromAddressErrors = formErrors?.fromAddress && Object.keys(formErrors.fromAddress).length > 0;
-  const hasToAddressErrors = formErrors?.toAddress && Object.keys(formErrors.toAddress).length > 0;
-  const hasPackageErrors = formErrors?.packages && formErrors.packages.length > 0 && 
+
+  const hasFromAddressErrors =
+    formErrors?.fromAddress && Object.keys(formErrors.fromAddress).length > 0;
+  const hasToAddressErrors =
+    formErrors?.toAddress && Object.keys(formErrors.toAddress).length > 0;
+  const hasPackageErrors =
+    formErrors?.packages &&
+    formErrors.packages.length > 0 &&
     formErrors.packages.some((pkg: any) => pkg && Object.keys(pkg).length > 0);
-  
+
   const selectedServices = Object.entries(additionalServices || {})
     .filter(([_, value]) => value === true)
     .map(([key]) => {
@@ -44,46 +48,30 @@ export const LiveSummary = ({
         returnLabel: "Return Label",
         weekendService: "Weekend Service",
         additionalHandling: "Additional Handling",
-        certifiedMail: "Certified Mail"
+        certifiedMail: "Certified Mail",
       };
       return serviceLabels[key] || key;
     });
 
   const steps = [
-    { 
-      number: 1, 
-      label: "Addresses", 
-      icon: MapPin,
-      canClick: true
-    },
-    { 
-      number: 2, 
-      label: "Package & Services", 
-      icon: Package,
-      canClick: completedSteps.includes(1)
-    },
-    { 
-      number: 3, 
-      label: "Rate Selection", 
-      icon: DollarSign,
-      canClick: completedSteps.includes(2) && !purchasedLabel
-    },
-    { 
-      number: 4, 
-      label: "Label", 
-      icon: CheckCircle2,
-      canClick: completedSteps.includes(3)
-    },
+    { number: 1, label: "Addresses", icon: MapPin, canClick: true },
+    { number: 2, label: "Package & Services", icon: Package, canClick: completedSteps.includes(1) },
+    { number: 3, label: "Rate Selection", icon: DollarSign, canClick: completedSteps.includes(2) && !purchasedLabel },
+    { number: 4, label: "Label", icon: CheckCircle2, canClick: completedSteps.includes(3) },
   ];
 
   const isStepCompleted = (step: number) => completedSteps.includes(step);
   const isStepCurrent = (step: number) => currentStep === step;
 
   return (
-    <Card className="sticky top-6">
-      <CardHeader className="py-3.5 px-8 flex flex-col items-center rounded-t-xl" style={{ backgroundColor: '#005392' }}>
+    <Card className="sticky top-6 hidden max-[1350px]:hidden xl:block">
+      <CardHeader
+        className="py-3.5 px-8 flex flex-col items-center rounded-t-xl"
+        style={{ backgroundColor: "#005392" }}
+      >
         <PandaLogo compact className="h-28 w-full object-contain" />
       </CardHeader>
+
       <CardContent className="space-y-4">
         <h3 className="text-lg font-semibold text-center mt-2">Shipment Progress</h3>
         <div className="space-y-2">
@@ -91,9 +79,11 @@ export const LiveSummary = ({
             const StepIcon = step.icon;
             const completed = isStepCompleted(step.number);
             const current = isStepCurrent(step.number);
-            const canClick = step.canClick && (completed || step.number <= Math.max(...completedSteps, 0) + 1);
+            const canClick =
+              step.canClick &&
+              (completed || step.number <= Math.max(...completedSteps, 0) + 1);
             const isLocked = step.number === 3 && purchasedLabel;
-            
+
             return (
               <button
                 key={step.number}
@@ -108,12 +98,16 @@ export const LiveSummary = ({
                 )}
                 data-testid={`step-${step.number}`}
               >
-                <div className={cn(
-                  "flex items-center justify-center h-8 w-8 rounded-full",
-                  completed ? "bg-chart-2 text-white" : 
-                  current ? "bg-primary text-primary-foreground" :
-                  "bg-muted text-muted-foreground"
-                )}>
+                <div
+                  className={cn(
+                    "flex items-center justify-center h-8 w-8 rounded-full",
+                    completed
+                      ? "bg-chart-2 text-white"
+                      : current
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground"
+                  )}
+                >
                   {completed ? (
                     <CheckCircle2 className="h-4 w-4" />
                   ) : isLocked ? (
@@ -122,14 +116,16 @@ export const LiveSummary = ({
                     <StepIcon className="h-4 w-4" />
                   )}
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
-                  <p className={cn(
-                    "text-sm font-medium",
-                    current && "text-primary",
-                    completed && !current && "text-foreground",
-                    !completed && !current && "text-muted-foreground"
-                  )}>
+                  <p
+                    className={cn(
+                      "text-sm font-medium",
+                      current && "text-primary",
+                      completed && !current && "text-foreground",
+                      !completed && !current && "text-muted-foreground"
+                    )}
+                  >
                     {step.label}
                   </p>
                 </div>
@@ -143,50 +139,101 @@ export const LiveSummary = ({
         </div>
 
         <div className="border-t pt-4 space-y-4">
-          <div className={`${hasFromAddressErrors ? 'border-l-2 border-destructive pl-2 -ml-2' : ''}`}>
+          {/* From Address */}
+          <div
+            className={`${hasFromAddressErrors ? "border-l-2 border-destructive pl-2 -ml-2" : ""}`}
+          >
             <div className="flex items-center gap-2 mb-2">
-              <MapPin className={`h-4 w-4 ${hasFromAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`} />
-              <h4 className={`font-semibold text-sm ${hasFromAddressErrors ? 'text-destructive' : ''}`}>From Address</h4>
+              <MapPin
+                className={`h-4 w-4 ${
+                  hasFromAddressErrors ? "text-destructive" : "text-muted-foreground"
+                }`}
+              />
+              <h4
+                className={`font-semibold text-sm ${
+                  hasFromAddressErrors ? "text-destructive" : ""
+                }`}
+              >
+                From Address
+              </h4>
             </div>
             {hasFromAddress ? (
               <div className="text-sm space-y-0.5 pl-6">
                 <p className="font-medium">{fromAddress?.name}</p>
-                {fromAddress?.company && <p className="text-muted-foreground">{fromAddress.company}</p>}
+                {fromAddress?.company && (
+                  <p className="text-muted-foreground">{fromAddress.company}</p>
+                )}
                 <p className="text-muted-foreground">
                   {fromAddress?.city}, {fromAddress?.state} {fromAddress?.zipCode}
                 </p>
               </div>
             ) : (
-              <p className={`text-sm pl-6 ${hasFromAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`}>
-                {hasFromAddressErrors ? 'Invalid or incomplete' : 'Not yet entered'}
+              <p
+                className={`text-sm pl-6 ${
+                  hasFromAddressErrors ? "text-destructive" : "text-muted-foreground"
+                }`}
+              >
+                {hasFromAddressErrors ? "Invalid or incomplete" : "Not yet entered"}
               </p>
             )}
           </div>
 
-          <div className={`${hasToAddressErrors ? 'border-l-2 border-destructive pl-2 -ml-2' : ''}`}>
+          {/* To Address */}
+          <div
+            className={`${hasToAddressErrors ? "border-l-2 border-destructive pl-2 -ml-2" : ""}`}
+          >
             <div className="flex items-center gap-2 mb-2">
-              <MapPin className={`h-4 w-4 ${hasToAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`} />
-              <h4 className={`font-semibold text-sm ${hasToAddressErrors ? 'text-destructive' : ''}`}>To Address</h4>
+              <MapPin
+                className={`h-4 w-4 ${
+                  hasToAddressErrors ? "text-destructive" : "text-muted-foreground"
+                }`}
+              />
+              <h4
+                className={`font-semibold text-sm ${
+                  hasToAddressErrors ? "text-destructive" : ""
+                }`}
+              >
+                To Address
+              </h4>
             </div>
             {hasToAddress ? (
               <div className="text-sm space-y-0.5 pl-6">
                 <p className="font-medium">{toAddress?.name}</p>
-                {toAddress?.company && <p className="text-muted-foreground">{toAddress.company}</p>}
+                {toAddress?.company && (
+                  <p className="text-muted-foreground">{toAddress.company}</p>
+                )}
                 <p className="text-muted-foreground">
                   {toAddress?.city}, {toAddress?.state} {toAddress?.zipCode}
                 </p>
               </div>
             ) : (
-              <p className={`text-sm pl-6 ${hasToAddressErrors ? 'text-destructive' : 'text-muted-foreground'}`}>
-                {hasToAddressErrors ? 'Invalid or incomplete' : 'Not yet entered'}
+              <p
+                className={`text-sm pl-6 ${
+                  hasToAddressErrors ? "text-destructive" : "text-muted-foreground"
+                }`}
+              >
+                {hasToAddressErrors ? "Invalid or incomplete" : "Not yet entered"}
               </p>
             )}
           </div>
 
-          <div className={`${hasPackageErrors ? 'border-l-2 border-destructive pl-2 -ml-2' : ''}`}>
+          {/* Package Details */}
+          <div
+            className={`${hasPackageErrors ? "border-l-2 border-destructive pl-2 -ml-2" : ""}`}
+          >
             <div className="flex items-center gap-2 mb-2">
-              <Package className={`h-4 w-4 ${hasPackageErrors ? 'text-destructive' : 'text-muted-foreground'}`} />
-              <h4 className={`font-semibold text-sm ${hasPackageErrors ? 'text-destructive' : ''}`}>Package Details</h4>
+              <Package
+                className={`h-4 w-4 ${
+                  hasPackageErrors ? "text-destructive" : "text-muted-foreground"
+                }`}
+              />
+              <h4
+                className={`font-semibold text-sm ${
+                  hasPackageErrors ? "text-destructive" : ""
+                }`}
+              >
+                Package Details
+              </h4>
             </div>
             {hasPackages ? (
               <div className="text-sm space-y-2 pl-6">
@@ -205,12 +252,17 @@ export const LiveSummary = ({
                 ))}
               </div>
             ) : (
-              <p className={`text-sm pl-6 ${hasPackageErrors ? 'text-destructive' : 'text-muted-foreground'}`}>
-                {hasPackageErrors ? 'Invalid or incomplete' : 'Not yet entered'}
+              <p
+                className={`text-sm pl-6 ${
+                  hasPackageErrors ? "text-destructive" : "text-muted-foreground"
+                }`}
+              >
+                {hasPackageErrors ? "Invalid or incomplete" : "Not yet entered"}
               </p>
             )}
           </div>
 
+          {/* Additional Services */}
           {selectedServices.length > 0 && (
             <div>
               <h4 className="font-semibold text-sm mb-2">Additional Services</h4>
@@ -224,6 +276,7 @@ export const LiveSummary = ({
             </div>
           )}
 
+          {/* Selected Rate */}
           {purchasedLabel && (
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -231,7 +284,9 @@ export const LiveSummary = ({
                 <h4 className="font-semibold text-sm">Selected Rate</h4>
               </div>
               <div className="text-sm pl-6 space-y-1">
-                <p className="font-medium text-primary">{purchasedLabel.carrier} - {purchasedLabel.service}</p>
+                <p className="font-medium text-primary">
+                  {purchasedLabel.carrier} - {purchasedLabel.service}
+                </p>
                 <p className="text-muted-foreground">{purchasedLabel.rate}</p>
               </div>
             </div>
