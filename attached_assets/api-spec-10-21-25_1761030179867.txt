@@ -1,0 +1,185 @@
+openapi: 3.1.0
+info:
+  title: Unified Shipping API
+  version: 1.0.0
+servers:
+  - url: https://{host}/
+    variables:
+      host:
+        default: api.example.com
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      operationId: getHealth
+      responses:
+        '200':
+          description: Service heartbeat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Healthy
+                  service:
+                    type: string
+                    example: UnifiedShippingAPI
+                  version:
+                    type: string
+                    example: 1.0.0
+                  timestamp:
+                    type: string
+                    format: date-time
+  /v1/Rates/quote:
+    post:
+      summary: Get shipping rate quotes
+      operationId: quoteRates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateQuoteRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateResponse'
+        '400':
+          description: Validation error
+        '404':
+          description: No rates found
+        '500':
+          description: Internal adapter error
+  /v1/Shipments/buy:
+    post:
+      summary: Purchase a shipment label
+      operationId: buyShipment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuyShipmentRequest'
+      responses:
+        '200':
+          description: Label purchased
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyShipmentResponse'
+        '400':
+          description: Invalid request
+        '404':
+          description: Shipment not found
+        '500':
+          description: Provider error
+
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        name: { type: string }
+        street1: { type: string }
+        street2: { type: string, nullable: true }
+        city: { type: string }
+        state: { type: string }
+        postalCode: { type: string }
+        country: { type: string, default: US }
+
+    Package:
+      type: object
+      properties:
+        weightOz: { type: number }
+        dimensionsIn:
+          type: object
+          properties:
+            length: { type: number }
+            width: { type: number }
+            height: { type: number }
+        insuredValue: { type: number }
+        reference: { type: string, nullable: true }
+
+    RateOptions:
+      type: object
+      properties:
+        saturdayDelivery: { type: boolean }
+        deliveryConfirmation: { type: string }
+        declaredValue: { type: boolean }
+        residential: { type: boolean }
+
+    RateQuoteRequest:
+      type: object
+      required: [shipper, recipient, packages]
+      properties:
+        shipper: { $ref: '#/components/schemas/Address' }
+        recipient: { $ref: '#/components/schemas/Address' }
+        packages:
+          type: array
+          items: { $ref: '#/components/schemas/Package' }
+        provider: { type: string }
+        carrier: { type: string }
+        service: { type: string }
+        pickupDate: { type: string, format: date }
+        options: { $ref: '#/components/schemas/RateOptions' }
+
+    RateResponse:
+      type: object
+      properties:
+        rates:
+          type: array
+          items:
+            type: object
+            properties:
+              provider: { type: string }
+              carrier: { type: string }
+              service: { type: string }
+              total: { type: number }
+              currency: { type: string }
+              estimatedDays: { type: integer }
+              estimatedDelivery: { type: string, format: date-time }
+              rateId: { type: string }
+              shipmentId: { type: string }
+              carrierAccountId: { type: string }
+              billingType: { type: string }
+              retailRate: { type: number }
+              listRate: { type: number }
+              accountRate: { type: number }
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              provider: { type: string }
+              carrier: { type: string }
+              message: { type: string }
+              type: { type: string }
+
+    BuyShipmentRequest:
+      type: object
+      required: [provider, shipmentId, rateId]
+      properties:
+        provider: { type: string }
+        shipmentId: { type: string }
+        rateId: { type: string }
+        reference: { type: string }
+
+    BuyShipmentResponse:
+      type: object
+      properties:
+        provider: { type: string }
+        shipmentId: { type: string }
+        trackingNumber: { type: string }
+        carrier: { type: string }
+        service: { type: string }
+        labelUrl: { type: string, format: uri }
+        currency: { type: string }
+        total: { type: number }
+        estimatedDelivery: { type: string, format: date-time }
+        carrierAccountId: { type: string }
+        billingType: { type: string }
