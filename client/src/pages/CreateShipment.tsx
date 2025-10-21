@@ -8,7 +8,8 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Settings2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { ApiConfigPanel, useApiConfig } from "@/components/ApiConfig";
+import { getShippingRates, purchaseShippingLabel } from "@/lib/directApiClient";
 
 type FormView = "four-step" | "three-step";
 
@@ -21,11 +22,12 @@ const CreateShipment = () => {
   const [showDebugPanel, setShowDebugPanel] = useState(false);
   const [rates, setRates] = useState<Rate[]>([]);
   const { toast } = useToast();
+  const { config: apiConfig, saveConfig: saveApiConfig, resetConfig: resetApiConfig } = useApiConfig();
 
   const getRatesMutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await apiRequest("POST", "/api/shipments/rates", data);
-      return await response.json();
+      // Call external API directly using configured endpoints
+      return await getShippingRates(apiConfig, data);
     },
     onSuccess: (data) => {
       setRates(data.rates || []);
@@ -46,8 +48,8 @@ const CreateShipment = () => {
 
   const purchaseLabelMutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await apiRequest("POST", "/api/shipments/buy", data);
-      return await response.json();
+      // Call external API directly using configured endpoints
+      return await purchaseShippingLabel(apiConfig, data);
     },
     onSuccess: () => {
       toast({
@@ -103,94 +105,102 @@ const CreateShipment = () => {
           </div>
 
           {showDebugPanel && (
-            <div className="flex flex-wrap items-center gap-3 sm:gap-6 p-3 bg-muted/30 rounded-lg border mb-3 sm:mb-4">
-              <div
-                className="flex items-center gap-3"
-                data-testid="view-toggle"
-              >
-                <Label
-                  htmlFor="view-toggle"
-                  className="text-xs sm:text-sm font-medium whitespace-nowrap"
+            <div className="space-y-3 mb-3 sm:mb-4">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-6 p-3 bg-muted/30 rounded-lg border">
+                <div
+                  className="flex items-center gap-3"
+                  data-testid="view-toggle"
                 >
-                  {formView === "four-step" ? "4-Step Flow" : "Compact 3-step flow"}
-                </Label>
-                <Switch
-                  id="view-toggle"
-                  checked={formView === "three-step"}
-                  onCheckedChange={(checked) =>
-                    setFormView(checked ? "three-step" : "four-step")
-                  }
-                  data-testid="switch-view-toggle"
-                />
+                  <Label
+                    htmlFor="view-toggle"
+                    className="text-xs sm:text-sm font-medium whitespace-nowrap"
+                  >
+                    {formView === "four-step" ? "4-Step Flow" : "Compact 3-step flow"}
+                  </Label>
+                  <Switch
+                    id="view-toggle"
+                    checked={formView === "three-step"}
+                    onCheckedChange={(checked) =>
+                      setFormView(checked ? "three-step" : "four-step")
+                    }
+                    data-testid="switch-view-toggle"
+                  />
+                </div>
+
+                <div className="hidden sm:block h-5 w-px bg-border" />
+
+                <div className="flex items-center gap-2">
+                  <Label
+                    htmlFor="compact-addresses-toggle"
+                    className="text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    Combine Address Forms
+                  </Label>
+                  <Switch
+                    id="compact-addresses-toggle"
+                    checked={useCompactAddresses}
+                    onCheckedChange={setUseCompactAddresses}
+                    data-testid="switch-compact-addresses-global"
+                  />
+                </div>
+
+                <div className="hidden sm:block h-5 w-px bg-border" />
+
+                <div className="flex items-center gap-2">
+                  <Label
+                    htmlFor="show-summary-toggle"
+                    className="text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    Show Sidebar Summary
+                  </Label>
+                  <Switch
+                    id="show-summary-toggle"
+                    checked={showLiveSummary}
+                    onCheckedChange={setShowLiveSummary}
+                    data-testid="switch-show-summary-global"
+                  />
+                </div>
+
+                <div className="hidden sm:block h-5 w-px bg-border" />
+
+                <div className="flex items-center gap-2">
+                  <Label
+                    htmlFor="banner-summary-toggle"
+                    className="text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    Show Banner Summary
+                  </Label>
+                  <Switch
+                    id="banner-summary-toggle"
+                    checked={showBannerSummary}
+                    onCheckedChange={setShowBannerSummary}
+                    data-testid="switch-banner-summary-global"
+                  />
+                </div>
+
+                <div className="hidden sm:block h-5 w-px bg-border" />
+
+                <div className="flex items-center gap-2">
+                  <Label
+                    htmlFor="label-preview-toggle"
+                    className="text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    Show Label Preview (Last step)
+                  </Label>
+                  <Switch
+                    id="label-preview-toggle"
+                    checked={showLabelPreview}
+                    onCheckedChange={setShowLabelPreview}
+                    data-testid="switch-label-preview-global"
+                  />
+                </div>
               </div>
 
-              <div className="hidden sm:block h-5 w-px bg-border" />
-
-              <div className="flex items-center gap-2">
-                <Label
-                  htmlFor="compact-addresses-toggle"
-                  className="text-xs sm:text-sm whitespace-nowrap"
-                >
-                  Combine Address Forms
-                </Label>
-                <Switch
-                  id="compact-addresses-toggle"
-                  checked={useCompactAddresses}
-                  onCheckedChange={setUseCompactAddresses}
-                  data-testid="switch-compact-addresses-global"
-                />
-              </div>
-
-              <div className="hidden sm:block h-5 w-px bg-border" />
-
-              <div className="flex items-center gap-2">
-                <Label
-                  htmlFor="show-summary-toggle"
-                  className="text-xs sm:text-sm whitespace-nowrap"
-                >
-                  Show Sidebar Summary
-                </Label>
-                <Switch
-                  id="show-summary-toggle"
-                  checked={showLiveSummary}
-                  onCheckedChange={setShowLiveSummary}
-                  data-testid="switch-show-summary-global"
-                />
-              </div>
-
-              <div className="hidden sm:block h-5 w-px bg-border" />
-
-              <div className="flex items-center gap-2">
-                <Label
-                  htmlFor="banner-summary-toggle"
-                  className="text-xs sm:text-sm whitespace-nowrap"
-                >
-                  Show Banner Summary
-                </Label>
-                <Switch
-                  id="banner-summary-toggle"
-                  checked={showBannerSummary}
-                  onCheckedChange={setShowBannerSummary}
-                  data-testid="switch-banner-summary-global"
-                />
-              </div>
-
-              <div className="hidden sm:block h-5 w-px bg-border" />
-
-              <div className="flex items-center gap-2">
-                <Label
-                  htmlFor="label-preview-toggle"
-                  className="text-xs sm:text-sm whitespace-nowrap"
-                >
-                  Show Label Preview (Last step)
-                </Label>
-                <Switch
-                  id="label-preview-toggle"
-                  checked={showLabelPreview}
-                  onCheckedChange={setShowLabelPreview}
-                  data-testid="switch-label-preview-global"
-                />
-              </div>
+              <ApiConfigPanel
+                config={apiConfig}
+                onSave={saveApiConfig}
+                onReset={resetApiConfig}
+              />
             </div>
           )}
         </div>

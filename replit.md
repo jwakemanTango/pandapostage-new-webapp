@@ -10,16 +10,20 @@ Preferred communication style: Simple, everyday language.
 
 ### External API Integration (October 21, 2025)
 - **Shipping API Integration**: Connected the application to an external unified shipping API for real-time rate quotes and label purchases
-  - Added `API_BASE_URL` environment variable configuration for specifying the external API endpoint
-  - Created `server/api-client.ts` utility module for communicating with the external shipping API
-  - Implemented backend proxy routes:
-    - `POST /api/shipments/rates` - Get shipping rate quotes from external API
-    - `POST /api/shipments/buy` - Purchase shipping labels from external API
   - Updated Rate schema to include API-specific fields: `provider`, `shipmentId`, `rateId`, `currency`, `estimatedDelivery`, `carrierAccountId`, `billingType`, `listRate`, `accountRate`
   - Transformed data between frontend format and API format (addresses, packages, weights, additional services)
   - Replaced mock data with real API calls using TanStack Query mutations
   - Added error handling and user feedback for API failures
   - API supports all form fields including company, phone, and all additional service options
+- **Direct API Configuration** (enables static deployment without backend proxy):
+  - Added API Configuration Panel in DEBUG mode for configuring external API endpoints directly from the frontend
+  - Created `client/src/components/ApiConfig.tsx` component with `useApiConfig` hook for managing API configuration
+  - Created `client/src/lib/directApiClient.ts` utility for making direct API calls from frontend
+  - API configuration includes: Base URL, Rates Endpoint, Buy/Purchase Endpoint
+  - Configuration persists in localStorage for convenience across sessions
+  - Frontend now calls external shipping API directly, bypassing backend proxy routes
+  - Enables static deployment of the application (no server-side proxy needed)
+  - Backend proxy routes (`server/api-client.ts`, `server/routes.ts`) remain available for environments that prefer server-side proxying
 
 ### Earlier Changes (October 17, 2025)
 ### UI and Navigation Improvements
