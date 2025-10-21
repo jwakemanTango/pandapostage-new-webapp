@@ -232,7 +232,7 @@ export const LiveSummary = ({
               </div>
               <div className="text-sm pl-6 space-y-1">
                 <p className="font-medium text-primary">{purchasedLabel.carrier} - {purchasedLabel.service}</p>
-                <p className="text-muted-foreground">${purchasedLabel.rate}</p>
+                <p className="text-muted-foreground">{purchasedLabel.rate}</p>
               </div>
             </div>
           )}

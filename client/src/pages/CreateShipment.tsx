@@ -113,7 +113,7 @@ const CreateShipment = () => {
                 >
                   <Label
                     htmlFor="view-toggle"
-                    className="text-xs sm:text-sm font-medium whitespace-nowrap"
+                    className="text-xs font-medium whitespace-nowrap"
                   >
                     {formView === "four-step" ? "4-Step Flow" : "Compact 3-step flow"}
                   </Label>
@@ -132,7 +132,7 @@ const CreateShipment = () => {
                 <div className="flex items-center gap-2">
                   <Label
                     htmlFor="compact-addresses-toggle"
-                    className="text-xs sm:text-sm whitespace-nowrap"
+                    className="text-xs whitespace-nowrap"
                   >
                     Combine Address Forms
                   </Label>
@@ -149,7 +149,7 @@ const CreateShipment = () => {
                 <div className="flex items-center gap-2">
                   <Label
                     htmlFor="show-summary-toggle"
-                    className="text-xs sm:text-sm whitespace-nowrap"
+                    className="text-xs whitespace-nowrap"
                   >
                     Show Sidebar Summary
                   </Label>
@@ -166,7 +166,7 @@ const CreateShipment = () => {
                 <div className="flex items-center gap-2">
                   <Label
                     htmlFor="banner-summary-toggle"
-                    className="text-xs sm:text-sm whitespace-nowrap"
+                    className="text-xs whitespace-nowrap"
                   >
                     Show Banner Summary
                   </Label>
@@ -183,7 +183,7 @@ const CreateShipment = () => {
                 <div className="flex items-center gap-2">
                   <Label
                     htmlFor="label-preview-toggle"
-                    className="text-xs sm:text-sm whitespace-nowrap"
+                    className="text-xs whitespace-nowrap"
                   >
                     Show Label Preview (Last step)
                   </Label>
