@@ -1,13 +1,30 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Download, Mail, Receipt, ArrowLeft } from "lucide-react";
 import { Rate } from "@shared/schema";
 import labelPreviewUrl from "@assets/label_1760604447339.png";
 
 interface LabelSummaryProps {
-  // purchasedLabel is the authoritative label object returned by the purchase flow
   purchasedLabel: any;
   onCreateAnother: () => void;
   showLabelPreview?: boolean;
+}
+
+interface LabelFormValues {
+  labelDimensions: {
+    width: number;
+    height: number;
+  };
 }
 
 export const LabelSummary = ({
@@ -15,29 +32,102 @@ export const LabelSummary = ({
   onCreateAnother,
   showLabelPreview = true,
 }: LabelSummaryProps) => {
+  // Base defaults
+  const [widthIn, setWidthIn] = useState(4);
+  const [heightIn, setHeightIn] = useState(6);
+
+  // Form setup
+  const form = useForm<LabelFormValues>({
+    defaultValues: {
+      labelDimensions: {
+        width: 4,
+        height: 6,
+      },
+    },
+  });
 
   const handleDownloadLabel = () => {
-    // Create a new window for printing
     const labelUrl = purchasedLabel.labelUrl || labelPreviewUrl;
-    const printWindow = window.open(labelUrl, "_blank");
-    if (printWindow) {
-      printWindow.addEventListener("load", () => {
-        printWindow.print();
-      });
-    }
+    const trackingNumber = purchasedLabel.trackingNumber || "Shipping-Label";
+
+    // Create hidden iframe for printing
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "fixed";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "none";
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!doc) return;
+
+    doc.title = trackingNumber;
+
+    // Write print-safe content with top-right anchored label
+    doc.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>${trackingNumber}</title>
+          <style>
+            @page {
+              size: auto;
+              margin: 0;
+            }
+            html, body {
+              margin: 0;
+              padding: 0;
+              width: 100%;
+              height: 100%;
+              position: relative;
+            }
+            .label {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: ${widthIn}in;
+              height: ${heightIn}in;
+            }
+            .label img {
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+              display: block;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="label">
+            <img src="${labelUrl}" alt="${trackingNumber}" />
+          </div>
+        </body>
+      </html>
+    `);
+    doc.close();
+
+    // Wait for the label image to load before printing
+    const img = doc.querySelector("img") as HTMLImageElement;
+    img.onload = () => {
+      const win = iframe.contentWindow;
+      if (win) {
+        win.focus();
+        win.print();
+      }
+      // Clean up after print
+      setTimeout(() => iframe.remove(), 1000);
+    };
   };
 
-  const handleEmailLabel = () => {
-    alert("TODO: NOT IMPLEMENTED");
-  };
 
-  const handleViewReceipt = () => {
-    alert("TODO: NOT IMPLEMENTED");
-  };
+  const handleEmailLabel = () => alert("TODO: NOT IMPLEMENTED");
+  const handleViewReceipt = () => alert("TODO: NOT IMPLEMENTED");
 
   return (
     <div
-      className={`grid ${showLabelPreview ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"} gap-4`}
+      className={`grid ${
+        showLabelPreview ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"
+      } gap-4`}
     >
       <div className="flex flex-col h-full">
         <div className="bg-chart-2/10 border border-chart-2/20 rounded-lg p-4 mb-6">
@@ -97,6 +187,73 @@ export const LabelSummary = ({
                 <p className="font-medium">{purchasedLabel.deliveryDate}</p>
               </div>
             )}
+
+            {/* --- Label dimension controls (with form) --- */}
+            <Form {...form}>
+              <div className="pt-4 border-t mt-4">
+                <FormLabel className="text-sm font-medium mb-2 block">
+                  Label Print Dimensions
+                </FormLabel>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="labelDimensions.width"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-medium">
+                          Width (in)
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            min="1"
+                            placeholder="4.0"
+                            {...field}
+                            onChange={(e) => {
+                              const value = parseFloat(e.target.value);
+                              setWidthIn(isNaN(value) ? 4 : value);
+                              field.onChange(value);
+                            }}
+                            data-testid="input-label-width"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="labelDimensions.height"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-medium">
+                          Height (in)
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            min="1"
+                            placeholder="6.0"
+                            {...field}
+                            onChange={(e) => {
+                              const value = parseFloat(e.target.value);
+                              setHeightIn(isNaN(value) ? 6 : value);
+                              field.onChange(value);
+                            }}
+                            data-testid="input-label-height"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </Form>
           </div>
 
           <div className="space-y-3">
