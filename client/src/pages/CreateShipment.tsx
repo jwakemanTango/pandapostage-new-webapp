@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Settings2 } from "lucide-react";
-import labelPreviewUrl from "@assets/label_1760604447339.png";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 type FormView = "four-step" | "three-step";
 
@@ -19,100 +20,68 @@ const CreateShipment = () => {
   const [showBannerSummary, setShowBannerSummary] = useState(true);
   const [showDebugPanel, setShowDebugPanel] = useState(false);
   const [rates, setRates] = useState<Rate[]>([]);
-  const [isLoadingRates, setIsLoadingRates] = useState(false);
-  const [isPurchasing, setIsPurchasing] = useState(false);
   const { toast } = useToast();
 
-  // TODO: remove mock functionality
-  const handleGetRates = (data: any) => {
-    console.log("Getting rates for:", data);
-    setIsLoadingRates(true);
-
-    // Mock API call
-    setTimeout(() => {
-      const mockRates: Rate[] = [
-        {
-          id: "1",
-          carrier: "USPS",
-          service: "Priority Mail",
-          rate: "$8.50",
-          retailRate: "$10.20",
-          deliveryDays: 3,
-          carrierId: 1,
-          labelUrl: labelPreviewUrl,
-          labelFormat: "png",
-        },
-        {
-          id: "2",
-          carrier: "USPS",
-          service: "First Class",
-          rate: "$5.20",
-          retailRate: "$6.50",
-          deliveryDays: 5,
-          carrierId: 1,
-          labelUrl: labelPreviewUrl,
-          labelFormat: "png",
-        },
-        {
-          id: "3",
-          carrier: "UPS",
-          service: "Ground",
-          rate: "$12.75",
-          retailRate: "$15.30",
-          deliveryDays: 4,
-          carrierId: 2,
-          labelUrl: labelPreviewUrl,
-          labelFormat: "png",
-        },
-        {
-          id: "4",
-          carrier: "FedEx",
-          service: "2Day",
-          rate: "$18.99",
-          retailRate: "$24.50",
-          deliveryDays: 2,
-          carrierId: 3,
-          labelUrl: labelPreviewUrl,
-          labelFormat: "png",
-        },
-        {
-          id: "5",
-          carrier: "UPS",
-          service: "3 Day Select",
-          rate: "$14.25",
-          retailRate: "$17.80",
-          deliveryDays: 3,
-          carrierId: 2,
-          labelUrl: labelPreviewUrl,
-          labelFormat: "png",
-        },
-      ];
-
-      setRates(mockRates);
-      setIsLoadingRates(false);
-
+  const getRatesMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest("POST", "/api/shipments/rates", data);
+      return await response.json();
+    },
+    onSuccess: (data) => {
+      setRates(data.rates || []);
       toast({
         title: "Rates Available",
-        description: `Found ${mockRates.length} shipping rate options`,
+        description: `Found ${data.rates?.length || 0} shipping rate options`,
       });
-    }, 1500);
-  };
+    },
+    onError: (error: any) => {
+      console.error("Error getting rates:", error);
+      toast({
+        title: "Error Getting Rates",
+        description: error.message || "Failed to get shipping rates. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
-  // TODO: remove mock functionality
-  const handlePurchaseLabel = (data: any) => {
-    console.log("Purchasing label:", data);
-    setIsPurchasing(true);
-
-    // Mock API call
-    setTimeout(() => {
-      setIsPurchasing(false);
-
+  const purchaseLabelMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest("POST", "/api/shipments/buy", data);
+      return await response.json();
+    },
+    onSuccess: () => {
       toast({
         title: "Label Purchased Successfully",
-        description:
-          "Your shipping label has been created and is ready to print.",
+        description: "Your shipping label has been created and is ready to print.",
       });
-    }, 1500);
+    },
+    onError: (error: any) => {
+      console.error("Error purchasing label:", error);
+      toast({
+        title: "Error Purchasing Label",
+        description: error.message || "Failed to purchase shipping label. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleGetRates = (data: any) => {
+    console.log("Getting rates for:", data);
+    getRatesMutation.mutate(data);
+  };
+
+  const handlePurchaseLabel = (data: any) => {
+    console.log("Purchasing label:", data);
+    
+    // Build the purchase request - data should have provider/shipmentId/rateId at top level
+    const purchaseRequest = {
+      provider: data.provider,
+      shipmentId: data.shipmentId,
+      rateId: data.rateId,
+      reference: data.reference,
+    };
+    
+    purchaseLabelMutation.mutate(purchaseRequest);
   };
 
   return (
@@ -231,8 +200,8 @@ const CreateShipment = () => {
             onGetRates={handleGetRates}
             onPurchaseLabel={handlePurchaseLabel}
             rates={rates}
-            isLoadingRates={isLoadingRates}
-            isPurchasing={isPurchasing}
+            isLoadingRates={getRatesMutation.isPending}
+            isPurchasing={purchaseLabelMutation.isPending}
             useCompactAddresses={useCompactAddresses}
             showLiveSummary={showLiveSummary}
             showLabelPreview={showLabelPreview}
@@ -243,8 +212,8 @@ const CreateShipment = () => {
             onGetRates={handleGetRates}
             onPurchaseLabel={handlePurchaseLabel}
             rates={rates}
-            isLoadingRates={isLoadingRates}
-            isPurchasing={isPurchasing}
+            isLoadingRates={getRatesMutation.isPending}
+            isPurchasing={purchaseLabelMutation.isPending}
             useCompactAddresses={useCompactAddresses}
             showLiveSummary={showLiveSummary}
             showLabelPreview={showLabelPreview}

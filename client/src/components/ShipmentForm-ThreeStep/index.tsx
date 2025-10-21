@@ -135,11 +135,13 @@ export const ShipmentFormFull = ({
     const fromAddress = form.getValues("fromAddress");
     const toAddress = form.getValues("toAddress");
     const packages = form.getValues("packages");
+    const additionalServices = form.getValues("additionalServices");
     
     onGetRates?.({
       fromAddress,
       toAddress,
-      packages
+      packages,
+      additionalServices
     });
     
     setViewState("summary");

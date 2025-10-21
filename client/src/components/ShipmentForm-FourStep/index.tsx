@@ -145,11 +145,13 @@ export const ShipmentForm = ({
       const fromAddress = form.getValues("fromAddress");
       const toAddress = form.getValues("toAddress");
       const packages = form.getValues("packages");
+      const additionalServices = form.getValues("additionalServices");
       
       onGetRates?.({
         fromAddress,
         toAddress,
-        packages
+        packages,
+        additionalServices
       });
       
       setRatesAvailable(true);
@@ -200,6 +202,7 @@ export const ShipmentForm = ({
     const data = form.getValues();
     onPurchaseLabel?.({
       ...data,
+      ...rate,
       rateSelection: {
         service: rate.service,
         rate: rate.rate,

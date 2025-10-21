@@ -62,6 +62,9 @@ export const createShipmentSchema = z.object({
 // Rate schema for API responses
 export const rateSchema = z.object({
   id: z.string(),
+  provider: z.string().optional(),
+  shipmentId: z.string().optional(),
+  rateId: z.string().optional(),
   carrierId: z.number().optional(),
   service: z.string(),
   carrier: z.string(),
@@ -71,6 +74,12 @@ export const rateSchema = z.object({
   retailRate: z.string().optional(),
   labelUrl: z.string().optional(),
   labelFormat: z.enum(['pdf', 'png', 'zpl']).optional(),
+  currency: z.string().optional(),
+  estimatedDelivery: z.string().optional(),
+  carrierAccountId: z.string().optional(),
+  billingType: z.string().optional(),
+  listRate: z.string().optional(),
+  accountRate: z.string().optional(),
 });
 
 // Address type for saved addresses

@@ -6,7 +6,22 @@ PandaPostage is a professional shipping rate comparison and label purchasing app
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (October 17, 2025)
+## Recent Changes
+
+### External API Integration (October 21, 2025)
+- **Shipping API Integration**: Connected the application to an external unified shipping API for real-time rate quotes and label purchases
+  - Added `API_BASE_URL` environment variable configuration for specifying the external API endpoint
+  - Created `server/api-client.ts` utility module for communicating with the external shipping API
+  - Implemented backend proxy routes:
+    - `POST /api/shipments/rates` - Get shipping rate quotes from external API
+    - `POST /api/shipments/buy` - Purchase shipping labels from external API
+  - Updated Rate schema to include API-specific fields: `provider`, `shipmentId`, `rateId`, `currency`, `estimatedDelivery`, `carrierAccountId`, `billingType`, `listRate`, `accountRate`
+  - Transformed data between frontend format and API format (addresses, packages, weights, additional services)
+  - Replaced mock data with real API calls using TanStack Query mutations
+  - Added error handling and user feedback for API failures
+  - API supports all form fields including company, phone, and all additional service options
+
+### Earlier Changes (October 17, 2025)
 ### UI and Navigation Improvements
 - **Ship To Icon Update**: Changed Ship To tab icon from `Package` to `MapPinned` in both 3-step and 4-step flows to avoid visual conflict with package details section. MapPinned better represents the destination concept.
 - **Banner Summary Sticky Positioning**: Increased z-index from z-20 to z-50 to ensure banner properly pins to top of viewport when scrolling and stays above all content (except modals/dialogs).
@@ -84,7 +99,10 @@ Preferred communication style: Simple, everyday language.
 ## External Dependencies
 
 ### Shipping Carrier Integrations
-- Planned integration with USPS, UPS, FedEx, DHL for rate comparison and label purchasing. (Currently uses mock data).
+- **External Shipping API**: Integrated with unified shipping API for multi-carrier rate quotes and label purchasing (USPS, UPS, FedEx, DHL)
+  - Configuration via `API_BASE_URL` environment variable
+  - Supports rate quotes, label purchasing, and tracking
+  - Currently unauthenticated (authentication to be added later)
 
 ### Third-Party Libraries
 - **@radix-ui**: Headless UI components.
