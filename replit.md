@@ -19,7 +19,9 @@ Preferred communication style: Simple, everyday language.
   - Added API Configuration Panel in DEBUG mode for configuring external API endpoints directly from the frontend
   - Created `client/src/components/ApiConfig.tsx` component with `useApiConfig` hook for managing API configuration
   - Created `client/src/lib/directApiClient.ts` utility for making direct API calls from frontend
-  - API configuration includes: Base URL, Rates Endpoint, Buy/Purchase Endpoint
+  - API configuration includes: Base URL, Rates Endpoint, Buy/Purchase Endpoint, API Key (optional)
+  - Configuration panel is collapsible with chevron icon indicator
+  - Health check button tests connection to API and displays success/failure status with visual indicators
   - Configuration persists in localStorage for convenience across sessions
   - Frontend now calls external shipping API directly, bypassing backend proxy routes
   - Enables static deployment of the application (no server-side proxy needed)
