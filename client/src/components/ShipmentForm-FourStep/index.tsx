@@ -20,11 +20,8 @@ import {
   Loader2,
   ArrowLeft,
   ArrowRight,
-  Mail,
-  Receipt,
   Plus,
 } from "lucide-react";
-import { printShippingLabel } from "@/utils/printLabel";
 
 interface ShipmentFormProps {
   onGetRates?: (data: any) => void;
@@ -69,8 +66,8 @@ export const ShipmentForm = ({
       currentStep === 1
         ? await form.trigger(["fromAddress", "toAddress"])
         : currentStep === 2
-          ? await form.trigger("packages")
-          : true;
+        ? await form.trigger("packages")
+        : true;
     if (!valid) return;
 
     if (currentStep === 2) {
@@ -100,11 +97,7 @@ export const ShipmentForm = ({
         rateId: rate.id || rate.rateId,
       };
 
-      if (
-        !purchasePayload.provider ||
-        !purchasePayload.shipmentId ||
-        !purchasePayload.rateId
-      ) {
+      if (!purchasePayload.provider || !purchasePayload.shipmentId || !purchasePayload.rateId) {
         console.error("Missing required purchase fields:", purchasePayload);
         throw new Error("Missing required fields for purchase");
       }
@@ -121,11 +114,26 @@ export const ShipmentForm = ({
     }
   };
 
-  const renderStepNavigation = () => {
+  // ✅ Reliable reset without reloading page
+  const handleResetForm = () => {
+    form.reset({
+      fromAddress: { country: "US" },
+      toAddress: { country: "US" },
+      packages: [{ packageType: "parcel", carrier: "any" }],
+      additionalServices: {},
+    });
+
+    setCurrentStep(1);
+    setCompletedSteps([]);
+    setPurchasedLabel(null);
+    setSelectedRate(null);
+    window.scrollTo(0, 0);
+  };
+
+  const renderStep = () => {
     const baseFooterClasses =
       "sticky bottom-0 bg-background/95 backdrop-blur-sm border-t p-4";
-    const footerInner =
-      "w-full flex flex-col sm:flex-row gap-3";
+    const footerInner = "w-full flex flex-col sm:flex-row gap-3";
 
     switch (currentStep) {
       case 1:
@@ -146,7 +154,6 @@ export const ShipmentForm = ({
                   type="button"
                   onClick={handleNext}
                   className="w-full gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-11"
-                  size="lg"
                 >
                   Next
                   <ArrowRight className="h-4 w-4" />
@@ -186,7 +193,6 @@ export const ShipmentForm = ({
                   onClick={handleNext}
                   disabled={isLoadingRates}
                   className="w-full sm:w-auto flex-1 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-11"
-                  size="lg"
                 >
                   {isLoadingRates ? (
                     <>
@@ -236,7 +242,6 @@ export const ShipmentForm = ({
                   onClick={() => handlePurchase(selectedRate!)}
                   disabled={!selectedRate || isPurchasing}
                   className="w-full sm:w-auto flex-1 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-11"
-                  size="lg"
                 >
                   {isPurchasing ? (
                     <>
@@ -263,39 +268,19 @@ export const ShipmentForm = ({
                   <LabelSummary
                     purchasedLabel={purchasedLabel}
                     formData={form.getValues()}
-                    onCreateAnother={() => window.location.reload()}
                     showLabelPreview={showLabelPreview}
-                    hidePrintButton={typeof window !== "undefined" && window.innerWidth < 1024}
                   />
                 )}
               </CardContent>
             </Card>
 
-            {/* Sticky footer — visible only on mobile/tablet */}
+            {/* Sticky footer – Create Another Shipment only */}
             {purchasedLabel && (
-              <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm border-t p-4 sm:hidden">
-                <div className="w-full flex flex-col gap-3">
-                  {/* Primary CTA - Print Label */}
+              <div className={baseFooterClasses}>
+                <div className="w-full">
                   <Button
-                    onClick={() =>
-                      printShippingLabel(
-                        purchasedLabel.labelUrl,
-                        purchasedLabel.trackingNumber,
-                        4,
-                        6,
-                        purchasedLabel.fileType
-                      )
-                    }
-                    className="w-full gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-11"
-                  >
-                    <Printer className="h-4 w-4" />
-                    Print Label
-                  </Button>
-
-                  {/* Secondary CTA - Create Another Shipment */}
-                  <Button
-                    onClick={() => window.location.reload()}
-                    className="w-full gap-2 bg-slate-600 hover:bg-slate-700 text-white font-medium h-11"
+                    onClick={handleResetForm}
+                    className="w-full flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-800 text-white font-medium h-11"
                   >
                     <Plus className="h-4 w-4" />
                     Create Another Shipment
@@ -311,7 +296,6 @@ export const ShipmentForm = ({
     }
   };
 
-  // Automatically hide sidebar on step 4
   const shouldShowLiveSummary = showLiveSummary && currentStep !== 4;
 
   return (
@@ -323,10 +307,10 @@ export const ShipmentForm = ({
             currentStep === 1
               ? "addresses"
               : currentStep === 2
-                ? "packages"
-                : currentStep === 3
-                  ? "rates"
-                  : "label"
+              ? "packages"
+              : currentStep === 3
+              ? "rates"
+              : "label"
           }
           formErrors={form.formState.errors}
           workflow="4-step"
@@ -335,12 +319,11 @@ export const ShipmentForm = ({
 
       <Form {...form}>
         <div
-          className={`grid grid-cols-1 gap-6 ${shouldShowLiveSummary ? "lg:grid-cols-[1fr_380px]" : ""
-            } pt-4`}
+          className={`grid grid-cols-1 gap-6 ${
+            shouldShowLiveSummary ? "lg:grid-cols-[1fr_380px]" : ""
+          } pt-4`}
         >
-          <div className="space-y-6">
-            {renderStepNavigation()}
-          </div>
+          <div className="space-y-6">{renderStep()}</div>
 
           {shouldShowLiveSummary && (
             <div className="hidden lg:block">
@@ -356,7 +339,6 @@ export const ShipmentForm = ({
           )}
         </div>
       </Form>
-
     </>
   );
 };
