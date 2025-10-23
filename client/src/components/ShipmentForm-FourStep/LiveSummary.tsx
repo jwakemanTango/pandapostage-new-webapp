@@ -64,7 +64,7 @@ export const LiveSummary = ({
   const isStepCurrent = (step: number) => currentStep === step;
 
   return (
-    <Card className="sticky top-6 hidden max-[1350px]:hidden xl:block">
+    <Card className="sticky top-6">
       <CardHeader
         className="py-3.5 px-8 flex flex-col items-center rounded-t-xl"
         style={{ backgroundColor: "#005392" }}
