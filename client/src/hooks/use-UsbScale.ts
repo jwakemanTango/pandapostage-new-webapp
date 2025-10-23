@@ -125,12 +125,22 @@ export function useUsbScale(): UsbScaleState {
     setSavedDeviceKey(lastKey);
 
     (async () => {
-      const devices: HIDDevice[] = await hid.getDevices();
-      if (lastKey && devices.length > 0) {
-        const match = devices.find((d) => `${d.vendorId}:${d.productId}` === lastKey);
-        if (match) {
-          console.log("[Scale] Auto-connecting:", match.productName);
-          await connect(match);
+      try {
+        const devices: HIDDevice[] = await hid.getDevices();
+        if (lastKey && devices.length > 0) {
+          const match = devices.find((d) => `${d.vendorId}:${d.productId}` === lastKey);
+          if (match) {
+            console.log("[Scale] Auto-connecting:", match.productName);
+            await connect(match);
+          }
+        }
+      } catch (err: any) {
+        // Check if this is a permissions policy error
+        if (err instanceof DOMException && err.message.includes("permissions policy")) {
+          console.warn("[USB Scale] HID access blocked by permissions policy.");
+          setSupported(false);
+        } else {
+          console.error("[USB Scale] Error checking devices:", err);
         }
       }
     })();
@@ -152,41 +162,50 @@ export function useUsbScale(): UsbScaleState {
      Auto-Reconnect
   ------------------------------- */
   useEffect(() => {
-    if (!("hid" in navigator)) return;
+    if (!("hid" in navigator) || !supported) return;
     const hid = (navigator as any).hid;
 
     const interval = setInterval(async () => {
       if (manualModeRef.current || connectingRef.current) return;
 
-      const devices: HIDDevice[] = await hid.getDevices();
-      const current = deviceRef.current;
-      const lastKey = localStorage.getItem("lastUsbScaleKey");
+      try {
+        const devices: HIDDevice[] = await hid.getDevices();
+        const current = deviceRef.current;
+        const lastKey = localStorage.getItem("lastUsbScaleKey");
 
-      const stillPresent =
-        current &&
-        devices.some((d) => d.vendorId === current.vendorId && d.productId === current.productId);
+        const stillPresent =
+          current &&
+          devices.some((d) => d.vendorId === current.vendorId && d.productId === current.productId);
 
-      if (current && !stillPresent) {
-        console.warn("[Scale] Scale powered off or disconnected.");
-        setConnectedDevice(null);
-        setWeight(null);
-        setIsOffline(true);
-      }
-
-      if (!current && lastKey && devices.length > 0) {
-        const match = devices.find((d) => `${d.vendorId}:${d.productId}` === lastKey);
-        if (match) {
-          console.log("[Scale] Reconnecting:", match.productName);
-          connectingRef.current = true;
-          await connect(match);
-          connectingRef.current = false;
-          setIsOffline(false);
+        if (current && !stillPresent) {
+          console.warn("[Scale] Scale powered off or disconnected.");
+          setConnectedDevice(null);
+          setWeight(null);
+          setIsOffline(true);
         }
+
+        if (!current && lastKey && devices.length > 0) {
+          const match = devices.find((d) => `${d.vendorId}:${d.productId}` === lastKey);
+          if (match) {
+            console.log("[Scale] Reconnecting:", match.productName);
+            connectingRef.current = true;
+            await connect(match);
+            connectingRef.current = false;
+            setIsOffline(false);
+          }
+        }
+      } catch (err: any) {
+        // Check if this is a permissions policy error
+        if (err instanceof DOMException && err.message.includes("permissions policy")) {
+          console.warn("[USB Scale] HID access blocked by permissions policy.");
+          setSupported(false);
+        }
+        // Silently ignore other errors in the auto-reconnect loop
       }
     }, 4000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [supported]);
 
   /* -------------------------------
      Connect / Disconnect
