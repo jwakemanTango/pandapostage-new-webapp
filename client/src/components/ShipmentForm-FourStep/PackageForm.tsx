@@ -134,17 +134,17 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
       const totalOz = result.ounces;
       const pounds = Math.floor(totalOz / 16);
       const ounces = Math.round(totalOz % 16);
-      
+
       // Get the current package data
       const currentPackage = fields[packageIndex] as unknown as PackageItem;
-      
+
       // Update the field array immediately so the table and form stay in sync
       update(packageIndex, {
         ...currentPackage,
         weightLbs: pounds.toString(),
         weightOz: ounces.toString(),
       });
-      
+
       // Also update editing package state if in edit mode for immediate UI feedback
       if (editingPackage && editingPackage.index === packageIndex) {
         setEditingPackage({
@@ -247,20 +247,60 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
   const selectedCarrier = form.watch("packages.0.carrier") || "any";
   const filteredPackageTypes = getFilteredPackageTypes(selectedCarrier);
 
+  // Read current packages synchronously from the form so validation reflects latest values
+  const currentPackages = form.getValues("packages") as PackageItem[] | undefined;
+  const packagesForValidation = currentPackages && currentPackages.length > 0
+    ? currentPackages
+    : fields.map((f) => ({
+      packageType: (f as any).packageType,
+      weightLbs: (f as any).weightLbs,
+    })) as PackageItem[];
+
+  // Determine which package indexes have validation errors (missing type or weight)
+  const invalidPackageIndexes = packagesForValidation
+    .map((pkg, idx) => ({ pkg, idx }))
+    .filter(({ pkg }) => !pkg || !pkg.packageType || !pkg.weightLbs)
+    .map(({ idx }) => idx);
+
+  const hasPackageErrors = invalidPackageIndexes.length > 0;
+
+  // When validation errors are shown, scroll the first invalid package into view
+  useEffect(() => {
+    if (!showErrors || invalidPackageIndexes.length === 0) return;
+    const first = invalidPackageIndexes[0];
+    // Use the data-testid that table rows already include
+    const selector = `[data-testid="row-package-${first}"]`;
+    const el = document.querySelector(selector) as HTMLElement | null;
+    if (el && typeof el.scrollIntoView === "function") {
+      try {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        // Try to focus for accessibility; may not be focusable, but attempt
+        (el as HTMLElement).focus?.();
+      } catch (err) {
+        // ignore scrolling errors
+      }
+    }
+  }, [showErrors, invalidPackageIndexes]);
+
+  // Build per-package error messages for display
+  const packageErrorMessages: (string[] | null)[] = packagesForValidation.map((pkg) => {
+    if (!pkg) return ["Missing package"];
+    const errs: string[] = [];
+    if (!pkg.packageType) errs.push("Missing package type");
+    if (!pkg.weightLbs) errs.push("Missing weight");
+    return errs.length > 0 ? errs : null;
+  });
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-2">
           <h3 className="text-base font-semibold">Package Details</h3>
-          {showErrors &&
-            fields.some((pkg) => {
-              const typedPkg = pkg as unknown as PackageItem;
-              return !typedPkg.packageType || !typedPkg.weightLbs;
-            }) && (
-              <Badge variant="destructive" className="px-1.5 py-0.5 text-xs">
-                Missing info
-              </Badge>
-            )}
+          {showErrors && hasPackageErrors && (
+            <Badge variant="destructive" className="px-1.5 py-0.5 text-xs">
+              {invalidPackageIndexes.length} missing
+            </Badge>
+          )}
         </div>
         {showMultiPackage && (
           <Badge variant="outline" className="px-2 py-1">
@@ -522,53 +562,83 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
               </TableHeader>
               <TableBody>
                 {fields.map((pkg, index) => {
-                  const typedPkg = pkg as unknown as PackageItem;
+                  const typedPkg = (packagesForValidation[index] as PackageItem) || (pkg as unknown as PackageItem);
+                  const isInvalid = showErrors && invalidPackageIndexes.includes(index);
                   return (
-                    <TableRow
-                      key={pkg.id}
-                      className={`cursor-pointer hover-elevate ${
-                        showErrors &&
-                        (!typedPkg.packageType || !typedPkg.weightLbs)
-                          ? "bg-destructive/10 border-l-4 border-destructive"
-                          : ""
-                      }`}
-                      onClick={() => handleEditPackage(index)}
-                      data-testid={`row-package-${index}`}
-                    >
-                      <TableCell className="font-medium">{index + 1}</TableCell>
-                      <TableCell>
-                        {typedPkg.packageType
-                          ? getPackageTypeLabel(typedPkg.packageType)
-                          : "Parcel/Package"}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {typedPkg.weightLbs
-                          ? typedPkg.weightOz && parseInt(typedPkg.weightOz) > 0
-                            ? `${typedPkg.weightLbs} lbs ${typedPkg.weightOz} oz`
-                            : `${typedPkg.weightLbs} lbs`
-                          : "-"}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {typedPkg.length && typedPkg.width && typedPkg.height
-                          ? `${typedPkg.length}" × ${typedPkg.width}" × ${typedPkg.height}"`
-                          : "-"}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeletePackage(index);
-                          }}
-                          disabled={fields.length <= 1}
-                          data-testid={`button-delete-package-${index}`}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
+                    <>
+                      <TableRow
+                        key={pkg.id}
+                        data-invalid={isInvalid ? "true" : undefined}
+                        tabIndex={isInvalid ? 0 : undefined}
+                        onClick={() => handleEditPackage(index)}
+                        data-testid={`row-package-${index}`}
+                        className={`
+    cursor-pointer transition-colors relative
+    hover:bg-muted/50
+
+    /* Invalid row base */
+    data-[invalid=true]:!bg-destructive/15
+    data-[invalid=true]:dark:!bg-destructive/30
+    data-[invalid=true]:!border-l-4
+    data-[invalid=true]:!border-destructive
+
+    /* Prevent hover-elevate or hover:bg-muted from overriding */
+    data-[invalid=true]:hover:!bg-destructive/25
+    data-[invalid=true]:before:absolute
+    data-[invalid=true]:before:inset-0
+    data-[invalid=true]:before:!bg-destructive/15
+    data-[invalid=true]:before:content-['']
+    data-[invalid=true]:before:pointer-events-none
+  `}
+                      >
+                        <TableCell className="font-medium">{index + 1}</TableCell>
+                        <TableCell>
+                          {typedPkg?.packageType
+                            ? getPackageTypeLabel(typedPkg.packageType)
+                            : "Parcel/Package"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {typedPkg?.weightLbs
+                            ? typedPkg.weightOz && parseInt(typedPkg.weightOz) > 0
+                              ? `${typedPkg.weightLbs} lbs ${typedPkg.weightOz} oz`
+                              : `${typedPkg.weightLbs} lbs`
+                            : "-"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {typedPkg?.length && typedPkg?.width && typedPkg?.height
+                            ? `${typedPkg.length}" × ${typedPkg.width}" × ${typedPkg.height}"`
+                            : "-"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeletePackage(index);
+                            }}
+                            disabled={fields.length <= 1}
+                            data-testid={`button-delete-package-${index}`}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+
+                      {isInvalid && packageErrorMessages[index] && (
+                        <TableRow key={`${pkg.id}-error`} className="bg-destructive/5">
+                          <TableCell />
+                          <TableCell colSpan={4} className="text-destructive text-sm px-4 py-2">
+                            {packageErrorMessages[index]!.map((m, i) => (
+                              <div key={i}>{m}</div>
+                            ))}
+                          </TableCell>
+                        </TableRow>
+                      )}
+
+
+                    </>
                   );
                 })}
               </TableBody>

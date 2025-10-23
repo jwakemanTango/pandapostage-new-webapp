@@ -2,9 +2,10 @@ import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createShipmentSchema } from "@shared/schema";
-import PackageForm from "../ShipmentForm-Latest/PackageForm";
+import PackageForm from "@/components/ShipmentForm-FourStep/PackageForm";
 
 export default function PackageFormExample() {
+
   const form = useForm({
     resolver: zodResolver(createShipmentSchema),
     defaultValues: {
@@ -16,16 +17,17 @@ export default function PackageFormExample() {
           length: "",
           width: "",
           height: "",
-        }
+          carrier: "any",
+        },
       ],
     },
+    mode: "onChange", // immediate validation feedback
   });
+
 
   return (
     <Form {...form}>
-      <div className="p-6 max-w-3xl">
-        <PackageForm form={form} />
-      </div>
+          <PackageForm {...({ form, showErrors: true } as any)} />
     </Form>
   );
 }
