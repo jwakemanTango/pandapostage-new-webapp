@@ -15,8 +15,28 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { PlugZap, Loader2, CheckCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Trash2, Plus, Package as PackageIcon, PlugZap, Loader2, CheckCircle } from "lucide-react";
 import { useFieldArray } from "react-hook-form";
 import {
   PACKAGE_TYPES,
@@ -40,6 +60,11 @@ type PackageItem = {
   carrier?: string;
 };
 
+type EditingPackage = {
+  index: number;
+  data: PackageItem;
+};
+
 const defaultPackage: PackageItem = {
   packageType: "parcel",
   weightLbs: "",
@@ -51,20 +76,25 @@ const defaultPackage: PackageItem = {
 };
 
 const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
-  const { fields, append } = useFieldArray({
+  const [editingPackage, setEditingPackage] = useState<EditingPackage | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showMultiPackage, setShowMultiPackage] = useState(false);
+
+  const { fields, append, remove, update } = useFieldArray({
     control: form.control,
     name: "packages",
   });
 
-  const selectedCarrier = form.watch("packages.0.carrier") || "any";
-  const availablePackageTypes =
-    CARRIER_PACKAGE_TYPES[selectedCarrier] || CARRIER_PACKAGE_TYPES.any;
-  const filteredPackageTypes = PACKAGE_TYPES.filter((type) =>
-    availablePackageTypes.includes(type.value)
-  );
-
+  // Initialize the packages array with one package if it's empty
   useEffect(() => {
-    if (fields.length === 0) append(defaultPackage);
+    if (fields.length === 0) {
+      append(defaultPackage);
+    }
+
+    // Set multi-package mode if we have more than one package
+    if (fields.length > 1) {
+      setShowMultiPackage(true);
+    }
   }, [fields.length, append]);
 
   // -----------------------------
@@ -92,9 +122,9 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
         }
       })();
     }
-  }, [supported]);
+  }, [supported, connectedDevice, connect]);
 
-  const handleFetchWeight = async () => {
+  const handleFetchWeight = async (packageIndex: number) => {
     if (!connectedDevice) {
       await connect();
       return;
@@ -104,218 +134,695 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
       const totalOz = result.ounces;
       const pounds = Math.floor(totalOz / 16);
       const ounces = Math.round(totalOz % 16);
-      form.setValue("packages.0.weightLbs", pounds.toString());
-      form.setValue("packages.0.weightOz", ounces.toString());
+      
+      // Get the current package data
+      const currentPackage = fields[packageIndex] as unknown as PackageItem;
+      
+      // Update the field array immediately so the table and form stay in sync
+      update(packageIndex, {
+        ...currentPackage,
+        weightLbs: pounds.toString(),
+        weightOz: ounces.toString(),
+      });
+      
+      // Also update editing package state if in edit mode for immediate UI feedback
+      if (editingPackage && editingPackage.index === packageIndex) {
+        setEditingPackage({
+          ...editingPackage,
+          data: {
+            ...editingPackage.data,
+            weightLbs: pounds.toString(),
+            weightOz: ounces.toString(),
+          },
+        });
+      }
     }
   };
 
-  // -----------------------------
+  // Get the package type label from the value
+  const getPackageTypeLabel = (value: string) => {
+    const packageType = PACKAGE_TYPES.find((type) => type.value === value);
+    return packageType ? packageType.label : value;
+  };
+
+  // Handle adding a new package
+  const handleAddPackage = () => {
+    append(defaultPackage);
+  };
+
+  // Handle editing a package
+  const handleEditPackage = (index: number) => {
+    const pkg = fields[index] as unknown as PackageItem;
+    setEditingPackage({
+      index,
+      data: {
+        packageType: pkg.packageType || "parcel",
+        weightLbs: pkg.weightLbs || "",
+        weightOz: pkg.weightOz || "0",
+        length: pkg.length || "",
+        width: pkg.width || "",
+        height: pkg.height || "",
+        carrier: pkg.carrier || "any",
+      },
+    });
+    setIsEditing(true);
+  };
+
+  // Handle deleting a package
+  const handleDeletePackage = (index: number) => {
+    if (fields.length > 1) {
+      remove(index);
+
+      // If we're down to one package, hide the multi-package interface
+      if (fields.length === 2) {
+        // Will be 1 after removal
+        setShowMultiPackage(false);
+      }
+    }
+  };
+
+  // Handle saving the edited package
+  const handleSavePackage = () => {
+    if (editingPackage) {
+      update(editingPackage.index, editingPackage.data);
+      setEditingPackage(null);
+      setIsEditing(false);
+    }
+  };
+
+  // Handle canceling the package edit
+  const handleCancelEdit = () => {
+    setEditingPackage(null);
+    setIsEditing(false);
+  };
+
+  // Update a field in the editing package
+  const updatePackageField = (field: keyof PackageItem, value: string) => {
+    if (editingPackage) {
+      setEditingPackage({
+        ...editingPackage,
+        data: {
+          ...editingPackage.data,
+          [field]: value,
+        },
+      });
+    }
+  };
+
+  // Enable multi-package mode and add a new package
+  const enableMultiPackage = () => {
+    setShowMultiPackage(true);
+    append(defaultPackage);
+  };
+
+  // Get filtered package types based on carrier
+  const getFilteredPackageTypes = (carrier: string) => {
+    const availablePackageTypes =
+      CARRIER_PACKAGE_TYPES[carrier] || CARRIER_PACKAGE_TYPES.any;
+    return PACKAGE_TYPES.filter((type) =>
+      availablePackageTypes.includes(type.value)
+    );
+  };
+
+  const selectedCarrier = form.watch("packages.0.carrier") || "any";
+  const filteredPackageTypes = getFilteredPackageTypes(selectedCarrier);
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-base font-semibold">Package Details</h3>
-        {showErrors &&
-          fields.some((pkg) => !pkg.packageType || !pkg.weightLbs) && (
-            <Badge variant="destructive" className="px-1.5 py-0.5 text-xs">
-              Missing info
-            </Badge>
-          )}
+        <div className="flex items-center gap-2">
+          <h3 className="text-base font-semibold">Package Details</h3>
+          {showErrors &&
+            fields.some((pkg) => {
+              const typedPkg = pkg as unknown as PackageItem;
+              return !typedPkg.packageType || !typedPkg.weightLbs;
+            }) && (
+              <Badge variant="destructive" className="px-1.5 py-0.5 text-xs">
+                Missing info
+              </Badge>
+            )}
+        </div>
+        {showMultiPackage && (
+          <Badge variant="outline" className="px-2 py-1">
+            {fields.length} {fields.length === 1 ? "package" : "packages"}
+          </Badge>
+        )}
       </div>
 
-      <div className="space-y-2">
-        {/* Carrier + Type */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name={`packages.0.carrier`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium">
-                  Preferred Carrier
-                </FormLabel>
-                <Select
-                  onValueChange={(value) => {
-                    field.onChange(value);
-                    const pkgType = form.getValues("packages.0.packageType");
-                    const newAvailable =
-                      CARRIER_PACKAGE_TYPES[value] || CARRIER_PACKAGE_TYPES.any;
-                    if (pkgType && !newAvailable.includes(pkgType)) {
-                      form.setValue("packages.0.packageType", "");
-                    }
-                  }}
-                  value={field.value || "any"}
-                >
-                  <FormControl>
-                    <SelectTrigger data-testid="select-carrier">
+      {/* Single Package Mode */}
+      {!showMultiPackage && !isEditing && (
+        <>
+          <div className="space-y-2">
+            {/* Carrier + Type */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="packages.0.carrier"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">
+                      Preferred Carrier
+                    </FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        const pkgType = form.getValues("packages.0.packageType");
+                        const newAvailable =
+                          CARRIER_PACKAGE_TYPES[value] || CARRIER_PACKAGE_TYPES.any;
+                        if (pkgType && !newAvailable.includes(pkgType)) {
+                          form.setValue("packages.0.packageType", "");
+                        }
+                      }}
+                      value={field.value || "any"}
+                    >
+                      <FormControl>
+                        <SelectTrigger data-testid="select-carrier">
+                          <SelectValue placeholder="Select carrier" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {CARRIERS.map((carrier) => (
+                          <SelectItem key={carrier.value} value={carrier.value}>
+                            {carrier.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="packages.0.packageType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">
+                      Package Type
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger data-testid="select-package-type">
+                          <SelectValue placeholder="Select package type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {filteredPackageTypes.map((type) => (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Weight Section */}
+            <div className="border-t mt-4 pt-4">
+              <FormLabel className="text-sm font-medium flex justify-between items-center">
+                <span>Weight</span>
+
+                {supported ? (
+                  <Button
+                    type="button"
+                    variant={connectedDevice ? "outline" : "default"}
+                    size="sm"
+                    onClick={() => handleFetchWeight(0)}
+                    disabled={isConnecting}
+                    className="flex items-center gap-1 text-xs px-2"
+                    data-testid="button-fetch-weight"
+                  >
+                    {isConnecting ? (
+                      <>
+                        <Loader2 size={12} className="animate-spin" /> Connecting...
+                      </>
+                    ) : connectedDevice ? (
+                      <>
+                        <PlugZap size={12} />
+                        Fetch Weight
+                      </>
+                    ) : (
+                      <>
+                        <PlugZap size={12} />
+                        Connect Scale
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          disabled
+                          className="flex items-center gap-1 text-xs px-2"
+                          data-testid="button-fetch-weight-disabled"
+                        >
+                          <PlugZap size={12} />
+                          Connect Scale
+                        </Button>
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">USB HID not supported in this browser</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </FormLabel>
+
+              <div className="flex gap-4 mt-1.5">
+                <FormField
+                  control={form.control}
+                  name="packages.0.weightLbs"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="0"
+                            step="1"
+                            placeholder="0"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(e.target.value.replace(/[^0-9]/g, ""))
+                            }
+                            data-testid="input-weight-lbs"
+                          />
+                        </FormControl>
+                        <span className="text-sm text-muted-foreground">lbs</span>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="packages.0.weightOz"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="0"
+                            max="15"
+                            step="1"
+                            placeholder="0"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(e.target.value.replace(/[^0-9]/g, ""))
+                            }
+                            data-testid="input-weight-oz"
+                          />
+                        </FormControl>
+                        <span className="text-sm text-muted-foreground">oz</span>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {weight && (
+                <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1" data-testid="text-scale-reading">
+                  <CheckCircle size={12} className="text-green-500" />
+                  Scale reading: {weight.grams.toFixed(0)} g /{" "}
+                  {weight.ounces.toFixed(1)} oz
+                </p>
+              )}
+            </div>
+
+            {/* Dimensions */}
+            <div className="grid grid-cols-3 gap-4 mt-4">
+              {["length", "width", "height"].map((dim) => (
+                <FormField
+                  key={dim}
+                  control={form.control}
+                  name={`packages.0.${dim}`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium capitalize">
+                        {dim} (in)
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="0"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.replace(/[^0-9.]/g, ""))
+                          }
+                          data-testid={`input-${dim}`}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end mt-6">
+            <Button
+              type="button"
+              variant="outline"
+              className="gap-2"
+              onClick={enableMultiPackage}
+              data-testid="button-add-multiple-packages"
+            >
+              <Plus className="h-4 w-4" />
+              Add Multiple Packages
+            </Button>
+          </div>
+        </>
+      )}
+
+      {/* Multi-Package Mode */}
+      {showMultiPackage && !isEditing && (
+        <>
+          <div className="mb-4 overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[80px]">#</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead className="text-right">Weight</TableHead>
+                  <TableHead className="text-right">Dimensions</TableHead>
+                  <TableHead className="text-right w-[100px]">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {fields.map((pkg, index) => {
+                  const typedPkg = pkg as unknown as PackageItem;
+                  return (
+                    <TableRow
+                      key={pkg.id}
+                      className={`cursor-pointer hover-elevate ${
+                        showErrors &&
+                        (!typedPkg.packageType || !typedPkg.weightLbs)
+                          ? "bg-destructive/10 border-l-4 border-destructive"
+                          : ""
+                      }`}
+                      onClick={() => handleEditPackage(index)}
+                      data-testid={`row-package-${index}`}
+                    >
+                      <TableCell className="font-medium">{index + 1}</TableCell>
+                      <TableCell>
+                        {typedPkg.packageType
+                          ? getPackageTypeLabel(typedPkg.packageType)
+                          : "Parcel/Package"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {typedPkg.weightLbs
+                          ? typedPkg.weightOz && parseInt(typedPkg.weightOz) > 0
+                            ? `${typedPkg.weightLbs} lbs ${typedPkg.weightOz} oz`
+                            : `${typedPkg.weightLbs} lbs`
+                          : "-"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {typedPkg.length && typedPkg.width && typedPkg.height
+                          ? `${typedPkg.length}" × ${typedPkg.width}" × ${typedPkg.height}"`
+                          : "-"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeletePackage(index);
+                          }}
+                          disabled={fields.length <= 1}
+                          data-testid={`button-delete-package-${index}`}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="flex justify-end mt-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="gap-2"
+              onClick={handleAddPackage}
+              data-testid="button-add-package"
+            >
+              <Plus className="h-4 w-4" />
+              Add Package
+            </Button>
+          </div>
+        </>
+      )}
+
+      {/* Package Edit Form */}
+      {isEditing && editingPackage && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <PackageIcon className="h-5 w-5" />
+              <span>
+                {showMultiPackage || fields.length > 1
+                  ? `Package ${editingPackage.index + 1}`
+                  : "Package Details"}
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {/* Carrier + Package Type */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <FormLabel className="text-sm font-medium">Preferred Carrier</FormLabel>
+                  <Select
+                    value={editingPackage.data.carrier || "any"}
+                    onValueChange={(value) => {
+                      updatePackageField("carrier", value);
+                      const pkgType = editingPackage.data.packageType;
+                      const newAvailable =
+                        CARRIER_PACKAGE_TYPES[value] || CARRIER_PACKAGE_TYPES.any;
+                      if (pkgType && !newAvailable.includes(pkgType)) {
+                        updatePackageField("packageType", "");
+                      }
+                    }}
+                  >
+                    <SelectTrigger data-testid="select-carrier-edit">
                       <SelectValue placeholder="Select carrier" />
                     </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {CARRIERS.map((carrier) => (
-                      <SelectItem key={carrier.value} value={carrier.value}>
-                        {carrier.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                    <SelectContent>
+                      {CARRIERS.map((carrier) => (
+                        <SelectItem key={carrier.value} value={carrier.value}>
+                          {carrier.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-          <FormField
-            control={form.control}
-            name={`packages.0.packageType`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium">
-                  Package Type
-                </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger data-testid="select-package-type">
+                <div>
+                  <FormLabel className="text-sm font-medium">Package Type</FormLabel>
+                  <Select
+                    value={editingPackage.data.packageType}
+                    onValueChange={(value) => updatePackageField("packageType", value)}
+                  >
+                    <SelectTrigger data-testid="select-package-type-edit">
                       <SelectValue placeholder="Select package type" />
                     </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {filteredPackageTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+                    <SelectContent>
+                      {getFilteredPackageTypes(
+                        editingPackage.data.carrier || "any"
+                      ).map((type) => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
 
-        {/* Weight Section */}
-        <div className="border-t mt-4 pt-4">
-          <FormLabel className="text-sm font-medium flex justify-between items-center">
-            <span>Weight</span>
+              {/* Weight Section with Scale */}
+              <div className="border-t pt-4">
+                <FormLabel className="text-sm font-medium flex justify-between items-center">
+                  <span>Weight</span>
 
-            {supported && (
-              <Button
-                type="button"
-                variant={connectedDevice ? "outline" : "default"}
-                size="sm"
-                onClick={handleFetchWeight}
-                disabled={isConnecting}
-                className="flex items-center gap-1 text-xs px-2"
-              >
-                {isConnecting ? (
-                  <>
-                    <Loader2 size={12} className="animate-spin" /> Connecting...
-                  </>
-                ) : connectedDevice ? (
-                  <>
-                    <PlugZap size={12} />
-                    Fetch Weight
-                  </>
-                ) : (
-                  <>
-                    <PlugZap size={12} />
-                    Connect Scale
-                  </>
-                )}
-              </Button>
-            )}
-          </FormLabel>
+                  {supported ? (
+                    <Button
+                      type="button"
+                      variant={connectedDevice ? "outline" : "default"}
+                      size="sm"
+                      onClick={() => handleFetchWeight(editingPackage.index)}
+                      disabled={isConnecting}
+                      className="flex items-center gap-1 text-xs px-2"
+                      data-testid="button-fetch-weight-edit"
+                    >
+                      {isConnecting ? (
+                        <>
+                          <Loader2 size={12} className="animate-spin" /> Connecting...
+                        </>
+                      ) : connectedDevice ? (
+                        <>
+                          <PlugZap size={12} />
+                          Fetch Weight
+                        </>
+                      ) : (
+                        <>
+                          <PlugZap size={12} />
+                          Connect Scale
+                        </>
+                      )}
+                    </Button>
+                  ) : (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            disabled
+                            className="flex items-center gap-1 text-xs px-2"
+                            data-testid="button-fetch-weight-edit-disabled"
+                          >
+                            <PlugZap size={12} />
+                            Connect Scale
+                          </Button>
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-xs">USB HID not supported in this browser</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </FormLabel>
 
-          <div className="flex gap-4 mt-1.5">
-            <FormField
-              control={form.control}
-              name={`packages.0.weightLbs`}
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <FormControl>
+                <div className="flex gap-4 mt-1.5">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
                       <Input
                         type="number"
                         min="0"
                         step="1"
                         placeholder="0"
-                        {...field}
+                        value={editingPackage.data.weightLbs}
                         onChange={(e) =>
-                          field.onChange(e.target.value.replace(/[^0-9]/g, ""))
+                          updatePackageField(
+                            "weightLbs",
+                            e.target.value.replace(/[^0-9]/g, "")
+                          )
                         }
+                        data-testid="input-weight-lbs-edit"
                       />
-                    </FormControl>
-                    <span className="text-sm text-muted-foreground">lbs</span>
+                      <span className="text-sm text-muted-foreground">lbs</span>
+                    </div>
                   </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            <FormField
-              control={form.control}
-              name={`packages.0.weightOz`}
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <FormControl>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
                       <Input
                         type="number"
                         min="0"
                         max="15"
                         step="1"
                         placeholder="0"
-                        {...field}
+                        value={editingPackage.data.weightOz}
                         onChange={(e) =>
-                          field.onChange(e.target.value.replace(/[^0-9]/g, ""))
+                          updatePackageField(
+                            "weightOz",
+                            e.target.value.replace(/[^0-9]/g, "")
+                          )
                         }
+                        data-testid="input-weight-oz-edit"
                       />
-                    </FormControl>
-                    <span className="text-sm text-muted-foreground">oz</span>
+                      <span className="text-sm text-muted-foreground">oz</span>
+                    </div>
                   </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                </div>
 
-          {weight && (
-            <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
-              <CheckCircle size={12} className="text-green-500" />
-              Scale reading: {weight.grams.toFixed(0)} g /{" "}
-              {weight.ounces.toFixed(1)} oz
-            </p>
-          )}
-        </div>
+                {weight && (
+                  <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1" data-testid="text-scale-reading-edit">
+                    <CheckCircle size={12} className="text-green-500" />
+                    Scale reading: {weight.grams.toFixed(0)} g /{" "}
+                    {weight.ounces.toFixed(1)} oz
+                  </p>
+                )}
+              </div>
 
-        {/* Dimensions */}
-        <div className="grid grid-cols-3 gap-4 mt-4">
-          {["length", "width", "height"].map((dim) => (
-            <FormField
-              key={dim}
-              control={form.control}
-              name={`packages.0.${dim}`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-medium capitalize">
-                    {dim} (in)
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="0"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(e.target.value.replace(/[^0-9.]/g, ""))
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
-        </div>
-      </div>
+              {/* Dimensions */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <FormLabel className="text-sm font-medium">Length (in)</FormLabel>
+                  <Input
+                    type="text"
+                    placeholder="0"
+                    value={editingPackage.data.length}
+                    onChange={(e) =>
+                      updatePackageField("length", e.target.value.replace(/[^0-9.]/g, ""))
+                    }
+                    data-testid="input-length-edit"
+                  />
+                </div>
+                <div>
+                  <FormLabel className="text-sm font-medium">Width (in)</FormLabel>
+                  <Input
+                    type="text"
+                    placeholder="0"
+                    value={editingPackage.data.width}
+                    onChange={(e) =>
+                      updatePackageField("width", e.target.value.replace(/[^0-9.]/g, ""))
+                    }
+                    data-testid="input-width-edit"
+                  />
+                </div>
+                <div>
+                  <FormLabel className="text-sm font-medium">Height (in)</FormLabel>
+                  <Input
+                    type="text"
+                    placeholder="0"
+                    value={editingPackage.data.height}
+                    onChange={(e) =>
+                      updatePackageField("height", e.target.value.replace(/[^0-9.]/g, ""))
+                    }
+                    data-testid="input-height-edit"
+                  />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-between pt-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCancelEdit}
+              data-testid="button-cancel-edit"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSavePackage}
+              data-testid="button-save-package"
+            >
+              Save Package
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
     </div>
   );
 };
