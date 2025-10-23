@@ -320,13 +320,13 @@ export const ShipmentForm = ({
       <Form {...form}>
         <div
           className={`grid grid-cols-1 gap-6 ${
-            shouldShowLiveSummary ? "lg:grid-cols-[1fr_380px]" : ""
+            shouldShowLiveSummary ? "md:grid-cols-[1fr_380px]" : ""
           } pt-4`}
         >
           <div className="space-y-6">{renderStep()}</div>
 
           {shouldShowLiveSummary && (
-            <div className="hidden lg:block">
+            <div className="hidden md:block">
               <LiveSummary
                 formData={form.getValues()}
                 currentStep={currentStep}

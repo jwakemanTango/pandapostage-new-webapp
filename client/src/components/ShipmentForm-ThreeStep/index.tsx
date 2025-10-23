@@ -231,7 +231,7 @@ export const ShipmentFormFull = ({
             </Button>
           </div>
 
-          <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? "lg:grid-cols-[1fr_320px]" : ""}`}>
+          <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? "md:grid-cols-[1fr_320px]" : ""}`}>
             <div>
               <LabelSummary
                 purchasedLabel={purchasedLabel}
@@ -241,7 +241,7 @@ export const ShipmentFormFull = ({
             </div>
 
             {showLiveSummary && (
-              <div className="hidden lg:block sticky top-0 self-start">
+              <div className="hidden md:block sticky top-0 self-start">
                 <CompactLiveSummary
                   formData={form.getValues()}
                   currentStep="printLabel"
@@ -270,7 +270,7 @@ export const ShipmentFormFull = ({
           />
         )}
 
-        <div className={`grid grid-cols-1 gap-6 ${showLiveSummary ? "lg:grid-cols-[1fr_320px]" : ""} pt-4`}>
+        <div className={`grid grid-cols-1 gap-6 ${showLiveSummary ? "md:grid-cols-[1fr_320px]" : ""} pt-4`}>
           {/* Left column: rate list + buttons */}
           <div className="flex flex-col space-y-4">
             <div className="flex items-center justify-between pb-2 border-b">
@@ -291,7 +291,7 @@ export const ShipmentFormFull = ({
                   onClick={handleGoBack}
                   variant="outline"
                   size="sm"
-                  className="gap-2 hidden lg:flex"
+                  className="gap-2 hidden md:flex"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Go Back
@@ -347,7 +347,7 @@ export const ShipmentFormFull = ({
 
           {/* Right column: summary */}
           {showLiveSummary && (
-            <div className="hidden lg:block sticky top-0 self-start">
+            <div className="hidden md:block sticky top-0 self-start">
               <CompactLiveSummary
                 formData={form.getValues()}
                 currentStep="selectRate"
@@ -390,7 +390,7 @@ export const ShipmentFormFull = ({
               </Button>
             </div>
 
-            <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? "lg:grid-cols-[1fr_320px]" : ""}`}>
+            <div className={`grid grid-cols-1 gap-4 ${showLiveSummary ? "md:grid-cols-[1fr_320px]" : ""}`}>
               <div className="space-y-4">
                 {useCompactAddresses ? (
                   <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
@@ -431,7 +431,7 @@ export const ShipmentFormFull = ({
                   </>
                 )}
 
-                <div className="hidden lg:block pt-2">
+                <div className="hidden md:block pt-2">
                   <Button
                     type="button"
                     onClick={handleGetRates}
@@ -445,7 +445,7 @@ export const ShipmentFormFull = ({
               </div>
 
               {showLiveSummary && (
-                <div className="hidden lg:block sticky top-0 self-start">
+                <div className="hidden md:block sticky top-0 self-start">
                   <CompactLiveSummary
                     formData={formValues}
                     currentStep="shipment"
@@ -457,7 +457,7 @@ export const ShipmentFormFull = ({
           </div>
         </div>
 
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t lg:hidden z-10">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t md:hidden z-10">
           <Button
             type="button"
             onClick={handleGetRates}
