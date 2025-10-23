@@ -41,3 +41,7 @@ interface HID extends EventTarget {
 interface Navigator {
   hid: HID;
 }
+
+interface HIDConnectionEvent extends Event {
+  device: HIDDevice;
+}

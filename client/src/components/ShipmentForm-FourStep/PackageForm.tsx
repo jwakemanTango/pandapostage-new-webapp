@@ -167,9 +167,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
     form.clearErrors("packages");
   };
 
-  const handleAddPackage = () => {
-    append(defaultPackage);
-  };
+  const handleAddPackage = () => append(defaultPackage);
 
   const handleEditPackage = (index: number) => {
     const pkg = fields[index] as unknown as PackageItem;
@@ -191,10 +189,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
   const handleDeletePackage = (index: number) => {
     if (fields.length > 1) {
       remove(index);
-
-      if (fields.length === 2) {
-        setShowMultiPackage(false);
-      }
+      if (fields.length === 2) setShowMultiPackage(false);
     }
   };
 
@@ -234,17 +229,17 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
   const { supported, connectedDevice, isConnecting, getCurrentWeight } =
     useUsbScale();
 
-  // Automatically attempt connection on render
+  // Auto connect on render if supported
   useEffect(() => {
     if (supported && !connectedDevice) {
-      getCurrentWeight(); // triggers internal connect logic
+      getCurrentWeight();
     }
   }, [supported]);
 
   const handleFetchWeight = async () => {
     const result = await getCurrentWeight();
     if (result) {
-      const roundedOz = Math.round(result.oz); // always whole ounces
+      const roundedOz = Math.round(result.oz); // whole ounces only
       form.setValue("packages.0.weightLbs", result.lbs.toString());
       form.setValue("packages.0.weightOz", roundedOz.toString());
     }
@@ -376,6 +371,7 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
 
             <div className="border-t my-4"></div>
 
+            {/* Weight Section */}
             <div>
               <FormLabel className="text-sm font-medium flex items-center justify-between">
                 <span>Weight</span>
@@ -406,7 +402,6 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
               </FormLabel>
 
               <div className="flex gap-4 mt-1.5">
-                {/* lbs */}
                 <FormField
                   control={form.control}
                   name={`packages.0.weightLbs`}
@@ -420,13 +415,9 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                             step="1"
                             placeholder="0"
                             {...field}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(
-                                /[^0-9]/g,
-                                ""
-                              );
-                              field.onChange(value);
-                            }}
+                            onChange={(e) =>
+                              field.onChange(e.target.value.replace(/[^0-9]/g, ""))
+                            }
                           />
                         </FormControl>
                         <span className="text-sm text-muted-foreground">
@@ -438,7 +429,6 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                   )}
                 />
 
-                {/* oz */}
                 <FormField
                   control={form.control}
                   name={`packages.0.weightOz`}
@@ -453,24 +443,47 @@ const PackageForm = ({ form, showErrors = false }: PackageFormProps) => {
                             step="1"
                             placeholder="0"
                             {...field}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(
-                                /[^0-9]/g,
-                                ""
-                              );
-                              field.onChange(value);
-                            }}
+                            onChange={(e) =>
+                              field.onChange(e.target.value.replace(/[^0-9]/g, ""))
+                            }
                           />
                         </FormControl>
-                        <span className="text-sm text-muted-foreground">
-                          oz
-                        </span>
+                        <span className="text-sm text-muted-foreground">oz</span>
                       </div>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
+            </div>
+
+            {/* Dimensions Section */}
+            <div className="grid grid-cols-3 gap-4 mt-4">
+              {["length", "width", "height"].map((dim) => (
+                <FormField
+                  key={dim}
+                  control={form.control}
+                  name={`packages.0.${dim}`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium capitalize">
+                        {dim} (in)
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="0"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.replace(/[^0-9.]/g, ""))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
             </div>
           </div>
 
