@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 
 interface WeightReading {
-  value: number;
-  unit: string;
+  ounces: number;
+  grams: number;
   raw: number[];
 }
 
@@ -16,6 +16,7 @@ export const UsbScaleMonitor: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [displayMode, setDisplayMode] = useState<DisplayMode>("imperial");
   const [isOffline, setIsOffline] = useState(false);
+  const [savedDeviceInfo, setSavedDeviceInfo] = useState<string | null>(null);
 
   const deviceRef = useRef<HIDDevice | null>(null);
   deviceRef.current = device;
@@ -26,7 +27,7 @@ export const UsbScaleMonitor: React.FC = () => {
     { vendorId: 0x1446, productId: 0x6a73 }, // Smart Weigh
   ];
 
-  // --- Initial setup ---
+  // --- Initialize + attempt auto-connect ---
   useEffect(() => {
     if (!("hid" in navigator)) {
       setSupported(false);
@@ -35,17 +36,17 @@ export const UsbScaleMonitor: React.FC = () => {
     setSupported(true);
 
     const hid = (navigator as any).hid;
+    const lastKey = localStorage.getItem("lastUsbScaleKey");
+    setSavedDeviceInfo(lastKey || null);
 
-    // Attempt to reconnect to last used device
     (async () => {
       const devices: HIDDevice[] = await hid.getDevices();
-      const lastKey = localStorage.getItem("lastUsbScaleKey");
       if (lastKey && devices.length > 0) {
         const match = devices.find(
           (d) => `${d.vendorId}:${d.productId}` === lastKey
         );
         if (match) {
-          console.log("Reconnecting to last known device:", match.productName);
+          console.log("Auto-connecting to saved device:", match.productName);
           await connect(match);
         }
       }
@@ -66,7 +67,7 @@ export const UsbScaleMonitor: React.FC = () => {
     };
   }, []);
 
-  // --- Polling for power cycles ---
+  // --- Polling for reappearance ---
   useEffect(() => {
     if (!("hid" in navigator)) return;
     const hid = (navigator as any).hid;
@@ -75,6 +76,7 @@ export const UsbScaleMonitor: React.FC = () => {
       const devices: HIDDevice[] = await hid.getDevices();
       const current = deviceRef.current;
       const lastKey = localStorage.getItem("lastUsbScaleKey");
+
       const stillPresent =
         current &&
         devices.some(
@@ -82,7 +84,6 @@ export const UsbScaleMonitor: React.FC = () => {
             d.vendorId === current.vendorId && d.productId === current.productId
         );
 
-      // Handle disappearance
       if (current && !stillPresent) {
         console.warn("Scale powered off or disconnected.");
         setDevice(null);
@@ -90,13 +91,13 @@ export const UsbScaleMonitor: React.FC = () => {
         setIsOffline(true);
       }
 
-      // Handle reappearance / auto reconnect
+      // Try reconnecting
       if (!current && lastKey && !isConnecting && devices.length > 0) {
         const match = devices.find(
           (d) => `${d.vendorId}:${d.productId}` === lastKey
         );
         if (match) {
-          console.log("Reconnecting to remembered device:", match.productName);
+          console.log("Reconnecting to saved device:", match.productName);
           await connect(match);
           setIsOffline(false);
         }
@@ -106,7 +107,7 @@ export const UsbScaleMonitor: React.FC = () => {
     return () => clearInterval(interval);
   }, [isConnecting]);
 
-  // --- Connect / Disconnect ---
+  // --- Connection management ---
   const connect = async (dev?: HIDDevice) => {
     setError(null);
     setIsConnecting(true);
@@ -126,11 +127,9 @@ export const UsbScaleMonitor: React.FC = () => {
       setDevice(selected);
       setIsOffline(false);
 
-      // Remember device key
-      localStorage.setItem(
-        "lastUsbScaleKey",
-        `${selected.vendorId}:${selected.productId}`
-      );
+      const key = `${selected.vendorId}:${selected.productId}`;
+      localStorage.setItem("lastUsbScaleKey", key);
+      setSavedDeviceInfo(key);
     } catch (err: any) {
       setError(err.message || String(err));
     } finally {
@@ -149,59 +148,72 @@ export const UsbScaleMonitor: React.FC = () => {
     }
   };
 
-  // --- Handle incoming HID data ---
+  const clearSavedDevice = () => {
+    localStorage.removeItem("lastUsbScaleKey");
+    setSavedDeviceInfo(null);
+    console.log("Cleared saved scale info from localStorage.");
+  };
+
+  // --- Handle reports ---
   const handleReport = (event: HIDInputReportEvent) => {
     const data = event.data;
     const bytes = Array.from(new Uint8Array(data.buffer));
-    const parsed = parseWeightReport(data);
-    if (parsed) setWeight({ ...parsed, raw: bytes });
+    console.log("Raw HID bytes:", bytes);
+
+    const parsed = parseWeightReport(bytes);
+    if (parsed) setWeight(parsed);
   };
 
-  const parseWeightReport = (data: DataView) => {
-    if (data.byteLength < 5) return null;
-    const status = data.getUint8(0);
-    const unitCode = data.getUint8(1);
-    const rawWeight = data.getUint16(3, true);
+  const parseWeightReport = (bytes: number[]): WeightReading | null => {
+    if (bytes.length < 5) return null;
+    const status = bytes[0];
+    const unitCode = bytes[1];
+    const sign = bytes[2];
+    const rawWeight = bytes[3] + bytes[4] * 256;
+
+    // Only accept "stable" or "active" statuses (2 or 4)
     if (status !== 2 && status !== 4) return null;
 
+    const multiplier = sign === 0 ? 1 : 1; // handle negatives if needed later
     let ounces = 0;
     let grams = 0;
+
     if (unitCode === 11) {
       ounces = rawWeight / 10;
       grams = ounces * 28.3495;
     } else if (unitCode === 2) {
       grams = rawWeight;
       ounces = grams / 28.3495;
-    } else return null;
+    } else {
+      console.warn("Unknown unitCode:", unitCode, "raw:", bytes);
+      return null;
+    }
 
-    return { value: ounces, unit: unitCode === 11 ? "oz" : "g", raw: [] };
+    return { ounces: ounces * multiplier, grams: grams * multiplier, raw: bytes };
   };
 
-  // --- Derived display values ---
+  // --- Display formatting ---
   let displayValue = "-";
   let secondaryValue = "";
 
   if (weight) {
     if (displayMode === "imperial") {
-      const totalOz = weight.value;
+      const totalOz = weight.ounces;
       const pounds = Math.floor(totalOz / 16);
       const oz = Math.round(totalOz % 16);
       displayValue = `${pounds} lb ${oz} oz`;
-      const grams = totalOz * 28.3495;
-      secondaryValue = `${grams.toFixed(1)} g`;
+      secondaryValue = `${weight.grams.toFixed(1)} g`;
     } else {
-      const grams = weight.unit === "oz" ? weight.value * 28.3495 : weight.value;
-      const kilograms = grams / 1000;
-      displayValue = `${grams.toFixed(1)} g`;
-      secondaryValue = `${kilograms.toFixed(3)} kg`;
+      displayValue = `${weight.grams.toFixed(1)} g`;
+      secondaryValue = `${(weight.grams / 1000).toFixed(3)} kg`;
     }
   }
 
+  // --- UI ---
   return (
     <div className="p-4 max-w-md mx-auto border rounded-xl bg-white shadow-sm">
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg font-semibold">USB Scale Monitor</h2>
-
         {supported ? (
           <div className="flex items-center gap-2">
             <button
@@ -238,11 +250,25 @@ export const UsbScaleMonitor: React.FC = () => {
 
       {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
-      {/* Device info */}
+      {savedDeviceInfo && (
+        <div className="text-xs text-gray-500 mb-2">
+          <p>
+            <strong>Saved Device:</strong> {savedDeviceInfo}
+          </p>
+          <button
+            onClick={clearSavedDevice}
+            className="text-[11px] text-blue-600 underline hover:text-blue-800 mt-1"
+          >
+            Clear Saved Device
+          </button>
+        </div>
+      )}
+
       {device && (
         <div className="text-sm text-gray-600 mb-3">
           <p>
-            <strong>Device:</strong> {device.productName || "Unknown Device"}
+            <strong>Connected Device:</strong>{" "}
+            {device.productName || "Unknown Device"}
           </p>
           <p>
             <strong>Vendor ID:</strong> {device.vendorId} &nbsp;|&nbsp;
