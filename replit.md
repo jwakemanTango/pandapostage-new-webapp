@@ -17,6 +17,16 @@ Preferred communication style: Simple, everyday language.
     - Features auto-opening invalid form tabs and `onChange` validation for immediate feedback.
     - Includes a collapsible, sticky `BannerLiveSummary` for progress tracking and a `CompactLiveSummary` sidebar for detailed summaries and validation error highlighting.
     - Implements a Custom Packages Preset System for quick-filling common package configurations.
+    - **Multi-Package Support**: PackageForm component supports both single-package and multi-package modes:
+        - Single mode: Direct form fields for a single package
+        - Multi mode: Table view with add/edit/delete functionality
+        - Edit modal for individual package configuration
+        - Automatic mode switching based on package count
+    - **USB Scale Integration**: Integrated WebHID-based USB scale support for automated weight measurement:
+        - "Connect Scale / Fetch Weight" button in both single mode and edit modal
+        - Immediate weight persistence to prevent data loss when canceling edits
+        - Tooltip display when USB HID is not supported or blocked
+        - Auto-reconnection on device disconnect/reconnect
     - Rates are automatically sorted by price (low to high).
     - Label download triggers the browser's native print dialog, supporting PDF, PNG, and ZPL formats.
 - **State Management**: TanStack Query for server state, React Hook Form for form state, React hooks for local UI state.
