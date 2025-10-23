@@ -154,8 +154,46 @@ export function useUsbScale(): UsbScaleState {
       }
     };
 
+    const handleConnect = async (event: HIDConnectionEvent) => {
+      try {
+        const dev = event.device;
+        // If we already have this device recorded, ignore
+        if (deviceRef.current && dev.vendorId === deviceRef.current.vendorId && dev.productId === deviceRef.current.productId) {
+          setIsOffline(false);
+          return;
+        }
+
+        // Try to open and attach a report listener so this hook instance reflects the connection
+        if (!dev.opened) {
+          try {
+            await dev.open();
+          } catch (err) {
+            // Opening may fail if another context already has the device open; still try to attach listener below
+          }
+        }
+        dev.addEventListener("inputreport", handleReport);
+        setConnectedDevice(dev);
+        setIsOffline(false);
+
+        const key = `${dev.vendorId}:${dev.productId}`;
+        localStorage.setItem("lastUsbScaleKey", key);
+        setSavedDeviceKey(key);
+
+        const known = KNOWN_SCALE_IDS.find(
+          (s) => s.vendorId === dev.vendorId && s.productId === dev.productId
+        );
+        console.log("[Scale] Connected (event):", known?.name ?? dev.productName);
+      } catch (err) {
+        // ignore connect handler errors
+      }
+    };
+
     hid.addEventListener("disconnect", handleDisconnect);
-    return () => hid.removeEventListener("disconnect", handleDisconnect);
+    hid.addEventListener("connect", handleConnect);
+    return () => {
+      hid.removeEventListener("disconnect", handleDisconnect);
+      hid.removeEventListener("connect", handleConnect);
+    };
   }, []);
 
   /* -------------------------------
@@ -233,8 +271,27 @@ export function useUsbScale(): UsbScaleState {
         selected = devices[0];
       }
 
-      await selected.open();
-      selected.addEventListener("inputreport", handleReport);
+      // Try to open the device, but if open() fails (for example because another
+      // context already has it open), still attach the inputreport listener and
+      // mark this hook instance as connected so the UI can reflect the device.
+      try {
+        if (!selected.opened) {
+          await selected.open();
+        }
+      } catch (err) {
+        // Opening may fail if another context already has the device open.
+        // We deliberately continue so this hook can still attach a listener
+        // and reflect the connected device state when possible.
+        console.warn("[Scale] Warning: unable to open device, continuing to attach listener if possible.", err);
+      }
+
+      try {
+        selected.addEventListener("inputreport", handleReport);
+      } catch (err) {
+        // Some environments may throw when adding listeners; ignore to avoid breaking UI.
+        console.warn("[Scale] Warning: unable to add inputreport listener:", err);
+      }
+
       setConnectedDevice(selected);
       setIsOffline(false);
 
