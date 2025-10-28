@@ -43,7 +43,7 @@ import {
   CARRIERS,
   CARRIER_PACKAGE_TYPES,
 } from "@/lib/constants";
-import { useUsbScale } from "@/hooks/use-UsbScale";
+import { useUsbScale } from "@/lib/usbScale-React/use-scale";
 
 interface PackageFormProps {
   form: any;

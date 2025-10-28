@@ -17,17 +17,45 @@ export const shipmentAddressSchema = z.object({
 
 // Package schema
 export const packageSchema = z.object({
-  packageType: z.string().min(1, "Package type is required"),
-  weightLbs: z.string().min(1, "Weight in pounds is required")
-    .refine(val => /^\d+$/.test(val), "Weight must be a whole number"),
-  weightOz: z.string().optional()
-    .refine(val => !val || /^\d+$/.test(val), "Ounces must be a whole number"),
-  length: z.string().min(1, "Length is required")
-    .refine(val => /^\d+$/.test(val), "Length must be a whole number"),
-  width: z.string().min(1, "Width is required")
-    .refine(val => /^\d+$/.test(val), "Width must be a whole number"),
-  height: z.string().min(1, "Height is required")
-    .refine(val => /^\d+$/.test(val), "Height must be a whole number"),
+  packageType: z
+    .string()
+    .min(1, "Package type is required")
+    .optional(),
+  weightLbs: z.coerce
+    .number({
+      invalid_type_error: "Weight in pounds must be a number",
+      required_error: "Weight in pounds is required",
+    })
+    .int("Weight must be a whole number")
+    .min(0, "Weight must be a whole number"),
+  weightOz: z.coerce
+    .number({
+      invalid_type_error: "Weight in ounces must be a number",
+    })
+    .int("Ounces must be a whole number")
+    .min(0, "Ounces must be a whole number")
+    .optional(),
+  length: z.coerce
+    .number({
+      invalid_type_error: "Length must be a number",
+      required_error: "Length is required",
+    })
+    .int("Length must be a whole number")
+    .min(0, "Length must be a whole number"),
+  width: z.coerce
+    .number({
+      invalid_type_error: "Width must be a number",
+      required_error: "Width is required",
+    })
+    .int("Width must be a whole number")
+    .min(0, "Width must be a whole number"),
+  height: z.coerce
+    .number({
+      invalid_type_error: "Height must be a number",
+      required_error: "Height is required",
+    })
+    .int("Height must be a whole number")
+    .min(0, "Height must be a whole number"),
   carrier: z.string().optional(),
 });
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ShipmentFormLatest } from "@/components/ShipmentForm-Latest";
 import { ShipmentForm } from "@/components/ShipmentForm-FourStep";
 import { ShipmentFormFull } from "@/components/ShipmentForm-ThreeStep";
 import { Rate } from "@shared/schema";
@@ -26,6 +27,7 @@ const CreateShipment = () => {
 
   const getRatesMutation = useMutation({
     mutationFn: async (data: any) => {
+      console.log("Get Rates", data)
       // Call external API directly using configured endpoints
       return await getShippingRates(apiConfig, data);
     },
@@ -213,7 +215,7 @@ const CreateShipment = () => {
         </div>
 
         {formView === "four-step" ? (
-          <ShipmentForm
+          <ShipmentFormLatest
             onGetRates={handleGetRates}
             onPurchaseLabel={handlePurchaseLabel}
             rates={rates}

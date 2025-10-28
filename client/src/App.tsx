@@ -6,9 +6,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import CreateShipment from "@/pages/CreateShipment";
 import LabelSummaryExample from "@/pages/examples/LabelSummary";
 import NotFound from "@/pages/not-found";
-import { UsbScaleMonitor } from "./components/UsbScaleReader/UsbScaleMonitor";
+import { UsbScaleMonitorInner } from "./components/UsbScaleReader/UsbScaleMonitor-inner";
 import PackageFormInline from "@/pages/examples/PackageForm-inline";
 import PackageFormOld from "@/pages/examples/PackageForm-old";
+import { UsbScaleMonitor } from "./components/UsbScaleReader/UsbScaleMontior";
 
 function Router() {
   return (

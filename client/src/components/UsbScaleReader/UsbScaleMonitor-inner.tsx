@@ -1,6 +1,8 @@
-import { useUsbScale } from "@/hooks/use-UsbScale";
+import { useState, useEffect } from "react";
+import { useScale } from "../../lib/usbScale";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+
 import {
   Loader2,
   Scale,
@@ -14,48 +16,44 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import { useState, useEffect } from "react";
 
-export const UsbScaleMonitor = () => {
+export const UsbScaleMonitorInner = () => {
   const {
     supported,
-    connectedDevice,
+    device,
     isConnecting,
     isOffline,
     weight,
     connect,
     disconnect,
     getCurrentWeight,
-    profiles,
-    activeProfile,
-    setProfileById,
-  } = useUsbScale();
+  } = useScale();
 
   const [displayWeight, setDisplayWeight] = useState(weight);
   const [showDebug, setShowDebug] = useState(false);
-  const [autoRefresh, setAutoRefresh] = useState(true); // default ON
+  const [autoRefresh, setAutoRefresh] = useState(true);
   const [manualReading, setManualReading] = useState("");
   const [manualUnit, setManualUnit] = useState("oz");
 
-  // Update displayed weight when auto-refresh is active
+  // Update displayed weight when live updates are active
   useEffect(() => {
     if (autoRefresh) setDisplayWeight(weight);
   }, [autoRefresh, weight]);
 
   const handleFetchWeight = async () => {
-    const w = await getCurrentWeight();
+    const w = await getCurrentWeight?.();
     if (w) setDisplayWeight(w);
   };
 
-  // Poll weight if auto-refresh enabled
+  // Poll weight periodically if auto-refresh is enabled
   useEffect(() => {
-    if (!autoRefresh || !connectedDevice) return;
+    if (!autoRefresh || !device) return;
     const interval = setInterval(handleFetchWeight, 1500);
     return () => clearInterval(interval);
-  }, [autoRefresh, connectedDevice]);
+  }, [autoRefresh, device]);
 
   const handleConnect = async () => {
-    if (connectedDevice) await disconnect();
+    if (device) await disconnect();
     else await connect();
   };
 
@@ -64,8 +62,8 @@ export const UsbScaleMonitor = () => {
   const pounds = ounces / 16;
   const kilograms = grams / 1000;
 
-  const vendorId = connectedDevice?.vendorId;
-  const productId = connectedDevice?.productId;
+  const vendorId = device?.vendorId;
+  const productId = device?.productId;
   const showVendorProduct = vendorId && productId;
 
   const handleDownloadReport = () => {
@@ -73,10 +71,9 @@ export const UsbScaleMonitor = () => {
 USB SCALE DIAGNOSTIC REPORT
 ===========================
 
-Device: ${connectedDevice?.productName || "N/A"}
-Profile: ${activeProfile?.name || "N/A"}
-Vendor/Product: ${vendorId}:${productId}
-Connected: ${connectedDevice ? "Yes" : "No"}
+Device: ${device?.productName || "N/A"}
+Vendor/Product: ${vendorId || "?"}:${productId || "?"}
+Connected: ${device ? "Yes" : "No"}
 Auto-refresh: ${autoRefresh ? "Enabled" : "Disabled"}
 
 Manual Reading:
@@ -122,7 +119,7 @@ ${JSON.stringify(displayWeight, null, 2)}
               <div className="grid grid-cols-2 gap-y-1">
                 <span className="text-gray-500">Device</span>
                 <span className="text-right font-medium text-gray-800 truncate">
-                  {connectedDevice?.productName || "No device connected"}
+                  {device?.productName || "No device connected"}
                 </span>
 
                 {showVendorProduct && (
@@ -135,31 +132,10 @@ ${JSON.stringify(displayWeight, null, 2)}
                 )}
               </div>
 
-              {/* Profile Selector */}
-              {connectedDevice && profiles.length > 0 && (
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">
-                    Select Profile
-                  </label>
-                  <select
-                    title="Select scale profile"
-                    value={activeProfile?.id || ""}
-                    onChange={(e) => setProfileById(e.target.value)}
-                    className="w-full border rounded-md px-2 py-1.5 text-sm focus:ring-1 focus:ring-primary focus:border-primary"
-                  >
-                    {profiles.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
               {/* Connect / Disconnect */}
               <div className="flex gap-2">
                 <Button
-                  variant={connectedDevice ? "outline" : "default"}
+                  variant={device ? "outline" : "default"}
                   className="flex-1 text-sm"
                   disabled={isConnecting}
                   onClick={handleConnect}
@@ -169,7 +145,7 @@ ${JSON.stringify(displayWeight, null, 2)}
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
                       Connecting...
                     </>
-                  ) : connectedDevice ? (
+                  ) : device ? (
                     <>
                       <Unplug className="h-4 w-4 mr-2" /> Disconnect
                     </>
@@ -182,10 +158,12 @@ ${JSON.stringify(displayWeight, null, 2)}
               </div>
 
               {/* Weight Display Section */}
-              {connectedDevice ? (
+              {device ? (
                 <div className="rounded-md border bg-gray-50 p-3 text-center space-y-2">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-sm font-medium text-gray-700">Current Weight</p>
+                    <p className="text-sm font-medium text-gray-700">
+                      Current Weight
+                    </p>
                     <label className="flex items-center gap-1.5 text-xs text-gray-600 select-none cursor-pointer">
                       <input
                         type="checkbox"
@@ -200,12 +178,20 @@ ${JSON.stringify(displayWeight, null, 2)}
                   {/* Main readings */}
                   <div className="grid grid-cols-2 gap-3 text-center">
                     <div>
-                      <p className="text-[11px] text-gray-400 uppercase">Pounds</p>
-                      <p className="text-xl font-semibold text-gray-900">{pounds.toFixed(2)}</p>
+                      <p className="text-[11px] text-gray-400 uppercase">
+                        Pounds
+                      </p>
+                      <p className="text-xl font-semibold text-gray-900">
+                        {pounds.toFixed(2)}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-[11px] text-gray-400 uppercase">Ounces</p>
-                      <p className="text-xl font-semibold text-gray-900">{ounces.toFixed(1)}</p>
+                      <p className="text-[11px] text-gray-400 uppercase">
+                        Ounces
+                      </p>
+                      <p className="text-xl font-semibold text-gray-900">
+                        {ounces.toFixed(1)}
+                      </p>
                     </div>
                   </div>
 
@@ -220,12 +206,11 @@ ${JSON.stringify(displayWeight, null, 2)}
                     </div>
                   </div>
 
-                  {/* Refresh button – only visible if auto-refresh is OFF */}
                   {!autoRefresh && (
                     <div className="pt-2.5">
                       <Button
                         onClick={handleFetchWeight}
-                        disabled={!connectedDevice || isConnecting}
+                        disabled={!device || isConnecting}
                         className="w-full text-sm font-medium flex items-center justify-center gap-1.5 bg-primary text-white hover:bg-primary/90 transition-all"
                       >
                         <RefreshCcw className="h-4 w-4" />
@@ -234,7 +219,6 @@ ${JSON.stringify(displayWeight, null, 2)}
                     </div>
                   )}
 
-                  {/* Status line */}
                   <p className="text-[11px] text-gray-500 mt-1.5 flex items-center justify-center gap-1">
                     <Zap className="h-3 w-3 text-yellow-500" />
                     {autoRefresh ? "Streaming..." : "Manual mode"}
@@ -247,9 +231,8 @@ ${JSON.stringify(displayWeight, null, 2)}
                 </div>
               )}
 
-
               {/* Manual Reading */}
-              {connectedDevice && (
+              {device && (
                 <div className="border-t pt-3 space-y-2">
                   <p className="font-medium text-gray-700 text-sm">
                     Manual Reading (from scale display)
