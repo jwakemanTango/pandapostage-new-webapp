@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { ShipmentFormLatest } from "@/components/ShipmentForm-Latest";
-import { ShipmentForm } from "@/components/ShipmentForm-FourStep";
-import { ShipmentFormFull } from "@/components/ShipmentForm-ThreeStep";
 import { Rate } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
@@ -11,12 +9,11 @@ import { Settings2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { ApiConfigPanel, useApiConfig } from "@/components/ApiConfig";
 import { getShippingRates, purchaseShippingLabel } from "@/lib/directApiClient";
+import { ScaleProvider } from "@/lib/usbScale";
 
 type FormView = "four-step" | "three-step";
 
 const CreateShipment = () => {
-  const [formView, setFormView] = useState<FormView>("four-step");
-  const [useCompactAddresses, setUseCompactAddresses] = useState(true);
   const [showLiveSummary, setShowLiveSummary] = useState(true);
   const [showLabelPreview, setShowLabelPreview] = useState(true);
   const [showBannerSummary, setShowBannerSummary] = useState(true);
@@ -27,7 +24,6 @@ const CreateShipment = () => {
 
   const getRatesMutation = useMutation({
     mutationFn: async (data: any) => {
-      console.log("Get Rates", data)
       // Call external API directly using configured endpoints
       return await getShippingRates(apiConfig, data);
     },
@@ -116,44 +112,6 @@ const CreateShipment = () => {
           {showDebugPanel && (
             <div className="space-y-3 mb-3 sm:mb-4">
               <div className="flex flex-wrap items-center gap-3 sm:gap-6 p-3 bg-muted/30 rounded-lg border">
-                <div
-                  className="flex items-center gap-3"
-                  data-testid="view-toggle"
-                >
-                  <Label
-                    htmlFor="view-toggle"
-                    className="text-xs font-medium whitespace-nowrap"
-                  >
-                    {formView === "four-step" ? "4-Step Flow" : "Compact 3-step flow"}
-                  </Label>
-                  <Switch
-                    id="view-toggle"
-                    checked={formView === "three-step"}
-                    onCheckedChange={(checked) =>
-                      setFormView(checked ? "three-step" : "four-step")
-                    }
-                    data-testid="switch-view-toggle"
-                  />
-                </div>
-
-                <div className="hidden sm:block h-5 w-px bg-border" />
-
-                <div className="flex items-center gap-2">
-                  <Label
-                    htmlFor="compact-addresses-toggle"
-                    className="text-xs whitespace-nowrap"
-                  >
-                    Combine Address Forms
-                  </Label>
-                  <Switch
-                    id="compact-addresses-toggle"
-                    checked={useCompactAddresses}
-                    onCheckedChange={setUseCompactAddresses}
-                    data-testid="switch-compact-addresses-global"
-                  />
-                </div>
-
-                <div className="hidden sm:block h-5 w-px bg-border" />
 
                 <div className="flex items-center gap-2">
                   <Label
@@ -213,32 +171,18 @@ const CreateShipment = () => {
             </div>
           )}
         </div>
-
-        {formView === "four-step" ? (
-          <ShipmentFormLatest
-            onGetRates={handleGetRates}
-            onPurchaseLabel={handlePurchaseLabel}
-            rates={rates}
-            isLoadingRates={getRatesMutation.isPending}
-            isPurchasing={purchaseLabelMutation.isPending}
-            useCompactAddresses={useCompactAddresses}
-            showLiveSummary={showLiveSummary}
-            showLabelPreview={showLabelPreview}
-            showBannerSummary={showBannerSummary}
-          />
-        ) : (
-          <ShipmentFormFull
-            onGetRates={handleGetRates}
-            onPurchaseLabel={handlePurchaseLabel}
-            rates={rates}
-            isLoadingRates={getRatesMutation.isPending}
-            isPurchasing={purchaseLabelMutation.isPending}
-            useCompactAddresses={useCompactAddresses}
-            showLiveSummary={showLiveSummary}
-            showLabelPreview={showLabelPreview}
-            showBannerSummary={showBannerSummary}
-          />
-        )}
+          <ScaleProvider>
+            <ShipmentFormLatest
+              onGetRates={handleGetRates}
+              onPurchaseLabel={handlePurchaseLabel}
+              rates={rates}
+              isLoadingRates={getRatesMutation.isPending}
+              isPurchasing={purchaseLabelMutation.isPending}
+              showLiveSummary={showLiveSummary}
+              showLabelPreview={showLabelPreview}
+              showBannerSummary={showBannerSummary}
+            />
+          </ScaleProvider>
       </main>
     </div>
   );

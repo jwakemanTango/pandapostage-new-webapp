@@ -1,6 +1,6 @@
 import { useFieldArray } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
-import { PackageBasicInfo } from "./PackageBasicInfo";
+import { PackageBasicInfo } from "./PackageBasicInfo2";
 import { PackageDetails } from "./PackageDetails";
 
 interface PackageFormInlineProps {

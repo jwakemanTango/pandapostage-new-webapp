@@ -5,7 +5,8 @@
    - Safe for destructuring (arrow-bound methods)
 -------------------------------------------------------------------*/
 
-const KNOWN_SCALES = [
+
+const DEFAULT_KNOWN_SCALES = [
   { vendorId: 5190, productId: 27379 },  // Stamps.com Model 510
   { vendorId: 2338, productId: 32771 },  // DYMO M10
   { vendorId: 2338, productId: 32772 },  // DYMO M25
@@ -18,6 +19,8 @@ const KNOWN_SCALES = [
 ];
 
 export class UsbScale {
+  knownScales = [...DEFAULT_KNOWN_SCALES];
+  allowAllDevices = false;
   supported = false;
   device = null;
   isConnecting = false;
@@ -151,7 +154,10 @@ export class UsbScale {
     try {
       let selected = dev;
       if (!selected) {
-        const devices = await this.#hid.requestDevice({ filters: KNOWN_SCALES });
+        const filters = this.allowAllDevices ? [] : this.knownScales;
+        const devices = await this.#hid.requestDevice(
+          filters.length ? { filters } : {} // empty object means show all
+        );
         if (!devices?.length) {
           this.isConnecting = false;
           this.#emit();
@@ -218,6 +224,15 @@ export class UsbScale {
     // immediately push current snapshot
     callback({ ...this.snapshot });
     return () => this.#listeners.delete(callback);
+  };
+
+  setKnownScales = (list = []) => {
+    if (Array.isArray(list)) this.knownScales = list;
+    else console.warn("[UsbScale] setKnownScales expects an array");
+  };
+
+  setAllowAllDevices = (enabled = true) => {
+    this.allowAllDevices = enabled;
   };
 
   /* --------------------------

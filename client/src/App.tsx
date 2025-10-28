@@ -4,11 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import CreateShipment from "@/pages/CreateShipment";
-import LabelSummaryExample from "@/pages/examples/LabelSummary";
 import NotFound from "@/pages/not-found";
-import { UsbScaleMonitorInner } from "./components/UsbScaleReader/UsbScaleMonitor-inner";
 import PackageFormInline from "@/pages/examples/PackageForm-inline";
-import PackageFormOld from "@/pages/examples/PackageForm-old";
 import { UsbScaleMonitor } from "./components/UsbScaleReader/UsbScaleMontior";
 
 function Router() {
@@ -16,9 +13,7 @@ function Router() {
     <Switch>
       <Route path="/" component={CreateShipment} />
       <Route path="/scaletest" component={UsbScaleMonitor} />
-      <Route path="/examples/package-form-2" component={PackageFormInline} />
-      <Route path="/examples/package-form-1" component={PackageFormOld} />
-      <Route path="/examples/label-summary" component={LabelSummaryExample} />
+      <Route path="/examples/package-form" component={PackageFormInline} />
       <Route component={NotFound} />
     </Switch>
   );

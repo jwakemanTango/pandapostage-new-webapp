@@ -15,7 +15,7 @@ export interface ApiConfig {
 }
 
 const DEFAULT_CONFIG: ApiConfig = {
-  baseUrl: "https://api.example.com",
+  baseUrl: "/",
   ratesEndpoint: "/v1/Rates/quote",
   buyEndpoint: "/v1/Shipments/buy",
   apiKey: "",

@@ -1,14 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { scale } from "./scale.js";
 
-// Create a context with the initial snapshot
-const ScaleContext = createContext(scale.snapshot);
+// Create a context with the initial snapshot + API methods
+const ScaleContext = createContext({
+  ...scale.snapshot,
+  setKnownScales: scale.setKnownScales?.bind(scale),
+  setAllowAllDevices: scale.setAllowAllDevices?.bind(scale),
+});
 
 export const ScaleProvider = ({ children }) => {
   const [snapshot, setSnapshot] = useState({ ...scale.snapshot });
 
   useEffect(() => {
-    console.log("[ScaleProvider] Mounting…");
+    //console.log("[ScaleProvider] Mounting…");
     
     // Subscribe to singleton updates
     const unsubscribe = scale.subscribe((newSnap) => {
@@ -18,20 +22,24 @@ export const ScaleProvider = ({ children }) => {
     });
 
     // Capture initial state after possible auto-connect
-    console.log(
-      "[ScaleProvider] Initial snapshot:",
-      scale.snapshot.device?.productName || "(no device)"
-    );
+    //console.log("[ScaleProvider] Initial snapshot:", scale.snapshot.device?.productName || "(no device)");
     setSnapshot({ ...scale.snapshot });
 
     return () => {
-      console.log("[ScaleProvider] Unmounting…");
+      //console.log("[ScaleProvider] Unmounting…");
       unsubscribe?.();
     };
   }, []);
 
+  const contextValue = {
+    ...snapshot,
+    // expose the debug methods directly from the singleton
+    setKnownScales: scale.setKnownScales?.bind(scale),
+    setAllowAllDevices: scale.setAllowAllDevices?.bind(scale),
+  };
+
   return (
-    <ScaleContext.Provider value={{ ...snapshot }}>
+    <ScaleContext.Provider value={{ contextValue }}>
       {children}
     </ScaleContext.Provider>
   );
