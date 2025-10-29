@@ -1,5 +1,3 @@
-import { ApiConfig } from "@/components/ApiConfig";
-
 /**
  * Transform frontend address format to API format
  * Matches the transformation in server/routes.ts
@@ -63,7 +61,7 @@ const transformAdditionalServices = (additionalServices: any) => {
  * Get shipping rates from the external API
  * Matches the backend proxy implementation in server/routes.ts
  */
-export const getShippingRates = async (config: ApiConfig, data: any) => {
+export const getShippingRates = async (config: any, data: any) => {
   const url = `${config.baseUrl}${config.ratesEndpoint}`;
   
   const requestBody = {
@@ -88,6 +86,9 @@ export const getShippingRates = async (config: ApiConfig, data: any) => {
     method: "POST",
     headers,
     body: JSON.stringify(requestBody),
+  }).catch((error) => {
+    console.error("Network error:", error);
+    throw new Error(`API Network error`);
   });
 
   if (!response.ok) {
@@ -125,17 +126,19 @@ export const getShippingRates = async (config: ApiConfig, data: any) => {
  * Purchase a shipping label from the external API
  * Matches the backend proxy implementation in server/routes.ts
  */
-export const purchaseShippingLabel = async (config: ApiConfig, data: any) => {
+export const purchaseShippingLabel = async (config: any, data: any) => {
   const url = `${config.baseUrl}${config.buyEndpoint}`;
   
-  const { provider, shipmentId, rateId, reference } = data;
+  const { provider, carrier, service, shipmentId, rateId, reference } = data;
 
-  if (!provider || !shipmentId || !rateId) {
-    throw new Error("Missing required fields: provider, shipmentId, and rateId are required");
+  if (!provider || !shipmentId || !rateId || !carrier || !service) {
+    throw new Error("Missing required fields: provider, shipmentId, carrier, service and rateId are required");
   }
 
   const requestBody = {
     provider,
+    carrier,
+    service,
     shipmentId,
     rateId,
     reference,
@@ -156,7 +159,10 @@ export const purchaseShippingLabel = async (config: ApiConfig, data: any) => {
     method: "POST",
     headers,
     body: JSON.stringify(requestBody),
-  });
+  }).catch((error) => {
+    console.error("Network error:", error);
+    throw new Error(`API Network error`);
+  })
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -165,6 +171,7 @@ export const purchaseShippingLabel = async (config: ApiConfig, data: any) => {
 
   const buyResponse = await response.json();
 
+  console.log("Purchase response:", buyResponse);
   // Transform API response to frontend format
   // Matches the transformation in server/routes.ts
   return {
@@ -175,7 +182,9 @@ export const purchaseShippingLabel = async (config: ApiConfig, data: any) => {
     trackingNumber: buyResponse.trackingNumber,
     carrier: buyResponse.carrier,
     service: buyResponse.service,
-    rate: `$${buyResponse.total.toFixed(2)}`,
+    retailRate: buyResponse.retailRate ? `$${buyResponse.retailRate.toFixed(2)}` : undefined,
+    listRate: buyResponse.listRate ? `$${buyResponse.listRate.toFixed(2)}` : undefined,
+    price: `$${buyResponse.price.toFixed(2)}`,
     labelUrl: buyResponse.labelUrl,
     currency: buyResponse.currency,
     estimatedDelivery: buyResponse.estimatedDelivery,

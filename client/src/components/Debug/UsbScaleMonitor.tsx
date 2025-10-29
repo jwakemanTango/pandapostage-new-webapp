@@ -1,8 +1,7 @@
+import { ScaleProvider, useScale } from "@/lib/usbScale/scale-react";
 import { useState, useEffect } from "react";
-import { useScale } from "../../lib/usbScale";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-
 import {
   Loader2,
   Scale,
@@ -17,7 +16,21 @@ import {
   ChevronUp,
 } from "lucide-react";
 
-export const UsbScaleMonitorInner = () => {
+export const UsbScaleMonitor = () => {
+  try {
+    useScale(); // If global provider exists, reuse it
+    return <UsbScaleMonitorInner />;
+  } catch {
+    // Otherwise, create self-contained provider
+    return (
+      <ScaleProvider>
+        <UsbScaleMonitorInner />
+      </ScaleProvider>
+    );
+  }
+};
+
+const UsbScaleMonitorInner = () => {
   const {
     supported,
     device,
@@ -66,6 +79,18 @@ export const UsbScaleMonitorInner = () => {
   const productId = device?.productId;
   const showVendorProduct = vendorId && productId;
 
+  // Extract HID collection info
+  const collections = device?.collections || [];
+  const usageDetails =
+    collections.length > 0
+      ? collections
+          .map(
+            (c, i) =>
+              `${i + 1}: usagePage=${c.usagePage ?? "?"}, usage=${c.usage ?? "?"}`
+          )
+          .join("; ")
+      : "N/A";
+
   const handleDownloadReport = () => {
     const info = `
 USB SCALE DIAGNOSTIC REPORT
@@ -76,10 +101,13 @@ Vendor/Product: ${vendorId || "?"}:${productId || "?"}
 Connected: ${device ? "Yes" : "No"}
 Auto-refresh: ${autoRefresh ? "Enabled" : "Disabled"}
 
+Usage Info:
+${usageDetails}
+
 Manual Reading:
 Value: ${manualReading || "N/A"} ${manualUnit}
 
-Raw Data:
+Raw Weight Data:
 ${JSON.stringify(displayWeight, null, 2)}
 `;
     const blob = new Blob([info], { type: "text/plain" });
@@ -124,9 +152,18 @@ ${JSON.stringify(displayWeight, null, 2)}
 
                 {showVendorProduct && (
                   <>
-                    <span className="text-gray-500">ID</span>
+                    <span className="text-gray-500">Vendor / Product</span>
                     <span className="text-right text-gray-800">
                       {vendorId}:{productId}
+                    </span>
+                  </>
+                )}
+
+                {device && (
+                  <>
+                    <span className="text-gray-500">Usage Page(s)</span>
+                    <span className="text-right text-gray-800 text-xs break-words">
+                      {usageDetails}
                     </span>
                   </>
                 )}

@@ -8,6 +8,8 @@ import { Address } from "@shared/schema";
 import { US_STATES } from "@/lib/constants";
 import { Truck, MapPinned } from "lucide-react";
 
+import { useFormState } from "react-hook-form";
+
 interface AddressFormCombinedProps {
   form: any;
   onAddressSelected?: () => void;
@@ -17,44 +19,170 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
   const [activeTab, setActiveTab] = useState<"from" | "to">("from");
   const [searchTermFrom, setSearchTermFrom] = useState("");
   const [searchTermTo, setSearchTermTo] = useState("");
-  
+
+  /*
   const { data: addresses } = useQuery<Address[]>({
     queryKey: ["/api/addresses"],
   });
-  
+  */
+
+  const addresses = [
+      {
+        id: 1,
+        name: "John Smith 123",
+        company: "Acme Corp",
+        phone: "(555) 123-4567",
+        addressLine1: "123 Main Street",
+        addressLine2: "Suite 100",
+        city: "New York",
+        state: "NY",
+        zipCode: "10001",
+        country: "US",
+        type: "sender"
+      },
+      {
+        id: 2,
+        name: "Sarah Johnson",
+        company: "Tech Solutions Inc",
+        phone: "(555) 234-5678",
+        addressLine1: "456 Oak Avenue",
+        addressLine2: "",
+        city: "Los Angeles",
+        state: "CA",
+        zipCode: "90001",
+        country: "US",
+        type: "sender"
+      },
+      {
+        id: 3,
+        name: "Michael Brown",
+        company: "",
+        phone: "(555) 345-6789",
+        addressLine1: "789 Pine Road",
+        addressLine2: "Apt 5B",
+        city: "Chicago",
+        state: "IL",
+        zipCode: "60601",
+        country: "US",
+        type: "sender"
+      },
+      {
+        id: 4,
+        name: "Emily Davis",
+        company: "Global Enterprises",
+        phone: "(555) 456-7890",
+        addressLine1: "321 Elm Street",
+        addressLine2: "",
+        city: "Houston",
+        state: "TX",
+        zipCode: "77001",
+        country: "US",
+        type: "recipient"
+      },
+      {
+        id: 5,
+        name: "Robert Wilson",
+        company: "",
+        phone: "(555) 567-8901",
+        addressLine1: "654 Maple Drive",
+        addressLine2: "Unit 12",
+        city: "Phoenix",
+        state: "AZ",
+        zipCode: "85001",
+        country: "US",
+        type: "recipient"
+      },
+      {
+        id: 6,
+        name: "Jennifer Martinez",
+        company: "Creative Studios",
+        phone: "(555) 678-9012",
+        addressLine1: "987 Cedar Lane",
+        addressLine2: "",
+        city: "Philadelphia",
+        state: "PA",
+        zipCode: "19101",
+        country: "US",
+        type: "recipient"
+      },
+      {
+        id: 7,
+        name: "David Anderson",
+        company: "Anderson & Associates",
+        phone: "(555) 789-0123",
+        addressLine1: "147 Birch Boulevard",
+        addressLine2: "Floor 3",
+        city: "San Antonio",
+        state: "TX",
+        zipCode: "78201",
+        country: "US",
+        type: "sender"
+      },
+      {
+        id: 8,
+        name: "Lisa Thompson",
+        company: "",
+        phone: "(555) 890-1234",
+        addressLine1: "258 Spruce Court",
+        addressLine2: "",
+        city: "San Diego",
+        state: "CA",
+        zipCode: "92101",
+        country: "US",
+        type: "recipient"
+      },
+      {
+        id: 9,
+        name: "James Garcia",
+        company: "Garcia Logistics",
+        phone: "(555) 901-2345",
+        addressLine1: "369 Walnut Place",
+        addressLine2: "Building A",
+        city: "Dallas",
+        state: "TX",
+        zipCode: "75201",
+        country: "US",
+        type: "sender"
+      },
+      {
+        id: 10,
+        name: "Maria Rodriguez",
+        company: "Rodriguez Retail",
+        phone: "(555) 012-3456",
+        addressLine1: "741 Ash Street",
+        addressLine2: "",
+        city: "San Jose",
+        state: "CA",
+        zipCode: "95101",
+        country: "US",
+        type: "recipient"
+      }
+    ];
+
+  const { errors } = useFormState({ control: form.control });
+
   // Check for validation errors and switch to that tab
   useEffect(() => {
-    // Access formState properties explicitly to ensure React Hook Form tracks them
-    const fromErrors = form.formState.errors?.fromAddress;
-    const toErrors = form.formState.errors?.toAddress;
-    const errorCount = form.formState.errorCount;
-    
+    const fromErrors = errors?.fromAddress;
+    const toErrors = errors?.toAddress;
+
     const hasFromErrors = fromErrors && Object.keys(fromErrors).length > 0;
     const hasToErrors = toErrors && Object.keys(toErrors).length > 0;
-    
-    // Auto-switch to the tab with errors
-    // Only switch if there are actually errors (meaning validation has been triggered)
+
     if (hasFromErrors || hasToErrors) {
-      // Prioritize switching to the tab that has errors
-      // If only "to" has errors, switch to "to"
-      if (hasToErrors && !hasFromErrors) {
-        setActiveTab("to");
-      } 
-      // If "from" has errors (with or without "to" errors), switch to "from"
-      else if (hasFromErrors) {
-        setActiveTab("from");
-      }
+      if (hasToErrors && !hasFromErrors) setActiveTab("to");
+      else if (hasFromErrors) setActiveTab("from");
     }
-  }, [form.formState.errors?.fromAddress, form.formState.errors?.toAddress, form.formState.errorCount]);
-  
+  }, [errors?.fromAddress, errors?.toAddress]);
+
   const getFilteredAddresses = (type: "from" | "to", searchTerm: string) => {
     return addresses?.filter(address => {
       const typeMatches = type === "from" ? address.type === "sender" : address.type === "recipient";
-      
+
       if (!typeMatches) return false;
-      
+
       if (!searchTerm) return true;
-      
+
       const searchLower = searchTerm.toLowerCase();
       return (
         address.name.toLowerCase().includes(searchLower) ||
@@ -65,10 +193,10 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
       );
     });
   };
-  
+
   const handleSavedAddressSelect = async (addressId: string, type: "fromAddress" | "toAddress") => {
     const selectedAddress = addresses?.find(address => address.id === parseInt(addressId));
-    
+
     if (selectedAddress) {
       form.setValue(`${type}.name`, selectedAddress.name);
       form.setValue(`${type}.company`, selectedAddress.company || "");
@@ -79,10 +207,10 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
       form.setValue(`${type}.state`, selectedAddress.state);
       form.setValue(`${type}.zipCode`, selectedAddress.zipCode);
       form.setValue(`${type}.country`, selectedAddress.country);
-      
+
       // Clear validation errors for this address section
       form.clearErrors(type);
-      
+
       // Validate the fields after setting them
       if (type === "fromAddress") {
         const isValid = await form.trigger("fromAddress");
@@ -94,15 +222,15 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
       }
     }
   };
-  
+
   const renderAddressFields = (type: "fromAddress" | "toAddress", searchTerm: string, setSearchTerm: (value: string) => void) => {
     const filteredAddresses = getFilteredAddresses(type === "fromAddress" ? "from" : "to", searchTerm);
-    
+
     return (
       <div className="space-y-4">
         <div>
           <FormLabel className="text-sm font-medium mb-1.5 block">Select from saved addresses</FormLabel>
-          
+
           <Select onValueChange={(value) => handleSavedAddressSelect(value, type)}>
             <SelectTrigger className="w-full" data-testid={`select-saved-address-${type}`}>
               <SelectValue placeholder="-- Select a saved address --" />
@@ -282,11 +410,11 @@ const AddressFormCombined = ({ form, onAddressSelected }: AddressFormCombinedPro
             Ship To
           </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="from" className="mt-4">
           {renderAddressFields("fromAddress", searchTermFrom, setSearchTermFrom)}
         </TabsContent>
-        
+
         <TabsContent value="to" className="mt-4">
           {renderAddressFields("toAddress", searchTermTo, setSearchTermTo)}
         </TabsContent>

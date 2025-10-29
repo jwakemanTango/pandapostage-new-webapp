@@ -1,0 +1,7 @@
+use getrates model to validate before getting rates? instead of 
+
+
+
+
+- templated txt / html / zpl / pdf reciept generator
+- 

@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package, MapPin, CheckCircle2, DollarSign, ChevronRight, Lock } from "lucide-react";
-import { ShipmentFormData, Rate } from "@shared/schema";
+import { ShipmentFormInput, Rate } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { PandaLogo } from "@/components/PandaLogo";
 
 interface LiveSummaryProps {
-  formData: ShipmentFormData;
+  formData: ShipmentFormInput;
   currentStep: number;
   completedSteps: number[];
   purchasedLabel?: Rate | null;
@@ -14,7 +14,7 @@ interface LiveSummaryProps {
   formErrors?: any;
 }
 
-export const LiveSummary = ({
+export const SidebarSummary = ({
   formData,
   currentStep,
   completedSteps,

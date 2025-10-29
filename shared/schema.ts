@@ -15,49 +15,39 @@ export const shipmentAddressSchema = z.object({
   country: z.string().default("US"),
 });
 
+const numField = (label: string) =>
+  z.union([
+    z.string().min(1, `*required`),
+    z.number({ invalid_type_error: `${label} must be a number` }),
+  ])
+  .pipe(
+    z.coerce.number()
+      .int(`${label} must be a whole number`)
+      .min(0, `${label} must be greater than or equal to 0`)
+  );
+
+
 // Package schema
 export const packageSchema = z.object({
-  packageType: z
-    .string()
-    .min(1, "Package type is required")
-    .optional(),
-  weightLbs: z.coerce
-    .number({
-      invalid_type_error: "Weight in pounds must be a number",
-      required_error: "Weight in pounds is required",
-    })
-    .int("Weight must be a whole number")
-    .min(0, "Weight must be a whole number"),
-  weightOz: z.coerce
-    .number({
-      invalid_type_error: "Weight in ounces must be a number",
-    })
-    .int("Ounces must be a whole number")
-    .min(0, "Ounces must be a whole number")
-    .optional(),
-  length: z.coerce
-    .number({
-      invalid_type_error: "Length must be a number",
-      required_error: "Length is required",
-    })
-    .int("Length must be a whole number")
-    .min(0, "Length must be a whole number"),
-  width: z.coerce
-    .number({
-      invalid_type_error: "Width must be a number",
-      required_error: "Width is required",
-    })
-    .int("Width must be a whole number")
-    .min(0, "Width must be a whole number"),
-  height: z.coerce
-    .number({
-      invalid_type_error: "Height must be a number",
-      required_error: "Height is required",
-    })
-    .int("Height must be a whole number")
-    .min(0, "Height must be a whole number"),
+  packageType: z.string().min(1, "*required"),
+
+  weightLbs: numField("Weight in pounds"),
+  weightOz: numField("Weight in ounces"),
+  length: numField("Length in inches"),
+  width: numField("Width in inches"),
+  height: numField("Height in inches"),
+
   carrier: z.string().optional(),
 });
+
+// Form-friendly version of ShipmentFormData for React Hook Form
+const numericPackageFields = ["weightLbs", "weightOz", "length", "width", "height"] as const;
+export type PackageFieldKey = typeof numericPackageFields[number];
+
+export type ShipmentFormInput = Omit<ShipmentFormData, "packages"> & {
+  packages: (Omit<Package, PackageFieldKey> &
+    Record<PackageFieldKey, number | string>)[];
+};
 
 // Rate selection schema
 export const rateSelectionSchema = z.object({

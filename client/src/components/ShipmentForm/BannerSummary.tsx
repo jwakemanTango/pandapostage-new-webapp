@@ -8,10 +8,10 @@ import {
   DollarSign,
   Printer,
 } from "lucide-react";
-import { ShipmentFormData } from "@shared/schema";
+import { ShipmentFormInput } from "@shared/schema";
 
-interface BannerLiveSummaryProps {
-  formData: ShipmentFormData;
+interface BannerSummaryProps {
+  formData: ShipmentFormInput;
   currentStep?:
     | "shipment"
     | "selectRate"
@@ -24,12 +24,12 @@ interface BannerLiveSummaryProps {
   workflow?: "3-step" | "4-step";
 }
 
-export const BannerLiveSummary = ({
+export const BannerSummary = ({
   formData,
   currentStep = "shipment",
   formErrors,
   workflow = "3-step",
-}: BannerLiveSummaryProps) => {
+}: BannerSummaryProps) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const { fromAddress, toAddress, packages } = formData || {};
 

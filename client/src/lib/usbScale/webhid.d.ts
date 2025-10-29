@@ -1,5 +1,6 @@
 interface HIDDevice {
   productName: string;
+  collections: HIDCollectionInfo[];
   vendorId: number;
   productId: number;
   opened: boolean;
