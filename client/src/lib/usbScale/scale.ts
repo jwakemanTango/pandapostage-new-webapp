@@ -49,7 +49,7 @@ const DEFAULT_KNOWN_SCALES: HIDDeviceFilter[] = [
 
 export class UsbScale {
   knownScales: HIDDeviceFilter[] = [...DEFAULT_KNOWN_SCALES];
-  filterMode: ScaleFilterMode = "known";
+  filterMode: ScaleFilterMode = "scale";
 
   supported = false;
   device: HIDDevice | null = null;
