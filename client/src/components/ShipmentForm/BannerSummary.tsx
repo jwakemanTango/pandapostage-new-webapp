@@ -1,36 +1,17 @@
-import { useState } from "react";
-import {
-  ChevronDown,
-  ChevronUp,
-  Package,
-  MapPin,
-  Truck,
-  DollarSign,
-  Printer,
-} from "lucide-react";
+import { MapPin, DollarSign, Printer } from "lucide-react";
 import { ShipmentFormInput } from "@shared/schema";
 
 interface BannerSummaryProps {
   formData: ShipmentFormInput;
-  currentStep?:
-    | "shipment"
-    | "selectRate"
-    | "printLabel"
-    | "addresses"
-    | "packages"
-    | "rates"
-    | "label";
+  currentStep?: "shipment" | "rates" | "label" | "addresses" | "packages";
   formErrors?: any;
-  workflow?: "3-step" | "4-step";
 }
 
 export const BannerSummary = ({
   formData,
   currentStep = "shipment",
   formErrors,
-  workflow = "3-step",
 }: BannerSummaryProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
   const { fromAddress, toAddress, packages } = formData || {};
 
   const hasFromAddress =
@@ -53,23 +34,24 @@ export const BannerSummary = ({
       (pkg: any) => pkg && Object.keys(pkg).length > 0
     );
 
-  const steps =
-    workflow === "4-step"
-      ? [
-          { id: "addresses", label: "Addresses", icon: MapPin },
-          { id: "packages", label: "Packages", icon: Package },
-          { id: "rates", label: "Rates", icon: DollarSign },
-          { id: "label", label: "Label", icon: Printer },
-        ]
-      : [
-          { id: "shipment", label: "Shipment", icon: Truck },
-          { id: "selectRate", label: "Rate", icon: DollarSign },
-          { id: "printLabel", label: "Print", icon: Printer },
-        ];
+  // --- Step configuration ---
+  // Supports both old 4-step and new 3-step flows
+  const isThreeStep = ["shipment", "rates", "label"].includes(currentStep);
 
-  const currentStepIndex = steps.findIndex(
-    (s) => s.id === currentStep
-  );
+  const steps = isThreeStep
+    ? [
+        { id: "shipment", label: "Shipment Details", icon: MapPin },
+        { id: "rates", label: "Rates", icon: DollarSign },
+        { id: "label", label: "Label", icon: Printer },
+      ]
+    : [
+        { id: "addresses", label: "Addresses", icon: MapPin },
+        { id: "packages", label: "Packages", icon: MapPin },
+        { id: "rates", label: "Rates", icon: DollarSign },
+        { id: "label", label: "Label", icon: Printer },
+      ];
+
+  const currentStepIndex = steps.findIndex((s) => s.id === currentStep);
 
   const getFromDisplay = () =>
     hasFromAddress
@@ -83,151 +65,76 @@ export const BannerSummary = ({
       : null;
 
   return (
-    <div className="sticky top-0 z-50 backdrop-blur-md bg-white/85 dark:bg-neutral-900/85 border-b shadow-sm transition-all">
-      <div className="container mx-auto px-3 sm:px-5 max-w-[1400px]">
-        <button
-          type="button"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="w-full py-3 px-4 text-left cursor-pointer hover:bg-accent/40 transition-colors relative"
-        >
-          <div className="relative space-y-2">
-            {/* Steps row */}
-            <div className="flex items-center justify-center gap-6">
-              {steps.map((step, index) => {
-                const isCompleted = index < currentStepIndex;
-                const isCurrent = index === currentStepIndex;
-                const StepIcon = step.icon;
+    <div className="sticky top-0 z-50 backdrop-blur-md bg-white/85 dark:bg-neutral-900/85 border-b shadow-sm">
+      <div className="container mx-auto px-3 sm:px-5 max-w-[1400px] py-3">
+        {/* Steps Row */}
+        <div className="flex items-center justify-center gap-6">
+          {steps.map((step, index) => {
+            const isCompleted = index < currentStepIndex;
+            const isCurrent = index === currentStepIndex;
+            const StepIcon = step.icon;
 
-                return (
-                  <div
-                    key={step.id}
-                    className="flex items-center gap-2 min-w-0"
-                  >
-                    <div
-                      className={`flex items-center justify-center w-7 h-7 rounded-full border text-sm transition-colors ${
-                        isCurrent
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : isCompleted
-                          ? "bg-primary/15 text-primary border-primary/20"
-                          : "bg-muted text-muted-foreground border-transparent"
-                      }`}
-                    >
-                      <StepIcon className="h-4 w-4" />
-                    </div>
-                    <span
-                      className={`text-xs whitespace-nowrap ${
-                        isCurrent
-                          ? "font-semibold text-foreground"
-                          : isCompleted
-                          ? "text-foreground/70"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {step.label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Chevron */}
-            <div className="absolute top-0 right-0 h-8 w-8 flex items-center justify-center text-muted-foreground">
-              {isCollapsed ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronUp className="h-4 w-4" />
-              )}
-            </div>
-
-            {/* Expanded details */}
-            <div
-              className={`transition-all duration-300 overflow-hidden ${
-                isCollapsed ? "max-h-0 opacity-0" : "max-h-24 opacity-100"
-              }`}
-            >
-              {!isCollapsed && (
-                <div className="flex items-center gap-4 justify-center flex-wrap text-xs text-muted-foreground mt-2">
-                  {/* From */}
-                  <div className="flex items-center gap-1 min-w-0">
-                    <MapPin
-                      className={`h-3.5 w-3.5 shrink-0 ${
-                        hasFromAddressErrors
-                          ? "text-destructive"
-                          : "text-muted-foreground"
-                      }`}
-                    />
-                    <span
-                      className={`truncate ${
-                        hasFromAddressErrors
-                          ? "text-destructive"
-                          : "text-foreground"
-                      }`}
-                    >
-                      {hasFromAddress
-                        ? getFromDisplay()
-                        : "From: Not set"}
-                    </span>
-                  </div>
-
-                  <span>→</span>
-
-                  {/* To */}
-                  <div className="flex items-center gap-1 min-w-0">
-                    <MapPin
-                      className={`h-3.5 w-3.5 shrink-0 ${
-                        hasToAddressErrors
-                          ? "text-destructive"
-                          : "text-muted-foreground"
-                      }`}
-                    />
-                    <span
-                      className={`truncate ${
-                        hasToAddressErrors
-                          ? "text-destructive"
-                          : "text-foreground"
-                      }`}
-                    >
-                      {hasToAddress
-                        ? getToDisplay()
-                        : "To: Not set"}
-                    </span>
-                  </div>
-
-                  {/* Package info */}
-                  {(packages?.length || hasPackageErrors) && (
-                    <>
-                      <span>•</span>
-                      <div className="flex items-center gap-1 min-w-0">
-                        <Package
-                          className={`h-3.5 w-3.5 shrink-0 ${
-                            hasPackageErrors
-                              ? "text-destructive"
-                              : "text-muted-foreground"
-                          }`}
-                        />
-                        <span
-                          className={`truncate ${
-                            hasPackageErrors
-                              ? "text-destructive"
-                              : "text-foreground"
-                          }`}
-                        >
-                          {hasPackages
-                            ? `${packages.length} ${
-                                packages.length === 1
-                                  ? "package"
-                                  : "packages"
-                              }`
-                            : "Package: Not set"}
-                        </span>
-                      </div>
-                    </>
-                  )}
+            return (
+              <div key={step.id} className="flex items-center gap-2 min-w-0">
+                <div
+                  className={`flex items-center justify-center w-7 h-7 rounded-full border text-sm transition-colors ${
+                    isCurrent
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : isCompleted
+                      ? "bg-primary/15 text-primary border-primary/20"
+                      : "bg-muted text-muted-foreground border-transparent"
+                  }`}
+                >
+                  <StepIcon className="h-4 w-4" />
                 </div>
-              )}
-            </div>
+                <span
+                  className={`text-xs whitespace-nowrap ${
+                    isCurrent
+                      ? "font-semibold text-foreground"
+                      : isCompleted
+                      ? "text-foreground/70"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  {step.label}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Optional summary below steps - DEBUG: hidden for now (likely permanent)*/}
+        {(getFromDisplay() || getToDisplay()) && (
+          <div className="hidden flex justify-center gap-6 mt-2 text-xs text-muted-foreground">
+            {getFromDisplay() && (
+              <span
+                className={`${
+                  hasFromAddressErrors ? "text-destructive font-medium" : ""
+                }`}
+              >
+                From: {getFromDisplay()}
+              </span>
+            )}
+            {getToDisplay() && (
+              <span
+                className={`${
+                  hasToAddressErrors ? "text-destructive font-medium" : ""
+                }`}
+              >
+                To: {getToDisplay()}
+              </span>
+            )}
+            {hasPackages && (
+              <span
+                className={`${
+                  hasPackageErrors ? "text-destructive font-medium" : ""
+                }`}
+              >
+                {packages?.length} package{packages.length !== 1 && "s"}
+              </span>
+            )}
           </div>
-        </button>
+        )}
       </div>
     </div>
   );

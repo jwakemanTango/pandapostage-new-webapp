@@ -1,5 +1,6 @@
 import { ScaleProvider, useScale } from "@/lib/usbScale/scale-react";
 import { useState, useEffect } from "react";
+import { useDebug, useDebugSelect } from "@/components/Debug/debugContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
@@ -18,10 +19,10 @@ import {
 
 export const UsbScaleMonitor = () => {
   try {
-    useScale(); // If global provider exists, reuse it
+    useScale(); // Reuse existing global provider if available
     return <UsbScaleMonitorInner />;
   } catch {
-    // Otherwise, create self-contained provider
+    // Otherwise, wrap in its own provider
     return (
       <ScaleProvider>
         <UsbScaleMonitorInner />
@@ -40,15 +41,49 @@ const UsbScaleMonitorInner = () => {
     connect,
     disconnect,
     getCurrentWeight,
+    setFilterMode,
   } = useScale();
 
+  const { mergeSchema } = useDebug();
+  const ctxFilter = useDebugSelect("hardware", "usbScaleFilter");
+
+  // Local filter mode synced with debugContext and ScaleProvider
+  const [filterMode, setFilterModeLocal] = useState<"all" | "scale" | "known">(
+    (ctxFilter as "all" | "scale" | "known") || "all"
+  );
+
+  // Sync context → local + provider
+  useEffect(() => {
+    if (ctxFilter && ctxFilter !== filterMode) {
+      setFilterModeLocal(ctxFilter as "all" | "scale" | "known");
+      setFilterMode?.(ctxFilter as "all" | "scale" | "known");
+    }
+  }, [ctxFilter, filterMode, setFilterMode]);
+
+  // Sync local changes → context + provider
+  const handleChangeFilter = (mode: "all" | "scale" | "known") => {
+    setFilterModeLocal(mode);
+    setFilterMode?.(mode);
+    mergeSchema({
+      hardware: {
+        selects: {
+          usbScaleFilter: {
+            value: mode,
+            options: ["all", "scale", "known"],
+          },
+        },
+      },
+    });
+  };
+
+  // --- Weight / UI logic ---
   const [displayWeight, setDisplayWeight] = useState(weight);
   const [showDebug, setShowDebug] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [manualReading, setManualReading] = useState("");
   const [manualUnit, setManualUnit] = useState("oz");
 
-  // Update displayed weight when live updates are active
+  // Live update display
   useEffect(() => {
     if (autoRefresh) setDisplayWeight(weight);
   }, [autoRefresh, weight]);
@@ -58,7 +93,7 @@ const UsbScaleMonitorInner = () => {
     if (w) setDisplayWeight(w);
   };
 
-  // Poll weight periodically if auto-refresh is enabled
+  // Polling
   useEffect(() => {
     if (!autoRefresh || !device) return;
     const interval = setInterval(handleFetchWeight, 1500);
@@ -79,7 +114,6 @@ const UsbScaleMonitorInner = () => {
   const productId = device?.productId;
   const showVendorProduct = vendorId && productId;
 
-  // Extract HID collection info
   const collections = device?.collections || [];
   const usageDetails =
     collections.length > 0
@@ -100,6 +134,7 @@ Device: ${device?.productName || "N/A"}
 Vendor/Product: ${vendorId || "?"}:${productId || "?"}
 Connected: ${device ? "Yes" : "No"}
 Auto-refresh: ${autoRefresh ? "Enabled" : "Disabled"}
+Filter Mode: ${filterMode}
 
 Usage Info:
 ${usageDetails}
@@ -192,6 +227,24 @@ ${JSON.stringify(displayWeight, null, 2)}
                     </>
                   )}
                 </Button>
+              </div>
+
+              {/* Filter Mode Control */}
+              <div className="flex items-center justify-between border rounded-md p-2 bg-gray-50 mt-2">
+                <span className="text-xs font-medium text-gray-600">Filter Mode</span>
+                <div className="flex gap-1">
+                  {(["all", "scale", "known"] as const).map((mode) => (
+                    <Button
+                      key={mode}
+                      variant={filterMode === mode ? "default" : "outline"}
+                      size="sm"
+                      className="text-xs px-2 py-1"
+                      onClick={() => handleChangeFilter(mode)}
+                    >
+                      {mode}
+                    </Button>
+                  ))}
+                </div>
               </div>
 
               {/* Weight Display Section */}

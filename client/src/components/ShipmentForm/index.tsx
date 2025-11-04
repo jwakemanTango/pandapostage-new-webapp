@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import {
   createShipmentSchema,
-  ShipmentFormData,
   Rate,
   ShipmentFormInput,
 } from "@shared/schema";
@@ -23,43 +22,18 @@ import {
   ArrowRight,
   Loader2,
   Plus,
+  MapIcon,
 } from "lucide-react";
 
-import AddressFormCombined from "./AddressFormCombined";
-import PackageForm from "./PackageForm";
-import AdditionalServices from "./AdditionalServices";
+import AdditionalServices from "./Package/AdditionalServices";
 import RatesSelection from "./RatesSelection";
 import { LabelSummary } from "./LabelSummary";
 import { SidebarSummary } from "./SidebarSummary";
 import { BannerSummary } from "./BannerSummary";
-import { AddressFormFlexible } from "./AddressFormFlexible";
+import { AddressSection } from "./Address/AddressSection";
+import { PackageSection } from "./Package/PackageSection";
 
-// ---- Step configuration ----
-const stepConfig = [
-  {
-    key: "addresses",
-    title: "Shipping Addresses",
-    icon: <MapPin className="h-5 w-5 text-primary" />,
-    validate: ["fromAddress", "toAddress"],
-  },
-  {
-    key: "packages",
-    title: "Package & Services",
-    icon: <Package className="h-5 w-5 text-primary" />,
-    validate: ["packages"],
-  },
-  {
-    key: "rates",
-    title: "Select Shipping Rate",
-    icon: <DollarSign className="h-5 w-5 text-primary" />,
-  },
-  {
-    key: "label",
-    title: "Label Purchased",
-    icon: <Printer className="h-5 w-5 text-primary" />,
-  },
-] as const;
-
+// ---- Default Values ----
 const defaultShipmentValues: ShipmentFormInput = {
   fromAddress: {
     country: "US",
@@ -68,7 +42,7 @@ const defaultShipmentValues: ShipmentFormInput = {
     addressLine1: "",
     city: "",
     state: "",
-    zipCode: ""
+    zipCode: "",
   },
   toAddress: {
     country: "US",
@@ -77,16 +51,19 @@ const defaultShipmentValues: ShipmentFormInput = {
     addressLine1: "",
     city: "",
     state: "",
-    zipCode: ""
+    zipCode: "",
   },
-  packages: [{
-    packageType: "parcel", carrier: "any",
-    length: "",
-    weightLbs: "",
-    weightOz: "",
-    width: "",
-    height: ""
-  }],
+  packages: [
+    {
+      packageType: "parcel",
+      carrier: "any",
+      length: "",
+      weightLbs: "",
+      weightOz: "",
+      width: "",
+      height: "",
+    },
+  ],
   additionalServices: {
     saturdayDelivery: false,
     requireSignature: false,
@@ -95,14 +72,14 @@ const defaultShipmentValues: ShipmentFormInput = {
     returnLabel: false,
     weekendService: false,
     additionalHandling: false,
-    certifiedMail: false
+    certifiedMail: false,
   },
-  rateSelection: { service: "", rate: "" }
+  rateSelection: { service: "", rate: "" },
 };
 
 // ---- Shared footer component ----
 const StepFooter = ({ children }: { children: React.ReactNode }) => (
-  <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm border-t p-4">
+  <div className="sticky bottom-0 z-50 backdrop-blur-md bg-white/70 dark:bg-neutral-900/75 border-t shadow-sm p-4 rounded-b-none">
     <div className="w-full flex flex-col sm:flex-row gap-3">{children}</div>
   </div>
 );
@@ -115,7 +92,9 @@ export const ShipmentForm = ({
   showSidebar = true,
   showLabelPreview = true,
   showBanner = false,
-  showScaleButton = true
+  showScaleButton = true,
+  addressFormLayout = "side-by-side",
+  shipmentFormLayout = "3-step",
 }: {
   apiConfig: any;
   onRatesLoaded?: (rates: Rate[]) => void;
@@ -124,6 +103,8 @@ export const ShipmentForm = ({
   showLabelPreview?: boolean;
   showBanner?: boolean;
   showScaleButton?: boolean;
+  addressFormLayout?: string;
+  shipmentFormLayout?: string;
 }) => {
   const { toast } = useToast();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -131,6 +112,52 @@ export const ShipmentForm = ({
   const [selectedRate, setSelectedRate] = useState<Rate | null>(null);
   const [purchasedLabel, setPurchasedLabel] = useState<any | null>(null);
   const [rates, setRates] = useState<Rate[]>([]);
+
+  // ---- Dynamic step configuration ----
+  const stepConfig =
+    shipmentFormLayout === "3-step"
+      ? [
+          {
+            key: "shipment", // Combined address & packages
+            title: "Shipment Information",
+            icon: <MapPin className="h-5 w-5 text-primary" />,
+            validate: ["fromAddress", "toAddress", "packages"],
+          },
+          {
+            key: "rates",
+            title: "Select Shipping Rate",
+            icon: <DollarSign className="h-5 w-5 text-primary" />,
+          },
+          {
+            key: "label",
+            title: "Label Purchased",
+            icon: <Printer className="h-5 w-5 text-primary" />,
+          },
+        ]
+      : [
+          {
+            key: "addresses",
+            title: "Shipping Addresses",
+            icon: <MapPin className="h-5 w-5 text-primary" />,
+            validate: ["fromAddress", "toAddress"],
+          },
+          {
+            key: "packages",
+            title: "Package & Services",
+            icon: <Package className="h-5 w-5 text-primary" />,
+            validate: ["packages"],
+          },
+          {
+            key: "rates",
+            title: "Select Shipping Rate",
+            icon: <DollarSign className="h-5 w-5 text-primary" />,
+          },
+          {
+            key: "label",
+            title: "Label Purchased",
+            icon: <Printer className="h-5 w-5 text-primary" />,
+          },
+        ];
 
   const form = useForm<ShipmentFormInput>({
     resolver: zodResolver(createShipmentSchema),
@@ -145,7 +172,7 @@ export const ShipmentForm = ({
     if (!completedSteps.includes(currentStepIndex))
       setCompletedSteps((s) => [...s, currentStepIndex]);
     setCurrentStepIndex((i) => Math.min(i + 1, stepConfig.length - 1));
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const showError = (title: string, msg: string) =>
@@ -158,8 +185,12 @@ export const ShipmentForm = ({
       const list = data?.rates || [];
       setRates(list);
       onRatesLoaded?.(list);
-      toast({ title: "Rates Available", description: `${list.length} option${list.length !== 1 ? "s" : ""} found.` });
-      advanceStep();
+      toast({
+        title: "Rates Available",
+        description: `${list.length} option${list.length !== 1 ? "s" : ""} found.`,
+      });
+      // Always advance to rates step after fetching
+      setTimeout(advanceStep, 200);
     },
     onError: (err: any) =>
       showError("Error Getting Rates", err?.message || "Failed to retrieve rates."),
@@ -183,40 +214,32 @@ export const ShipmentForm = ({
   const handleNext = async () => {
     console.log("Handling next for step:", step.key);
 
-    // ---- Step 1: Addresses ----
-    if (step.key === "addresses") {
-      const valid = await form.trigger(["fromAddress", "toAddress"]);
-      if (!valid) {
-        console.log("Address validation failed — staying on addresses step");
+    if (step.key === "shipment" || step.key === "addresses" || step.key === "packages") {
+      const fieldsToValidate =
+        step.key === "shipment"
+          ? ["fromAddress", "toAddress", "packages"]
+          : step.validate || [];
+
+      const valid = await form.trigger(fieldsToValidate as (keyof ShipmentFormInput)[]);
+      if (!valid) return;
+
+      // Fetch rates in 3-step or after packages in 4-step
+      if (step.key === "shipment" || step.key === "packages") {
+        getRatesMutation.mutate({
+          fromAddress: form.getValues("fromAddress"),
+          toAddress: form.getValues("toAddress"),
+          packages: form.getValues("packages"),
+          additionalServices: form.getValues("additionalServices"),
+        });
         return;
       }
-      advanceStep();
-      return;
-    }
 
-    // ---- Step 2: Packages ----
-    if (step.key === "packages") {
-      const valid = await form.trigger("packages", { shouldFocus: true });
-      if (!valid) {
-        console.log("❌ Package validation failed — not requesting rates");
+      if (step.key === "addresses") {
+        advanceStep();
         return;
       }
-
-      console.log("✅ Package validation passed — requesting rates...");
-
-      // Request rates
-      getRatesMutation.mutate({
-        fromAddress: form.getValues("fromAddress"),
-        toAddress: form.getValues("toAddress"),
-        packages: form.getValues("packages"),
-        additionalServices: form.getValues("additionalServices"),
-      });
-
-      // Do NOT call advanceStep() here — the mutation's onSuccess will do that.
-      return;
     }
 
-    // ---- Step 3: Rates ----
     if (step.key === "rates") {
       if (!selectedRate) {
         showError("No Rate Selected", "Please select a rate before continuing.");
@@ -226,20 +249,12 @@ export const ShipmentForm = ({
       return;
     }
 
-    // ---- Step 4: Label ----
-    if (step.key === "label") {
-      handleReset();
-    }
+    if (step.key === "label") handleReset();
   };
 
-
-  const handleBack = () => {
-    setCurrentStepIndex((i) => Math.max(i - 1, 0));
-  };
+  const handleBack = () => setCurrentStepIndex((i) => Math.max(i - 1, 0));
 
   const handlePurchase = (rate: Rate) => {
-    if (!rate) return;
-
     const payload = {
       provider: rate.provider,
       carrier: rate.carrier,
@@ -248,9 +263,8 @@ export const ShipmentForm = ({
       rateId: (rate as any).id || (rate as any).rateId,
     };
 
-    if (!payload.provider || !payload.shipmentId || !payload.rateId) {
+    if (!payload.provider || !payload.shipmentId || !payload.rateId)
       return showError("Invalid Selection", "This rate is missing required fields.");
-    }
 
     purchaseLabelMutation.mutate(payload);
   };
@@ -264,27 +278,38 @@ export const ShipmentForm = ({
     setRates([]);
   };
 
-  const isBusy =
-    getRatesMutation.isPending || purchaseLabelMutation.isPending;
+  const isBusy = getRatesMutation.isPending || purchaseLabelMutation.isPending;
 
-  // ---- Step content map ----
+  // ---- Step content ----
   const stepContent = useMemo(() => {
     switch (step.key) {
-      case "addresses":
-        //return <AddressFormCombined form={form} />;
-        return <AddressFormFlexible layout="tabs" form={form} />;
-      case "packages":
+      case "shipment": // 3-step combined address + package
         return (
-          <>
-            <PackageForm
-              showScaleButton={showScaleButton}
-             form={form} 
-             />
-            <div className="border-t pt-5">
-              <AdditionalServices form={form} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left: Address Section */}
+            <div>
+              <Card className="border border-border">
+                <CardContent className="p-5">
+                  <h4 className="font-medium text-base mb-3 flex items-center gap-2">
+                    <MapIcon className="h-4 w-4 text-primary" />
+                    Address
+                  </h4>
+                  <AddressSection layout={addressFormLayout} form={form} />
+                </CardContent>
+              </Card>
             </div>
-          </>
+
+            {/* Right: Package + Services */}
+            <PackageSection form={form} showScaleButton={showScaleButton} />
+          </div>
         );
+
+      case "addresses":
+        return <AddressSection layout={addressFormLayout} form={form} />;
+
+      case "packages":
+        return <PackageSection form={form}/>;
+
       case "rates":
         return (
           <RatesSelection
@@ -294,6 +319,7 @@ export const ShipmentForm = ({
             selectedRateId={selectedRate?.id}
           />
         );
+
       case "label":
         return (
           purchasedLabel && (
@@ -314,29 +340,35 @@ export const ShipmentForm = ({
     showLabelPreview,
     showScaleButton,
     getRatesMutation.isPending,
+    addressFormLayout,
+    shipmentFormLayout,
   ]);
 
   const shouldShowSidebar = showSidebar && step.key !== "label";
 
-  // ---- Render ----
   return (
     <>
       {showBanner && (
         <BannerSummary
           formData={form.getValues()}
-          currentStep={step.key}
+          currentStep={step.key as
+            | "shipment"
+            | "addresses"
+            | "packages"
+            | "rates"
+            | "label"}
           formErrors={form.formState.errors}
-          workflow="4-step"
         />
       )}
 
       <Form {...form}>
         <div
-          className={`grid grid-cols-1 gap-6 ${shouldShowSidebar ? "md:grid-cols-[1fr_380px]" : ""
-            } pt-4`}
+          className={`grid grid-cols-1 gap-6 ${
+            shouldShowSidebar ? "md:grid-cols-[1fr_380px]" : ""
+          } pt-4 p-6`}
         >
-          <div className="space-y-6">
-            <Card>
+          <div>
+            <Card className="rounded-b-none">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   {step.icon} {step.title}
@@ -345,9 +377,8 @@ export const ShipmentForm = ({
               </CardContent>
             </Card>
 
-            {/* Footer */}
             <StepFooter>
-              {currentStepIndex > 0 && step.key != "label" && (
+              {currentStepIndex > 0 && step.key !== "label" && (
                 <Button
                   variant="outline"
                   onClick={handleBack}

@@ -63,8 +63,8 @@ const RatesSelection = ({
         {/* Header Row */}
         <div className="grid grid-cols-12 text-[13px] uppercase font-semibold text-muted-foreground tracking-wide bg-muted/30 px-4 py-2 border-b border-border/40">
           <div className="col-span-6">Service</div>
-          <div className="col-span-3 text-left">Retail</div>
-          <div className="col-span-3 text-left">Your Price</div>
+          <div className="col-span-3 text-left">Retail Price</div>
+          <div className="col-span-3 text-left">Panda Price</div>
         </div>
 
         {/* Rate Rows */}

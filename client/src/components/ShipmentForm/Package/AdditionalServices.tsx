@@ -7,9 +7,7 @@ interface AdditionalServicesProps {
 
 const AdditionalServices = ({ form }: AdditionalServicesProps) => {
   return (
-    <div>
-      <h3 className="text-base font-semibold mb-4">Additional Services</h3>
-      
+    <div>      
       <div className="space-y-3">
         <FormField
           control={form.control}
