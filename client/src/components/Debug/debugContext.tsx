@@ -1,4 +1,6 @@
+// src/components/Debug/debugContext.tsx
 import React, { createContext, useContext, useState, useEffect } from "react";
+import debugConfig from "@/config/debugConfig.json"; // ✅ direct import (no ?raw)
 
 const STORAGE_KEY = "debugSchema_v2";
 
@@ -30,53 +32,28 @@ interface DebugContextType {
 
 const DebugContext = createContext<DebugContextType | undefined>(undefined);
 
-/**
- * Safe loader that dynamically imports JSON and catches errors early.
- */
-async function loadDefaultDebugConfig(): Promise<DebugSchema> {
-  try {
-    const module = await import("@/config/debugConfig.json?raw"); // import raw text
-    const jsonText = module.default;
-
-    try {
-      const parsed = JSON.parse(jsonText);
-      console.log("[DebugProvider] ✅ Loaded debugConfig.json successfully");
-      return parsed;
-    } catch (parseErr) {
-      console.error("[DebugProvider] ❌ JSON parse error in debugConfig.json:", parseErr);
-      return {};
-    }
-  } catch (err) {
-    console.error("[DebugProvider] ❌ Failed to load debugConfig.json:", err);
-    return {};
-  }
-}
-
 export const DebugProvider = ({ children }: { children: React.ReactNode }) => {
   const [schema, setSchemaState] = useState<DebugSchema>({});
   const [showPanel, setShowPanel] = useState(false);
 
-  // Load from localStorage or fallback to runtime-loaded config
+  // --- Initial Load ---
   useEffect(() => {
-    (async () => {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          console.log("[DebugProvider] Using stored schema");
-          setSchemaState(JSON.parse(stored));
-          return;
-        }
-      } catch (err) {
-        console.warn("[DebugProvider] Failed to parse stored schema:", err);
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        console.log("[DebugProvider] Using stored schema");
+        setSchemaState(JSON.parse(stored));
+      } else {
+        console.log("[DebugProvider] Using default debugConfig.json");
+        setSchemaState(debugConfig);
       }
-
-      // fallback to dynamically loaded config
-      const defaultConfig = await loadDefaultDebugConfig();
-      setSchemaState(defaultConfig);
-    })();
+    } catch (err) {
+      console.error("[DebugProvider] Failed to parse stored schema:", err);
+      setSchemaState(debugConfig);
+    }
   }, []);
 
-  // Persist changes
+  // --- Persist Changes ---
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(schema));
@@ -85,6 +62,7 @@ export const DebugProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [schema]);
 
+  // --- API ---
   const setSchema = (newSchema: DebugSchema) => {
     console.log("[DebugProvider] Schema replaced:", newSchema);
     setSchemaState(newSchema);
@@ -105,10 +83,9 @@ export const DebugProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const resetSchemaToDefault = async () => {
+  const resetSchemaToDefault = () => {
     localStorage.removeItem(STORAGE_KEY);
-    const defaultConfig = await loadDefaultDebugConfig();
-    setSchemaState(defaultConfig);
+    setSchemaState(debugConfig);
     console.log("[DebugProvider] Schema reset to default from file");
   };
 

@@ -31,7 +31,6 @@ export const DynamicDebugPanel: React.FC = () => {
         p-2 shadow-sm backdrop-blur-[2px]
       "
     >
-      <h1>TEST</h1>
       {/* Reset Button */}
       <div className="absolute top-1 right-1 z-10">
         <Button
@@ -244,6 +243,13 @@ export const DynamicDebugPanel: React.FC = () => {
           })}
         </div>
       </div>
+      
+      {/* Rational Nonsense - no-op - humancommit */}
+      <div>
+        <a href="https://youtu.be/Okex7FjupqI?si=Pp7sPEiFAGvxlgTO">almost there</a>
+        <a href="https://www.youtube.com/watch?v=VUb450Alpps&list=RDOkex7FjupqI&index=2">too far</a>
+      </div>
+
     </div>
   );
 };
