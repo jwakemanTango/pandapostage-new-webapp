@@ -102,7 +102,7 @@
     "name": "Not Found",
     "title": "Not Found",
     "icon": "AlertTriangle",
-    "component": "NotFound",
+    "component": "NotFoundPage",
     "showInSidebar": false
   }
 ]

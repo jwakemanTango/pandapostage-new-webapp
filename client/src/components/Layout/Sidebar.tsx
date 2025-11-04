@@ -3,7 +3,7 @@ import PandaLogo from "@/components/PandaLogo";
 import { LogOut, User, Wrench } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
-import { appRoutes } from "@/config/appRoutes";
+import { appRoutes } from "@/AppRoutes";
 
 type SidebarProps = {
   isMobileOpen: boolean;

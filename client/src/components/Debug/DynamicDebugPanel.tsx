@@ -14,6 +14,9 @@ import { ChevronDown, ChevronRight, RotateCcw } from "lucide-react";
 
 export const DynamicDebugPanel: React.FC = () => {
   const { schema, mergeSchema, resetSchemaToDefault } = useDebug();
+
+  console.log("[DynamicDebugPanel] schema:", schema);
+
   if (!schema) return null;
 
   const entries = Object.entries(schema);
@@ -28,6 +31,7 @@ export const DynamicDebugPanel: React.FC = () => {
         p-2 shadow-sm backdrop-blur-[2px]
       "
     >
+      <h1>TEST</h1>
       {/* Reset Button */}
       <div className="absolute top-1 right-1 z-10">
         <Button

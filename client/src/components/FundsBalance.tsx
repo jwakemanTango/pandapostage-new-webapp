@@ -20,12 +20,20 @@ export const FundsBalance = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  // Parse safe numeric values
+  // --- Parse safe numeric values ---
   const availableFunds = Number(schema?.user?.fields?.availableFunds) || 0;
-const alertFunds = Number(
-  schema?.user?.fields?.alertFunds?.value ?? schema?.user?.fields?.alertFunds ?? 25
-);
-  // Determine state color palette
+
+  // Explicitly handle both string and object field shapes
+  type FieldValue = string | { value: string } | undefined;
+  const rawAlertFunds = schema?.user?.fields?.alertFunds as FieldValue;
+
+  const alertFunds = Number(
+    typeof rawAlertFunds === "object"
+      ? rawAlertFunds?.value
+      : rawAlertFunds ?? 25
+  );
+
+  // --- Determine state color palette ---
   let state = "normal";
   let bgColor = "bg-emerald-50";
   let borderColor = "border-emerald-300";
@@ -43,6 +51,7 @@ const alertFunds = Number(
     textColor = "text-amber-700 hover:bg-amber-100";
   }
 
+  // --- Add funds handler ---
   const handleAddFunds = async () => {
     const amt = parseFloat(amount);
     if (isNaN(amt) || amt < 25) {
@@ -87,6 +96,7 @@ const alertFunds = Number(
     setPin("");
   };
 
+  // --- Render ---
   return (
     <>
       {/* Clickable balance box */}
@@ -113,7 +123,7 @@ const alertFunds = Number(
 
           <div className="space-y-4 mt-2">
             <p className="text-sm text-muted-foreground">
-                Add funds to your account using your saved payment method
+              Add funds to your account using your saved payment method
             </p>
 
             <div className="grid gap-2">
@@ -134,7 +144,9 @@ const alertFunds = Number(
                     placeholder="0"
                   />
                 </div>
-                <span className="text-xs text-muted-foreground">($25.00 min)</span>
+                <span className="text-xs text-muted-foreground">
+                  ($25.00 min)
+                </span>
               </div>
             </div>
 

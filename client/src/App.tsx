@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { DebugProvider } from "@/components/Debug/debugContext";
 import AppShell from "@/components/Layout/AppShell";
-import { appRoutes } from "./config/appRoutes";
+import { appRoutes } from "./AppRoutes";
 import NotFoundPage from "@/pages/catch-alls/NotFound";
 
 /**
