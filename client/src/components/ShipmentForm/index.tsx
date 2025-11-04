@@ -32,6 +32,7 @@ import RatesSelection from "./RatesSelection";
 import { LabelSummary } from "./LabelSummary";
 import { SidebarSummary } from "./SidebarSummary";
 import { BannerSummary } from "./BannerSummary";
+import { AddressFormFlexible } from "./AddressFormFlexible";
 
 // ---- Step configuration ----
 const stepConfig = [
@@ -270,7 +271,8 @@ export const ShipmentForm = ({
   const stepContent = useMemo(() => {
     switch (step.key) {
       case "addresses":
-        return <AddressFormCombined form={form} />;
+        //return <AddressFormCombined form={form} />;
+        return <AddressFormFlexible layout="tabs" form={form} />;
       case "packages":
         return (
           <>

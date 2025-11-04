@@ -7,7 +7,7 @@ const STORAGE_KEY = "debugSchema_v1";
 const defaultSchema: DebugSchema = {
   api: {
     fields: {
-      apiBaseUrl: "/",
+      apiBaseUrl: "",
       ratesEndpoint: "/v1/Rates/quote",
       buyEndpoint: "/v1/Shipments/buy",
       apiKey: "",
