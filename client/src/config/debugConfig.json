@@ -1,0 +1,71 @@
+{
+  "api": {
+    "hide": true,
+    "fields": {
+      "apiBaseUrl": "",
+      "ratesEndpoint": "/v1/Rates/quote",
+      "buyEndpoint": "/v1/Shipments/buy",
+      "apiKey": ""
+    }
+  },
+  "user": {
+    "hide": true,
+    "fields": {
+      "name" : "Demo User",
+      "email": "demo@pandapostage.com",
+      "availableFunds": "98.76",
+      "alertFunds": "95.00"
+    },
+    "selects": {
+      "role": {
+        "value": "superAdmin",
+        "options": ["superAdmin", "admin", "user"]
+      }
+    }
+  },
+  "hardware": {
+    "hide": true,
+    "selects": {
+      "usbScaleFilter": {
+        "value": "all",
+        "options": ["all", "scale", "known"]
+      }
+    }
+  },
+  "shipping": {
+    "hide": false,
+    "selects": {
+      "shipmentFormLayout": {
+        "value": "4-step",
+        "options": ["4-step", "3-step"]
+      },
+      "addressFormLayout": {
+        "value": "tabs",
+        "options": ["side-by-side", "tabs", "accordion", "single"]
+      }
+    },
+    "toggles": {
+      "showSidebar": true,
+      "showBanner": true,
+      "showLabelPreview": true,
+      "showScaleButton": true
+    }
+  },
+  "some-new-feature": {
+    "hide": true,
+    "toggles": {
+      "thingEnabled": true,
+      "showThatThing": true,
+      "dynamicSettingTestEtc": false
+    },
+    "fields": {
+      "thingLabel": "thingLabel_value"
+    },
+    "selects": {
+      "optionForThatThing": {
+        "value": "optionA",
+        "options": ["optionA", "optionB"]
+      }
+    }
+  }
+}

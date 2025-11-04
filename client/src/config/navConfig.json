@@ -1,0 +1,108 @@
+[
+    {
+    "path": "/",
+    "name": "DEMO",
+    "title":"New Shipment - AKA HOME",
+    "icon": "LayoutDashboard",
+    "component": "NewShipmentPage",
+    "showInSidebar": false
+  },
+  {
+    "path": "/dashboard",
+    "name": "Dashboard",
+    "title": "Dashboard",
+    "icon": "LayoutDashboard",
+    "component": "NotImplementedPage",
+    "showInSidebar": false
+  },
+  {"divider": true},
+  {
+    "path": "/ship",
+    "name": "New Shipment",
+    "title": "New Shipment",
+    "icon": "LayoutDashboard",
+    "component": "NewShipmentPage",
+    "showInSidebar": true
+  },
+  {
+    "path": "/scale",
+    "name": "USB Scale",
+    "title": "USB Scale - Debugger",
+    "icon": "Scale",
+    "component": "ScalePage",
+    "showInSidebar": true
+  },
+  {
+    "path": "/dev-settings",
+    "name": "Dev Settings",
+    "title": "Developer Settings",
+    "icon": "SettingsIcon",
+    "component": "DevSettingsPage",
+    "showInSidebar": true
+  },
+  {"divider": true},
+    {
+    "path": "/reports",
+    "name": "Reports",
+    "title": "Reports",
+    "icon": "BarChart3",
+    "component": "NotImplementedPage",
+    "showInSidebar": true
+  },
+  {
+    "path": "/batch",
+    "name": "Batch Processing",
+    "title": "Batch Processing",
+    "icon": "PackageIcon",
+    "component": "NotImplementedPage",
+    "showInSidebar": true
+  },
+  {
+    "path": "/addressBook",
+    "name": "Address Book",
+    "title": "Address Book",
+    "icon": "BookOpen",
+    "component": "NotImplementedPage",
+    "showInSidebar": true
+  },
+  {
+    "path": "/history",
+    "name": "Ship History",
+    "title": "Ship History",
+    "icon": "History",
+    "component": "NotImplementedPage",
+    "showInSidebar": true
+  },
+  {
+    "path": "/superAdmin-settings",
+    "name": "SuperAdmin Settings",
+    "title": "SuperAdmin Settings",
+    "icon": "SettingsIcon",
+    "component": "NotImplementedPage",
+    "showInSidebar": true
+  },
+  {
+    "path": "/admin-settings",
+    "name": "Admin Settings",
+    "title": "Admin Settings",
+    "icon": "SettingsIcon",
+    "component": "NotImplementedPage",
+    "showInSidebar": true
+  },
+    {
+    "path": "/user-settings",
+    "name": "User Settings",
+    "title": "User Settings",
+    "icon": "SettingsIcon",
+    "component": "NotImplementedPage",
+    "showInSidebar": true
+  },
+  {
+    "path": "*",
+    "name": "Not Found",
+    "title": "Not Found",
+    "icon": "AlertTriangle",
+    "component": "NotFound",
+    "showInSidebar": false
+  }
+]
