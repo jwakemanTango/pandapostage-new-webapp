@@ -1,8 +1,10 @@
 import navigation from "@/config/navConfig.json";
 import * as Icons from "lucide-react";
+
 import NewShipmentPage from "@/pages/NewShipment";
 import ScalePage from "@/pages/Scale";
 import DevSettingsPage from "@/pages/settings/DevSettings";
+
 import NotImplementedPage from "@/pages/catch-alls/NotImplemented";
 import NotFoundPage from "@/pages/catch-alls/NotFound";
 

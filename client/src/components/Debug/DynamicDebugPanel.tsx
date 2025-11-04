@@ -243,13 +243,6 @@ export const DynamicDebugPanel: React.FC = () => {
           })}
         </div>
       </div>
-      
-      {/* Rational Nonsense - no-op - humancommit */}
-      <div>
-        <a href="https://youtu.be/Okex7FjupqI?si=Pp7sPEiFAGvxlgTO">almost there</a>
-        <a href="https://www.youtube.com/watch?v=VUb450Alpps&list=RDOkex7FjupqI&index=2">too far</a>
-      </div>
-
     </div>
   );
 };
