@@ -11,7 +11,7 @@
   "user": {
     "hide": true,
     "fields": {
-      "name" : "Demo User",
+      "name": "Demo User",
       "email": "demo@pandapostage.com",
       "availableFunds": "98.76",
       "alertFunds": "95.00"
@@ -19,8 +19,20 @@
     "selects": {
       "role": {
         "value": "superAdmin",
-        "options": ["superAdmin", "admin", "user"]
+        "options": [
+          "superAdmin",
+          "admin",
+          "user"
+        ]
       }
+    },
+    "toggles": {
+      "shippingPermission": true,
+      "reportsPermission": true,
+      "addressBookPermission": true,
+      "batchPermission": true,
+      "historyPermission": true,
+      "settingsPermission": true
     }
   },
   "hardware": {
@@ -28,7 +40,11 @@
     "selects": {
       "usbScaleFilter": {
         "value": "all",
-        "options": ["all", "scale", "known"]
+        "options": [
+          "all",
+          "scale",
+          "known"
+        ]
       }
     }
   },
@@ -37,11 +53,19 @@
     "selects": {
       "shipmentFormLayout": {
         "value": "4-step",
-        "options": ["4-step", "3-step"]
+        "options": [
+          "4-step",
+          "3-step"
+        ]
       },
       "addressFormLayout": {
         "value": "tabs",
-        "options": ["side-by-side", "tabs", "accordion", "single"]
+        "options": [
+          "side-by-side",
+          "tabs",
+          "accordion",
+          "single"
+        ]
       }
     },
     "toggles": {
@@ -49,23 +73,6 @@
       "showBanner": true,
       "showLabelPreview": true,
       "showScaleButton": true
-    }
-  },
-  "some-new-feature": {
-    "hide": true,
-    "toggles": {
-      "thingEnabled": true,
-      "showThatThing": true,
-      "dynamicSettingTestEtc": false
-    },
-    "fields": {
-      "thingLabel": "thingLabel_value"
-    },
-    "selects": {
-      "optionForThatThing": {
-        "value": "optionA",
-        "options": ["optionA", "optionB"]
-      }
     }
   }
 }

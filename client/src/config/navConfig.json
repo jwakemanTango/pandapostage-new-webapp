@@ -1,8 +1,8 @@
 [
-    {
+  {
     "path": "/",
     "name": "DEMO",
-    "title":"New Shipment - AKA HOME",
+    "title": "New Shipment - AKA HOME",
     "icon": "LayoutDashboard",
     "component": "NewShipmentPage",
     "showInSidebar": false
@@ -15,14 +15,105 @@
     "component": "NotImplementedPage",
     "showInSidebar": false
   },
-  {"divider": true},
+  {
+    "divider": true
+  },
   {
     "path": "/ship",
     "name": "New Shipment",
     "title": "New Shipment",
     "icon": "LayoutDashboard",
     "component": "NewShipmentPage",
+    "permissions": [
+      "shipping"
+    ],
     "showInSidebar": true
+  },
+  {
+    "divider": true
+  },
+  {
+    "path": "/reports",
+    "name": "Reports",
+    "title": "Reports",
+    "icon": "BarChart3",
+    "component": "NotImplementedPage",
+    "permissions": [
+      "reports"
+    ],
+    "showInSidebar": true
+  },
+  {
+    "path": "/batch",
+    "name": "Batch Processing",
+    "title": "Batch Processing",
+    "icon": "PackageIcon",
+    "component": "NotImplementedPage",
+    "permissions": [
+      "batch"
+    ],
+    "showInSidebar": true
+  },
+  {
+    "path": "/addressBook",
+    "name": "Address Book",
+    "title": "Address Book",
+    "icon": "BookOpen",
+    "component": "NotImplementedPage",
+    "permissions": [
+      "addressBook"
+    ],
+    "showInSidebar": true
+  },
+  {
+    "path": "/history",
+    "name": "Ship History",
+    "title": "Ship History",
+    "icon": "History",
+    "component": "NotImplementedPage",
+    "permissions": [
+      "history"
+    ],
+    "showInSidebar": true
+  },
+  {
+    "path": "/user-settings",
+    "name": "Settings",
+    "title": "Settings",
+    "icon": "SettingsIcon",
+    "component": "NotImplementedPage",
+    "permissions": [
+      "settings"
+    ],
+    "showInSidebar": true
+  },
+  {
+    "divider": true
+  },
+  {
+    "path": "/superAdmin-settings",
+    "name": "SuperAdmin Settings",
+    "title": "SuperAdmin Settings",
+    "icon": "SettingsIcon",
+    "component": "NotImplementedPage",
+    "roles": [
+      "superAdmin"
+    ],
+    "showInSidebar": true
+  },
+  {
+    "path": "/admin-settings",
+    "name": "Admin Settings",
+    "title": "Admin Settings",
+    "icon": "SettingsIcon",
+    "component": "NotImplementedPage",
+    "roles": [
+      "admin","superAdmin"
+    ],
+    "showInSidebar": true
+  },
+  {
+    "divider": true
   },
   {
     "path": "/scale",
@@ -38,63 +129,6 @@
     "title": "Developer Settings",
     "icon": "SettingsIcon",
     "component": "DevSettingsPage",
-    "showInSidebar": true
-  },
-  {"divider": true},
-    {
-    "path": "/reports",
-    "name": "Reports",
-    "title": "Reports",
-    "icon": "BarChart3",
-    "component": "NotImplementedPage",
-    "showInSidebar": true
-  },
-  {
-    "path": "/batch",
-    "name": "Batch Processing",
-    "title": "Batch Processing",
-    "icon": "PackageIcon",
-    "component": "NotImplementedPage",
-    "showInSidebar": true
-  },
-  {
-    "path": "/addressBook",
-    "name": "Address Book",
-    "title": "Address Book",
-    "icon": "BookOpen",
-    "component": "NotImplementedPage",
-    "showInSidebar": true
-  },
-  {
-    "path": "/history",
-    "name": "Ship History",
-    "title": "Ship History",
-    "icon": "History",
-    "component": "NotImplementedPage",
-    "showInSidebar": true
-  },
-  {
-    "path": "/superAdmin-settings",
-    "name": "SuperAdmin Settings",
-    "title": "SuperAdmin Settings",
-    "icon": "SettingsIcon",
-    "component": "NotImplementedPage",
-    "showInSidebar": true
-  },
-  {
-    "path": "/admin-settings",
-    "name": "Admin Settings",
-    "title": "Admin Settings",
-    "icon": "SettingsIcon",
-    "component": "NotImplementedPage",
-    "showInSidebar": true
-  },
-    {
-    "path": "/user-settings",
-    "name": "User Settings",
-    "title": "User Settings",
-    "icon": "SettingsIcon",
-    "component": "NotImplementedPage",
     "showInSidebar": true
   },
   {

@@ -35,9 +35,29 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
     ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
   `;
 
-  // Only show sidebar-visible routes (skip dividers and hidden)
-  const navItems = appRoutes.filter((r) => r.showInSidebar || r.divider);
+  const userPermissions = user?.permissions ?? [];
+  const userRole = user?.role ?? null;
 
+  const navItems = appRoutes.filter((item) => {
+    // Always allow dividers
+    if (item.divider) return true;
+
+    // Must be marked to show in sidebar
+    if (!item.showInSidebar) return false;
+
+    // Permission-based visibility
+    const hasPermission =
+      !item.permissions || item.permissions.some((p:string) => userPermissions.includes(p));
+
+    // Role-based visibility (single role)
+    const hasRole =
+      !item.roles || item.roles.includes(userRole);
+
+    // Only include item if user meets both conditions
+    return hasPermission && hasRole;
+  });
+
+  
   const activeClasses =
     "bg-[hsl(var(--sidebar-primary)/0.25)] text-white font-semibold border-l-4 border-[hsl(var(--sidebar-primary))]";
   const inactiveClasses =
@@ -67,6 +87,7 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
       <nav className="flex-1 overflow-y-auto py-4">
         <ul>
           {navItems.map((item, idx) => {
+
             // Divider line (from JSON)
             if (item.divider) {
               return (
@@ -76,6 +97,7 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
               );
             }
 
+            // Nav item
             const isActive = location === item.path;
 
             return (

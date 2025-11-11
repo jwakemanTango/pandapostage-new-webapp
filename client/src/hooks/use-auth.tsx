@@ -5,6 +5,7 @@ export interface AuthUser {
   id: string;
   name: string;
   role: string;
+  permissions: string[];
   email?: string;
 }
 
@@ -21,14 +22,21 @@ export function useAuth() {
   const userSection = schema?.user ?? {};
   const fields = userSection.fields ?? {};
   const selects = userSection.selects ?? {};
+  const toggles = userSection.toggles ?? {};
+  const permissions = Object.entries(toggles)
+    .filter(([key, value]) => key.endsWith("Permission") && value === true)
+    .map(([key]) => key.replace(/Permission$/, ""));
 
   // Derived user object from DebugContext
   const user: AuthUser = {
     id: "1",
     name: fields.name || "System Admin",
     role: selects.role?.value || "superAdmin",
+    permissions: permissions || [],
     email: fields.email || "admin@example.com",
   };
+  
+  console.log(user);
 
   // Dummy logout mutation (just clears debug user fields)
   const logoutMutation = useMutation({
