@@ -1,7 +1,9 @@
 import { useState } from "react";
 import Sidebar from "./Sidebar";
-import TopBar from "./TopBar";
+import ContentHeader from "./ContentHeader";
+import AppHeader from "./AppHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useDebugToggle } from "../Debug/debugContext";
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -15,16 +17,24 @@ export const AppShell = ({ children, title }: AppShellProps) => {
   const toggleSidebar = () => setIsMobileOpen((prev) => !prev);
   const closeMobileSidebar = () => setIsMobileOpen(false);
 
+  const showTopBar = useDebugToggle("app", "showTopBar");
+
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar isMobileOpen={isMobileOpen} onCloseMobile={closeMobileSidebar} />
+    <div className="flex flex-col h-screen">
+      {/* Global app header */}
+      {showTopBar && (
+        <AppHeader />
+      )}
+      
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <TopBar title={title} onMenuClick={toggleSidebar} />
+      {/* Main layout area */}
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar isMobileOpen={isMobileOpen} onCloseMobile={closeMobileSidebar} />
 
-        {/* Content area */}
-        <main className="flex-1 overflow-y-auto bg-gray-100">{children}</main>
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <ContentHeader title={title} onMenuClick={toggleSidebar} />
+          <main className="flex-1 overflow-y-auto bg-gray-100">{children}</main>
+        </div>
       </div>
     </div>
   );

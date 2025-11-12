@@ -1,4 +1,9 @@
 {
+  "app":{
+    "toggles": {
+      "showTopBar": true
+    }
+  },
   "api": {
     "hide": true,
     "fields": {

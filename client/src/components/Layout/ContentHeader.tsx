@@ -4,19 +4,20 @@ import { Menu, Settings2 } from "lucide-react";
 import { DynamicDebugPanel } from "@/components/Debug/DynamicDebugPanel";
 import { FundsBalance } from "@/components/FundsBalance";
 import { useIsMobile } from "@/hooks/use-mobile";
+import PandaLogo from "@/components/PandaLogo";
 
 type TopBarProps = {
   title: string;
   onMenuClick?: () => void;
 };
 
-export const TopBar = ({ title, onMenuClick }: TopBarProps) => {
+export const ContentHeader = ({ title, onMenuClick }: TopBarProps) => {
   const { showPanel, togglePanel } = useDebug();
   const isMobile = useIsMobile();
 
   return (
     <header className="bg-white shadow-sm flex flex-col border-b border-[hsl(var(--sidebar-border))]">
-      {/* Top Row */}
+      {/* Main top bar row */}
       <div className="h-16 flex items-center justify-between px-4">
         {/* Left Section */}
         <div className="flex items-center">
@@ -61,4 +62,4 @@ export const TopBar = ({ title, onMenuClick }: TopBarProps) => {
   );
 };
 
-export default TopBar;
+export default ContentHeader;
