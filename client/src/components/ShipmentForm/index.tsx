@@ -25,6 +25,7 @@ import {
   Loader2,
   Plus,
   MapIcon,
+  Wrench,
 } from "lucide-react";
 
 import RatesSelection from "./RatesSelection";
@@ -33,6 +34,9 @@ import { SidebarSummary } from "./SidebarSummary";
 import { BannerSummary } from "./BannerSummary";
 import { AddressSection } from "./Address/AddressSection";
 import { PackageSection } from "./Package/PackageSection";
+import { PackageBasicInfo } from "./Package/PackageBasicInfo";
+import { PackageDetails } from "./Package/PackageDetails";
+import AdditionalServices from "./Package/AdditionalServices";
 
 // ---- Default Values ----
 const defaultShipmentValues: ShipmentFormInput = {
@@ -131,49 +135,49 @@ export const ShipmentForm = ({
 
   // ---- Dynamic step configuration ----
   const stepConfig =
-    shipmentFormLayout === "3-step" || shipmentFormLayout === "3-step-2"
+    shipmentFormLayout === "3-step" || shipmentFormLayout === "3-step-2" || shipmentFormLayout === "3-step-3"
       ? [
-          {
-            key: "shipment", // Combined address & packages
-            title: "Shipment Information",
-            icon: <MapPin className="h-5 w-5 text-primary" />,
-            validate: ["fromAddress", "toAddress", "packages"],
-          },
-          {
-            key: "rates",
-            title: "Select Shipping Rate",
-            icon: <DollarSign className="h-5 w-5 text-primary" />,
-          },
-          {
-            key: "label",
-            title: "Label Purchased",
-            icon: <Printer className="h-5 w-5 text-primary" />,
-          },
-        ]
+        {
+          key: "shipment", // Combined address & packages
+          title: "Shipment Information",
+          icon: <MapPin className="h-5 w-5 text-primary" />,
+          validate: ["fromAddress", "toAddress", "packages"],
+        },
+        {
+          key: "rates",
+          title: "Select Shipping Rate",
+          icon: <DollarSign className="h-5 w-5 text-primary" />,
+        },
+        {
+          key: "label",
+          title: "Label Purchased",
+          icon: <Printer className="h-5 w-5 text-primary" />,
+        },
+      ]
       : [
-          {
-            key: "addresses",
-            title: "Shipping Addresses",
-            icon: <MapPin className="h-5 w-5 text-primary" />,
-            validate: ["fromAddress", "toAddress"],
-          },
-          {
-            key: "packages",
-            title: "Package & Services",
-            icon: <Package className="h-5 w-5 text-primary" />,
-            validate: ["packages"],
-          },
-          {
-            key: "rates",
-            title: "Select Shipping Rate",
-            icon: <DollarSign className="h-5 w-5 text-primary" />,
-          },
-          {
-            key: "label",
-            title: "Label Purchased",
-            icon: <Printer className="h-5 w-5 text-primary" />,
-          },
-        ];
+        {
+          key: "addresses",
+          title: "Shipping Addresses",
+          icon: <MapPin className="h-5 w-5 text-primary" />,
+          validate: ["fromAddress", "toAddress"],
+        },
+        {
+          key: "packages",
+          title: "Package & Services",
+          icon: <Package className="h-5 w-5 text-primary" />,
+          validate: ["packages"],
+        },
+        {
+          key: "rates",
+          title: "Select Shipping Rate",
+          icon: <DollarSign className="h-5 w-5 text-primary" />,
+        },
+        {
+          key: "label",
+          title: "Label Purchased",
+          icon: <Printer className="h-5 w-5 text-primary" />,
+        },
+      ];
 
   const form = useForm<ShipmentFormInput>({
     resolver: zodResolver(createShipmentSchema),
@@ -335,6 +339,61 @@ export const ShipmentForm = ({
               <PackageSection form={form} showScaleButton={showScaleButton} />
             </div>
           );
+        } else if (shipmentFormLayout === "3-step-3") {
+          // New layout: address + package side by side, services + label options below
+          return (
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-row gap-8">
+                <Card className="flex-1 border border-border">
+                  <CardContent className="p-5">
+                    <h4 className="font-medium text-base mb-3 flex items-center gap-2">
+                      <MapIcon className="h-4 w-4 text-primary" />
+                      Addresses
+                    </h4>
+                    <AddressSection layout={addressFormLayout} form={form} />
+                  </CardContent>
+                </Card>
+
+                <Card className="flex-1 border border-border">
+                  <CardContent className="p-5">
+                    <h4 className="font-medium text-base mb-3 flex items-center gap-2">
+                      <MapIcon className="h-4 w-4 text-primary" />
+                      Package Details
+                    </h4>
+                    <PackageBasicInfo form={form} showScaleButton={showScaleButton} />
+                  </CardContent>
+                </Card>
+
+              </div>
+              <div className="flex flex-row gap-8">
+
+                <Card className="flex-1 border border-border">
+                  <CardContent className="p-5">
+                    <h4 className="font-medium text-base mb-3 flex items-center gap-2">
+                      <MapIcon className="h-4 w-4 text-primary" />
+                      Additional Services
+                    </h4>
+                    <AdditionalServices form={form} />
+                  </CardContent>
+                </Card>
+
+                <Card className="flex-1 border border-border">
+                  <CardContent className="p-5">
+                    <h4 className="font-medium text-base mb-3 flex items-center gap-2">
+                      <MapIcon className="h-4 w-4 text-primary" />
+                      Label Options
+                    </h4>
+                    <PackageDetails form={form} />
+                  </CardContent>
+                </Card>
+
+
+
+              </div>
+
+
+            </div>
+          );
         }
         break;
 
@@ -395,9 +454,8 @@ export const ShipmentForm = ({
 
       <Form {...form}>
         <div
-          className={`grid gap-6 pt-4 p-6 ${
-            shouldShowSidebar ? "grid-cols-[1fr_minmax(260px,320px)]" : "grid-cols-1"
-          }`}
+          className={`grid gap-6 pt-4 p-6 ${shouldShowSidebar ? "grid-cols-[1fr_minmax(260px,320px)]" : "grid-cols-1"
+            }`}
         >
           {/* Left / Main column (auto-fills when sidebar hidden) */}
           <div>

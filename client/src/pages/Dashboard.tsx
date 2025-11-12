@@ -16,7 +16,7 @@ export default function DashboardPage() {
     <div className="p-6 flex flex-col gap-6">
       {/* Header */}
       <div className="flex justify-between items-center flex-wrap gap-4">
-        <h1 className="text-xl">FAKE PLACEHOLDER DATA</h1>
+        <h1>PLACEHOLDER DASHBOARD DATA</h1>
 
         {/* Big Go To Shipping Button */}
         <Link href="/ship">
@@ -31,6 +31,18 @@ export default function DashboardPage() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>System Status</CardTitle>
+            <Settings className="h-5 w-5 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold text-green-600">Online</p>
+            <p className="text-xs text-gray-500">all services operational</p>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Total Shipments</CardTitle>
@@ -39,17 +51,6 @@ export default function DashboardPage() {
           <CardContent>
             <p className="text-2xl font-bold">248</p>
             <p className="text-xs text-gray-500">in the past 30 days</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Labels Printed</CardTitle>
-            <BarChart3 className="h-5 w-5 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">1,472</p>
-            <p className="text-xs text-gray-500">total since last sync</p>
           </CardContent>
         </Card>
 
@@ -66,14 +67,15 @@ export default function DashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>System Status</CardTitle>
-            <Settings className="h-5 w-5 text-primary" />
+            <CardTitle>Awaiting Delivery</CardTitle>
+            <BarChart3 className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-green-600">Online</p>
-            <p className="text-xs text-gray-500">all services operational</p>
+            <p className="text-2xl font-bold">11</p>
+            <p className="text-xs text-gray-500">shipments</p>
           </CardContent>
         </Card>
+
       </div>
 
       {/* Announcements + Recent Activity Side by Side */}
@@ -88,8 +90,8 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="text-gray-600 text-sm space-y-3">
             <div className="border-b pb-2">
-              <p className="font-medium text-gray-800">📦 UPS BYOA rollout coming soon</p>
-              <p className="text-xs text-gray-500">Expected launch: Nov 20th</p>
+              <p className="font-medium text-gray-800">📦 New usps shipping guidelines released</p>
+              <p className="text-xs text-gray-500">See link for details: <a href="panda.tangosquared.com">TESTING</a></p>
             </div>
 
             <div className="border-b pb-2">
