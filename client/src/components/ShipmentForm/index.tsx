@@ -115,49 +115,49 @@ export const ShipmentForm = ({
 
   // ---- Dynamic step configuration ----
   const stepConfig =
-    shipmentFormLayout === "3-step"
+    shipmentFormLayout === "3-step" || shipmentFormLayout === "3-step-2"
       ? [
-          {
-            key: "shipment", // Combined address & packages
-            title: "Shipment Information",
-            icon: <MapPin className="h-5 w-5 text-primary" />,
-            validate: ["fromAddress", "toAddress", "packages"],
-          },
-          {
-            key: "rates",
-            title: "Select Shipping Rate",
-            icon: <DollarSign className="h-5 w-5 text-primary" />,
-          },
-          {
-            key: "label",
-            title: "Label Purchased",
-            icon: <Printer className="h-5 w-5 text-primary" />,
-          },
-        ]
+        {
+          key: "shipment", // Combined address & packages
+          title: "Shipment Information",
+          icon: <MapPin className="h-5 w-5 text-primary" />,
+          validate: ["fromAddress", "toAddress", "packages"],
+        },
+        {
+          key: "rates",
+          title: "Select Shipping Rate",
+          icon: <DollarSign className="h-5 w-5 text-primary" />,
+        },
+        {
+          key: "label",
+          title: "Label Purchased",
+          icon: <Printer className="h-5 w-5 text-primary" />,
+        },
+      ]
       : [
-          {
-            key: "addresses",
-            title: "Shipping Addresses",
-            icon: <MapPin className="h-5 w-5 text-primary" />,
-            validate: ["fromAddress", "toAddress"],
-          },
-          {
-            key: "packages",
-            title: "Package & Services",
-            icon: <Package className="h-5 w-5 text-primary" />,
-            validate: ["packages"],
-          },
-          {
-            key: "rates",
-            title: "Select Shipping Rate",
-            icon: <DollarSign className="h-5 w-5 text-primary" />,
-          },
-          {
-            key: "label",
-            title: "Label Purchased",
-            icon: <Printer className="h-5 w-5 text-primary" />,
-          },
-        ];
+        {
+          key: "addresses",
+          title: "Shipping Addresses",
+          icon: <MapPin className="h-5 w-5 text-primary" />,
+          validate: ["fromAddress", "toAddress"],
+        },
+        {
+          key: "packages",
+          title: "Package & Services",
+          icon: <Package className="h-5 w-5 text-primary" />,
+          validate: ["packages"],
+        },
+        {
+          key: "rates",
+          title: "Select Shipping Rate",
+          icon: <DollarSign className="h-5 w-5 text-primary" />,
+        },
+        {
+          key: "label",
+          title: "Label Purchased",
+          icon: <Printer className="h-5 w-5 text-primary" />,
+        },
+      ];
 
   const form = useForm<ShipmentFormInput>({
     resolver: zodResolver(createShipmentSchema),
@@ -284,31 +284,50 @@ export const ShipmentForm = ({
   const stepContent = useMemo(() => {
     switch (step.key) {
       case "shipment": // 3-step combined address + package
-        return (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left: Address Section */}
-            <div>
+        if (shipmentFormLayout === "3-step") {
+          return (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Left: Address Section */}
+              <div>
+                <Card className="border border-border">
+                  <CardContent className="p-5">
+                    <h4 className="font-medium text-base mb-3 flex items-center gap-2">
+                      <MapIcon className="h-4 w-4 text-primary" />
+                      Address
+                    </h4>
+                    <AddressSection layout={addressFormLayout} form={form} />
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Right: Package + Services */}
+              <PackageSection form={form} showScaleButton={showScaleButton} />
+            </div>
+          );
+        } else if (shipmentFormLayout === "3-step-2") {
+          // Addresses above packages, both stacked in the same column
+          return (
+            <div className="flex flex-col gap-8">
               <Card className="border border-border">
                 <CardContent className="p-5">
                   <h4 className="font-medium text-base mb-3 flex items-center gap-2">
                     <MapIcon className="h-4 w-4 text-primary" />
-                    Address
+                    Addresses
                   </h4>
                   <AddressSection layout={addressFormLayout} form={form} />
                 </CardContent>
               </Card>
+
+              <PackageSection form={form} showScaleButton={showScaleButton} />
             </div>
-
-            {/* Right: Package + Services */}
-            <PackageSection form={form} showScaleButton={showScaleButton} />
-          </div>
-        );
-
+          );
+        }
+        break;
       case "addresses":
         return <AddressSection layout={addressFormLayout} form={form} />;
 
       case "packages":
-        return <PackageSection form={form}/>;
+        return <PackageSection form={form} />;
 
       case "rates":
         return (
@@ -363,9 +382,8 @@ export const ShipmentForm = ({
 
       <Form {...form}>
         <div
-          className={`grid grid-cols-1 gap-6 ${
-            shouldShowSidebar ? "md:grid-cols-[1fr_380px]" : ""
-          } pt-4 p-6`}
+          className={`grid grid-cols-1 gap-6 ${shouldShowSidebar ? "md:grid-cols-[1fr_380px]" : ""
+            } pt-4 p-6`}
         >
           <div>
             <Card className="rounded-b-none">

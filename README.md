@@ -12,12 +12,15 @@ npm run build
 
 ## SHIPPING DEMO - TODO
 
+- layout
+    - hide left side bar sooner
+
+- shipping
+    - hide right side bar sooner
+
 - rates
     - delivery dates are only estimates
     - your price => Panda Price
-
-- sidebar & banner
-    - more layouts with debug toggles (compact vs full)
 
 - label summary
     - estimated elivery date
@@ -29,11 +32,8 @@ npm run build
     - verify accurate data
     - panda logo missing
 
-- packages 
-    - middle dimension field no rounding on corners
-
 - add-on services & details
-    - reference fields + print on label
+    - implement reference fields + print on label
     - all other services
     - filter by carrier + packageType?
 
@@ -47,15 +47,9 @@ npm run build
     - how are we going to configure & generate zpl labels
     - panda branded labels? zpl customization? Easypost,usps,ups terms?
 
-- website frame
-    - header, sidebar, mobile menu
-    - debug toggle
-
 
 ## INFRASTRUCTURE - TODO
 
-- page routing
-    - verify apache/nginx will recognize react routes
 
 - static cdn hosting
     - can we host the whole frontend in S3 or static host?

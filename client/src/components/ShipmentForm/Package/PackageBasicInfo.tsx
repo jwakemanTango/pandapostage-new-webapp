@@ -24,12 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import {
-  Plus,
-  Trash2,
-  Scale,
-  Loader2,
-} from "lucide-react";
+import { Plus, Trash2, Scale, Loader2 } from "lucide-react";
 import { useFieldArray, type UseFormReturn } from "react-hook-form";
 import { useScale, ScaleProvider } from "@/lib/usbScale";
 import { CARRIERS, PACKAGE_TYPES } from "@/lib/constants";
@@ -40,10 +35,6 @@ interface PackageBasicInfoProps {
   showScaleButton?: boolean;
 }
 
-/**
- * Automatically wraps itself with <ScaleProvider>,
- * so parent components don’t need to.
- */
 export const PackageBasicInfo = ({ form, showScaleButton }: PackageBasicInfoProps) => {
   return (
     <ScaleProvider>
@@ -52,11 +43,7 @@ export const PackageBasicInfo = ({ form, showScaleButton }: PackageBasicInfoProp
   );
 };
 
-// --- Inner implementation (isolated for clarity) ---
-const PackageBasicInfoInner = ({
-  form,
-  showScaleButton,
-}: PackageBasicInfoProps) => {
+const PackageBasicInfoInner = ({ form, showScaleButton }: PackageBasicInfoProps) => {
   const { control, watch, setValue } = form;
   const { device, weight, isConnecting, supported, connect, getCurrentWeight } = useScale();
   const isConnected = !!device;
@@ -117,7 +104,7 @@ const PackageBasicInfoInner = ({
 
   return (
     <div className="space-y-4">
-      {/* Errors */}
+      {/* Error Banner */}
       {form.formState.errors.packages && (
         <div className="mb-3 rounded-md border border-destructive/40 bg-destructive/10 text-destructive text-sm px-3 py-2">
           Please correct all package fields before continuing.
@@ -177,12 +164,13 @@ const PackageBasicInfoInner = ({
 
       {/* Packages Table */}
       <div className="border rounded-md overflow-hidden">
+        {/* Desktop View */}
         <div className="hidden md:block">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[40px] text-center">#</TableHead>
-                <TableHead className="w-[120px] text-center">
+                <TableHead className="w-[140px] text-center">
                   {isConnected && showScaleButton ? (
                     <div className="flex items-center justify-center text-green-700 text-sm">
                       <Scale className="h-4 w-4 mr-1 text-green-600" />
@@ -213,6 +201,8 @@ const PackageBasicInfoInner = ({
               {fields.map((field, i) => (
                 <TableRow key={field.id}>
                   <TableCell className="text-center">{i + 1}</TableCell>
+
+                  {/* Scale Button */}
                   <TableCell className="text-center">
                     {showScaleButton ? (
                       <Button
@@ -238,18 +228,70 @@ const PackageBasicInfoInner = ({
 
                   {/* Weight Fields */}
                   <TableCell colSpan={2}>
-                    <div className="flex gap-1 justify-center w-full max-w-[240px] mx-auto">
-                      {(["weightLbs", "weightOz"] as PackageFieldKey[]).map(
-                        (dim, j) => {
+                    <div className="flex gap-2 justify-center w-full max-w-[640px] mx-auto">
+                      {(["weightLbs", "weightOz"] as PackageFieldKey[]).map((dim, j) => {
+                        const hasError = getErrorFor(i, dim);
+                        const isFirst = j === 0;
+                        const isLast = j === 1;
+
+                        return (
+                          <FormField
+                            key={dim}
+                            control={control}
+                            name={`packages.${i}.${dim}` as const}
+                            render={({ field }) => (
+                              <FormItem className="flex-1 basis-0">
+                                <FormControl>
+                                  <div className="relative h-full">
+                                    <Input
+                                      {...field}
+                                      type="text"
+                                      inputMode="numeric"
+                                      placeholder="0"
+                                      value={field.value === 0 ? "" : field.value}
+                                      onChange={(e) => {
+                                        integerOnly(e);
+                                        const val = e.target.value;
+                                        field.onChange(val === "" ? "" : Number(val));
+                                      }}
+                                      className={`w-full h-full pr-10 text-right md:rounded-none
+                                        ${isFirst ? "md:rounded-l-md" : ""}
+                                        ${isLast ? "md:rounded-r-md" : ""}
+                                        ${
+                                          hasError
+                                            ? "border-2 border-destructive focus-visible:ring-2 focus-visible:ring-destructive"
+                                            : ""
+                                        }`}
+                                    />
+                                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                                      {getUnitLabel(dim)}
+                                    </span>
+                                  </div>
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        );
+                      })}
+                    </div>
+                  </TableCell>
+
+                  {/* Dimensions */}
+                  <TableCell colSpan={3}>
+                    <div className="flex justify-center gap-2 w-full max-w-[720px] mx-auto">
+                      {(["length", "width", "height"] as PackageFieldKey[]).map(
+                        (dim, j, arr) => {
                           const hasError = getErrorFor(i, dim);
-                          const isLast = j === 1;
+                          const isFirst = j === 0;
+                          const isLast = j === arr.length - 1;
+
                           return (
                             <FormField
                               key={dim}
                               control={control}
                               name={`packages.${i}.${dim}` as const}
                               render={({ field }) => (
-                                <FormItem className="flex-1">
+                                <FormItem className="flex-1 basis-0">
                                   <FormControl>
                                     <div className="relative h-full">
                                       <Input
@@ -263,61 +305,14 @@ const PackageBasicInfoInner = ({
                                           const val = e.target.value;
                                           field.onChange(val === "" ? "" : Number(val));
                                         }}
-                                        className={`h-full pr-8 text-right rounded-none ${
-                                          isLast
-                                            ? "rounded-r-md"
-                                            : "rounded-l-md"
-                                        } ${
-                                          hasError
-                                            ? "border-2 border-destructive focus-visible:ring-2 focus-visible:ring-destructive"
-                                            : ""
-                                        }`}
-                                      />
-                                      <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
-                                        {getUnitLabel(dim)}
-                                      </span>
-                                    </div>
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
-                          );
-                        }
-                      )}
-                    </div>
-                  </TableCell>
-
-                  {/* Dimensions */}
-                  <TableCell colSpan={3}>
-                    <div className="flex justify-center gap-2 w-full max-w-[400px] mx-auto">
-                      {(["length", "width", "height"] as PackageFieldKey[]).map(
-                        (dim) => {
-                          const hasError = getErrorFor(i, dim);
-                          return (
-                            <FormField
-                              key={dim}
-                              control={control}
-                              name={`packages.${i}.${dim}` as const}
-                              render={({ field }) => (
-                                <FormItem className="flex-1">
-                                  <FormControl>
-                                    <div className="relative">
-                                      <Input
-                                        {...field}
-                                        type="text"
-                                        inputMode="numeric"
-                                        placeholder="0"
-                                        value={field.value === 0 ? "" : field.value}
-                                        onChange={(e) => {
-                                          integerOnly(e);
-                                          const val = e.target.value;
-                                          field.onChange(val === "" ? "" : Number(val));
-                                        }}
-                                        className={`pr-8 text-right ${
-                                          hasError
-                                            ? "border-2 border-destructive focus-visible:ring-2 focus-visible:ring-destructive"
-                                            : ""
-                                        }`}
+                                        className={`w-full h-full pr-10 text-right md:rounded-none
+                                          ${isFirst ? "md:rounded-l-md" : ""}
+                                          ${isLast ? "md:rounded-r-md" : ""}
+                                          ${
+                                            hasError
+                                              ? "border-2 border-destructive focus-visible:ring-2 focus-visible:ring-destructive"
+                                              : ""
+                                          }`}
                                       />
                                       <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
                                         {getUnitLabel(dim)}
@@ -349,6 +344,98 @@ const PackageBasicInfoInner = ({
             </TableBody>
           </Table>
         </div>
+
+        {/* Mobile View */}
+        <div className="block md:hidden divide-y">
+          {fields.map((field, i) => (
+            <div key={field.id} className="p-4 space-y-3">
+              <div className="flex justify-between items-center">
+                <h4 className="font-medium text-sm">Package {i + 1}</h4>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => remove(i)}
+                  disabled={pkgCount === 1}
+                >
+                  <Trash2 className="h-4 w-4 text-muted-foreground" />
+                </Button>
+              </div>
+
+              {/* Weight Fields */}
+              <div className="grid grid-cols-2 gap-3">
+                {(["weightLbs", "weightOz"] as PackageFieldKey[]).map((dim) => (
+                  <FormField
+                    key={dim}
+                    control={control}
+                    name={`packages.${i}.${dim}` as const}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs">
+                          {dim === "weightLbs" ? "Weight (lb)" : "Weight (oz)"}
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              type="text"
+                              inputMode="numeric"
+                              placeholder="0"
+                              className="w-full pr-10 text-right"
+                              onChange={(e) => {
+                                integerOnly(e);
+                                const val = e.target.value;
+                                field.onChange(val === "" ? "" : Number(val));
+                              }}
+                            />
+                            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                              {getUnitLabel(dim)}
+                            </span>
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                ))}
+              </div>
+
+              {/* Dimensions Fields */}
+              <div className="grid grid-cols-3 gap-3">
+                {(["length", "width", "height"] as PackageFieldKey[]).map((dim) => (
+                  <FormField
+                    key={dim}
+                    control={control}
+                    name={`packages.${i}.${dim}` as const}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs capitalize">{dim}</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              type="text"
+                              inputMode="numeric"
+                              placeholder="0"
+                              className="w-full pr-10 text-right"
+                              onChange={(e) => {
+                                integerOnly(e);
+                                const val = e.target.value;
+                                field.onChange(val === "" ? "" : Number(val));
+                              }}
+                            />
+                            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                              in
+                            </span>
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Add Package */}
@@ -369,3 +456,4 @@ const PackageBasicInfoInner = ({
     </div>
   );
 };
+

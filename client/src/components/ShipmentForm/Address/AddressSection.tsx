@@ -1,13 +1,24 @@
 import { useEffect } from "react";
-import { useDebugField} from "@/components/Debug/debugContext";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { AddressFormSingle } from "./AddressFormSingle";
-import { MapPin, Truck } from "lucide-react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
+
 import { Card, CardContent } from "../../ui/card";
+import { MapPin, Truck } from "lucide-react";
 
+import { AddressFormSingle } from "./AddressFormSingle";
+import { AddressesFormModals } from "./AddressesFormModals";
 
-export const AddressSection = ({ form, layout}: { form: any, layout:string }) => {
+interface AddressSectionProps {
+  form: any;
+  layout: string;
+}
+
+export const AddressSection = ({ form, layout }: AddressSectionProps) => {
   // Set a default "Ship From" when using single mode
   useEffect(() => {
     if (layout === "single") {
@@ -25,6 +36,13 @@ export const AddressSection = ({ form, layout}: { form: any, layout:string }) =>
       });
     }
   }, [layout, form]);
+
+  // -----------------------
+  // Layout: MODAL
+  // -----------------------
+  if (layout === "modal") {
+    return <AddressesFormModals form={form} />;
+  }
 
   // -----------------------
   // Layout: SINGLE (Ship To only)
@@ -105,16 +123,15 @@ export const AddressSection = ({ form, layout}: { form: any, layout:string }) =>
   // -----------------------
   return (
     <div className="grid md:grid-cols-2 gap-6">
-
       <Card className="border border-border">
         <CardContent className="p-5">
-      <AddressFormSingle form={form} type="fromAddress" label="Ship From" />
+          <AddressFormSingle form={form} type="fromAddress" label="Ship From" />
         </CardContent>
       </Card>
 
       <Card className="border border-border">
         <CardContent className="p-5">
-      <AddressFormSingle form={form} type="toAddress" label="Ship To" />
+          <AddressFormSingle form={form} type="toAddress" label="Ship To" />
         </CardContent>
       </Card>
     </div>

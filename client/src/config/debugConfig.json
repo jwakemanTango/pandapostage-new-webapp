@@ -55,7 +55,8 @@
         "value": "4-step",
         "options": [
           "4-step",
-          "3-step"
+          "3-step",
+          "3-step-2"
         ]
       },
       "addressFormLayout": {
@@ -64,7 +65,8 @@
           "side-by-side",
           "tabs",
           "accordion",
-          "single"
+          "single",
+          "modal"
         ]
       }
     },
