@@ -223,3 +223,38 @@
     color: hsl(var(--primary-foreground));
   }
 }
+
+/* === Global Scrollbars: White Thumb, Themed Track === */
+
+/* Chrome, Edge, Safari */
+*::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+*::-webkit-scrollbar-track {
+  background: hsl(var(--sidebar-background));
+  border-radius: 8px;
+  box-shadow: inset 0 0 6px hsl(var(--sidebar-border)/0.4);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: hsl(var(--sidebar-foreground)); /* solid white if your foreground is white */
+  border-radius: 8px;
+  border: 3px solid hsl(var(--sidebar-background)); /* slightly thicker border for proportion */
+  box-shadow: 0 0 3px hsl(var(--sidebar-primary)/0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--sidebar-foreground)); /* stays white */
+  box-shadow: 0 0 6px hsl(var(--sidebar-primary)/0.5);
+  transform: scale(1.05);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: auto; /* less cramped for 16px */
+  scrollbar-color: hsl(var(--sidebar-foreground)) hsl(var(--sidebar-background));
+}
+

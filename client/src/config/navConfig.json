@@ -7,22 +7,11 @@
     "component": "NewShipmentPage",
     "showInSidebar": false
   },
-  {
-    "path": "/dashboard",
-    "name": "Dashboard",
-    "title": "Dashboard",
-    "icon": "LayoutDashboard",
-    "component": "NotImplementedPage",
-    "showInSidebar": false
-  },
-  {
-    "divider": true
-  },
-  {
+    {
     "path": "/ship",
     "name": "New Shipment",
     "title": "New Shipment",
-    "icon": "LayoutDashboard",
+    "icon": "Package",
     "component": "NewShipmentPage",
     "permissions": [
       "shipping"
@@ -30,7 +19,12 @@
     "showInSidebar": true
   },
   {
-    "divider": true
+    "path": "/dashboard",
+    "name": "Dashboard",
+    "title": "Dashboard",
+    "icon": "Gauge",
+    "component": "NotImplementedPage",
+    "showInSidebar": true
   },
   {
     "path": "/reports",
@@ -77,6 +71,9 @@
     "showInSidebar": true
   },
   {
+    "divider": true
+  },
+  {
     "path": "/user-settings",
     "name": "Settings",
     "title": "Settings",
@@ -87,28 +84,25 @@
     ],
     "showInSidebar": true
   },
-  {
-    "divider": true
-  },
-  {
-    "path": "/superAdmin-settings",
-    "name": "SuperAdmin Settings",
-    "title": "SuperAdmin Settings",
-    "icon": "SettingsIcon",
+    {
+    "path": "/admin-settings",
+    "name": "Admin Settings",
+    "title": "Admin Settings",
+    "icon": "UserCog",
     "component": "NotImplementedPage",
     "roles": [
-      "superAdmin"
+      "admin","superAdmin"
     ],
     "showInSidebar": true
   },
   {
-    "path": "/admin-settings",
-    "name": "Admin Settings",
-    "title": "Admin Settings",
-    "icon": "SettingsIcon",
+    "path": "/superAdmin-settings",
+    "name": "App Settings",
+    "title": "App Settings",
+    "icon": "Building2",
     "component": "NotImplementedPage",
     "roles": [
-      "admin","superAdmin"
+      "superAdmin"
     ],
     "showInSidebar": true
   },
@@ -127,7 +121,7 @@
     "path": "/dev-settings",
     "name": "Dev Settings",
     "title": "Developer Settings",
-    "icon": "SettingsIcon",
+    "icon": "Code2",
     "component": "DevSettingsPage",
     "showInSidebar": true
   },
