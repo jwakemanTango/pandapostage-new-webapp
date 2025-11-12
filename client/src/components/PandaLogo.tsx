@@ -1,4 +1,4 @@
-import logoUrl from "@assets/panda-logo_1760601059590.png";
+import logoUrl from "@assets/panda-logo.png";
 
 export const PandaLogo = ({ className, compact = false }: { className?: string; compact?: boolean }) => {
   if (compact) {

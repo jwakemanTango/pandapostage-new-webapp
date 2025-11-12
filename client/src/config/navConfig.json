@@ -1,10 +1,10 @@
 [
   {
     "path": "/",
-    "name": "DEMO",
-    "title": "New Shipment - AKA HOME",
+    "name": "Dashboard",
+    "title": "Dashboard",
     "icon": "LayoutDashboard",
-    "component": "NewShipmentPage",
+    "component": "DashboardPage",
     "showInSidebar": false
   },
     {
@@ -74,7 +74,7 @@
     "divider": true
   },
   {
-    "path": "/user-settings",
+    "path": "/userSettings",
     "name": "Settings",
     "title": "Settings",
     "icon": "SettingsIcon",
@@ -85,7 +85,7 @@
     "showInSidebar": true
   },
     {
-    "path": "/admin-settings",
+    "path": "/adminSettings",
     "name": "Admin Settings",
     "title": "Admin Settings",
     "icon": "UserCog",
@@ -96,7 +96,7 @@
     "showInSidebar": true
   },
   {
-    "path": "/superAdmin-settings",
+    "path": "/superAdminSettings",
     "name": "App Settings",
     "title": "App Settings",
     "icon": "Building2",

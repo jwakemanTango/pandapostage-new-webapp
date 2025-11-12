@@ -13,7 +13,6 @@ export default function NewShipmentPage(){
     const addressFormLayout = useDebugSelect("shipping", "addressFormLayout");
 
     // Debug API Config
-
     const apiConfig = {
         baseUrl: useDebugField("api", "apiBaseUrl"),
         ratesEndpoint: useDebugField("api", "ratesEndpoint"),

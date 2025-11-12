@@ -52,7 +52,7 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
     fixed inset-y-0 left-0 flex flex-col h-full
     bg-[hsl(var(--sidebar-background))] text-[hsl(var(--sidebar-foreground))]
     shadow-xl transition-all duration-300 ease-in-out transform-gpu
-    will-change-[width,transform] overscroll-none
+    will-change-[width,transform]
     z-[200]
     ${sidebarWidth} ${sidebarVisibility}
     ${isMobile ? "" : "relative translate-x-0"}
@@ -98,35 +98,35 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
 
       <aside className={sidebarClasses}>
         {/* Header: Logo + Collapse/Close */}
-        <div className="relative flex items-center border-b border-[hsl(var(--sidebar-border))] px-4 py-3 flex-none">
-          <div className="flex items-center w-full justify-between gap-2">
-            <div className="flex-none overflow-hidden">
-              {!collapsed && (
-                <PandaLogo className="max-h-10 w-auto block object-contain pointer-events-none select-none" />
-              )}
-            </div>
+        <div
+          className={`flex items-center border-b border-[hsl(var(--sidebar-border))] px-4 py-3 flex-none
+            ${collapsed && !isMobile ? "justify-center" : "justify-between"}`}
+        >
+          {!collapsed && (
+            <PandaLogo className="max-h-10 w-auto block object-contain pointer-events-none select-none" />
+          )}
 
-            <button
-              onClick={isMobile ? onCloseMobile : toggleCollapse}
-              className="
-                bg-[hsl(var(--sidebar-accent)/0.1)]
-                border border-[hsl(var(--sidebar-border))]
-                rounded-md p-1.5
-                hover:bg-[hsl(var(--sidebar-accent)/0.2)]
-                hover:text-[hsl(var(--sidebar-primary))]
-                transition-all duration-200
-                flex items-center justify-center
-              "
-            >
-              {isMobile ? (
-                <X className="h-4 w-4" />
-              ) : collapsed ? (
-                <ChevronRight className="h-4 w-4" />
-              ) : (
-                <ChevronLeft className="h-4 w-4" />
-              )}
-            </button>
-          </div>
+          <button
+            onClick={isMobile ? onCloseMobile : toggleCollapse}
+            className="
+              bg-[hsl(var(--sidebar-accent)/0.1)]
+              border border-[hsl(var(--sidebar-border))]
+              rounded-md p-1.5
+              hover:bg-[hsl(var(--sidebar-accent)/0.2)]
+              hover:text-[hsl(var(--sidebar-primary))]
+              transition-all duration-200
+              flex items-center justify-center
+              mx-auto
+            "
+          >
+            {isMobile ? (
+              <X className="h-4 w-4" />
+            ) : collapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
+          </button>
         </div>
 
         {/* User Info */}
@@ -167,16 +167,24 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
                       onClick={() => {
                         if (isMobile) onCloseMobile();
                       }}
-                      className={`flex items-center px-4 py-3 cursor-pointer transition-colors duration-150 ${
-                        collapsed && !isMobile
-                          ? "justify-center"
-                          : "justify-between"
-                      } ${isActive ? activeClasses : inactiveClasses}`}
+                      className={`flex items-center px-4 py-3 cursor-pointer transition-colors duration-150
+                        ${
+                          collapsed && !isMobile
+                            ? "justify-center px-0"
+                            : "justify-between"
+                        }
+                        ${isActive ? activeClasses : inactiveClasses}`}
                     >
-                      <div className="flex items-center gap-3 flex-none">
+                      <div
+                        className={`flex items-center gap-3 flex-none ${
+                          collapsed && !isMobile ? "justify-center w-full" : ""
+                        }`}
+                      >
                         {item.icon}
                         {!collapsed && (
-                          <span className="whitespace-nowrap">{item.name}</span>
+                          <span className="whitespace-nowrap">
+                            {item.name}
+                          </span>
                         )}
                       </div>
                       {!collapsed && item.underConstruction && (
@@ -192,17 +200,17 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
 
         {/* Logout */}
         <div
-          className={`p-4 border-t border-[hsl(var(--sidebar-border))] flex-none ${
-            collapsed && !isMobile ? "flex justify-center" : ""
-          }`}
+          className={`p-4 border-t border-[hsl(var(--sidebar-border))] flex-none
+            ${collapsed && !isMobile ? "flex justify-center" : ""}`}
         >
           <button
             onClick={handleLogout}
-            className="flex items-center flex-none transition-colors duration-150
-                       text-[hsl(var(--sidebar-foreground))] hover:text-[hsl(var(--sidebar-primary))]"
+            className={`flex items-center transition-colors duration-150
+              text-[hsl(var(--sidebar-foreground))] hover:text-[hsl(var(--sidebar-primary))]
+              ${collapsed && !isMobile ? "justify-center w-full" : ""}`}
           >
-            <LogOut className="mr-2 h-5 w-5 flex-none" />
-            {!collapsed && <span>Logout</span>}
+            <LogOut className="h-5 w-5" />
+            {!collapsed && <span className="ml-2">Logout</span>}
           </button>
         </div>
       </aside>

@@ -35,8 +35,6 @@ export function useAuth() {
     permissions: permissions || [],
     email: fields.email || "admin@example.com",
   };
-  
-  console.log(user);
 
   // Dummy logout mutation (just clears debug user fields)
   const logoutMutation = useMutation({

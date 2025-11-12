@@ -13,7 +13,7 @@ import {
   Printer,
   Settings,
 } from "lucide-react";
-import labelPreviewUrl from "@assets/label_1760604447339.png";
+import labelPreviewUrl from "@assets/panda-logo.png";
 import { ShipmentFormInput } from "@shared/schema";
 import { printMultipleShippingLabels, printShippingLabel } from "@/utils/printLabel";
 

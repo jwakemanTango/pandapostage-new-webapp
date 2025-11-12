@@ -80,3 +80,18 @@ export const CARRIER_PACKAGE_TYPES: Record<string, string[]> = {
   fedex: ["letter", "parcel", "large_box"],
   dhl: ["letter", "parcel", "large_box"],
 };
+
+export const USER_ROLES = [
+  { value: "user", label: "User" },
+  { value: "admin", label: "Admin" },
+  { value: "superAdmin", label: "SuperAdmin" },
+]
+
+export const USER_FEATURE_PERMISSIONS = [
+  { value: "shipping", label: "Shipping" },
+  { value: "reports", label: "Reports" },
+  { value: "batch", label: "Batch" },
+  { value: "history", label: "History" },
+  { value: "settings", label: "Settings" },
+  { value: "addressBook", label: "Address Book" },
+]

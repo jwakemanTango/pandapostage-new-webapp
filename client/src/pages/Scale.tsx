@@ -1,8 +1,8 @@
 import { UsbScaleMonitor } from "@/components/UsbScaleMonitor";
 
-export default function ScalePage(){
+export default function ScalePage() {
   return (
-        <UsbScaleMonitor />
+    <UsbScaleMonitor />
   );
 };
 
