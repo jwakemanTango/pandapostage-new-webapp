@@ -1,7 +1,12 @@
 // --------------------------------------------------------------
 // Electron main process with robust debug logging + loading screen + DevTools toggle
 // --------------------------------------------------------------
+
 import { app, BrowserWindow, Menu, ipcMain, Notification, Tray } from "electron";
+
+import os from "os";
+import { networkInterfaces } from "os";
+
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
@@ -156,6 +161,65 @@ function createWindow() {
     }
   };
 
+  // Native OS notification with host information
+  const showTestNotification = () => {
+    try {
+      const nets = networkInterfaces();
+      let ip = "Unknown";
+
+      for (const name of Object.keys(nets)) {
+        for (const net of nets[name] || []) {
+          if (net.family === "IPv4" && !net.internal) {
+            ip = net.address;
+            break;
+          }
+        }
+      }
+
+      // Get readable OS name + version
+      const platform = os.platform();
+      let osName = platform;
+      switch (platform) {
+        case "win32":
+          osName = "Windows";
+          break;
+        case "darwin":
+          osName = "macOS";
+          break;
+        case "linux":
+          osName = "Linux";
+          break;
+      }
+
+      const osVersion = os.release();
+
+      const info = {
+        Hostname: os.hostname(),
+        User: os.userInfo().username,
+        OS: `${osName} ${osVersion}`,
+        Arch: os.arch(),
+        IP: ip,
+      };
+
+      console.log("💻 Machine Info:", info);
+
+      new Notification({
+        title: "Machine Info",
+        body:
+          `Host: ${info.Hostname}\n` +
+          `User: ${info.User}\n` +
+          `OS: ${info.OS} (${info.Arch})\n` //+
+          //`IP: ${info.IP}`,
+      }).show();
+    } catch (err) {
+      console.error("❌ Failed to get system info:", err);
+      new Notification({
+        title: "Error",
+        body: "Could not retrieve system information.",
+      }).show();
+    }
+  }
+
   // Delay slightly so spinner is visible
   setTimeout(loadAppContent, 500);
 
@@ -173,48 +237,53 @@ function createWindow() {
     mainWindow = null;
   });
 
-  // ------------------------------------------------------------
-  // 🧩 Application Menu (includes Always on Top + DevTools)
-  // ------------------------------------------------------------
-  const menuTemplate = [
-    {
-      label: "View",
-      submenu: [
-        {
-          label: "Always on Top",
-          type: "checkbox",
-          checked: false,
-          click: (menuItem) => {
-            const newState = !mainWindow.isAlwaysOnTop();
-            mainWindow.setAlwaysOnTop(newState);
-            menuItem.checked = newState;
-            console.log(`📌 Always on top: ${newState}`);
-          },
+// ------------------------------------------------------------
+// 🧩 Application Menu (includes Always on Top + DevTools + Notifications + System Info)
+// ------------------------------------------------------------
+const menuTemplate = [
+  {
+    label: "Tools",
+    submenu: [
+      {
+        label: "Show Test Notification",
+        click: showTestNotification,
+      },
+      { type: "separator" },
+      {
+        label: "Always on Top",
+        type: "checkbox",
+        checked: false,
+        click: (menuItem) => {
+          const newState = !mainWindow.isAlwaysOnTop();
+          mainWindow.setAlwaysOnTop(newState);
+          menuItem.checked = newState;
+          console.log(`📌 Always on top: ${newState}`);
         },
-        { type: "separator" },
-        {
-          label: "Reload",
-          accelerator: "CmdOrCtrl+R",
-          click: () => mainWindow.reload(),
+      },
+      { type: "separator" },
+      {
+        label: "Reload",
+        accelerator: "CmdOrCtrl+R",
+        click: () => mainWindow.reload(),
+      },
+      {
+        label: "Toggle DevTools",
+        accelerator: "CmdOrCtrl+Shift+I",
+        click: () => {
+          console.log("🛠️ Toggling DevTools");
+          if (mainWindow.webContents.isDevToolsOpened()) {
+            mainWindow.webContents.closeDevTools();
+          } else {
+            mainWindow.webContents.openDevTools({ mode: "detach" });
+          }
         },
-        {
-          label: "Toggle DevTools",
-          accelerator: "CmdOrCtrl+Shift+I",
-          click: () => {
-            console.log("🛠️ Toggling DevTools");
-            if (mainWindow.webContents.isDevToolsOpened()) {
-              mainWindow.webContents.closeDevTools();
-            } else {
-              mainWindow.webContents.openDevTools({ mode: "detach" });
-            }
-          },
-        },
-      ],
-    },
-  ];
+      },
+    ],
+  },
+];
 
-  const menu = Menu.buildFromTemplate(menuTemplate);
-  Menu.setApplicationMenu(menu);
+const menu = Menu.buildFromTemplate(menuTemplate);
+Menu.setApplicationMenu(menu);
 
   // ------------------------------------------------------------
   // IPC hook — optional frontend toggle
@@ -243,7 +312,7 @@ app.whenReady().then(() => {
   // ------------------------------------------------------------
   const notif = new Notification({
     title: "PandaPostage",
-    body: "App is ready — running as a native desktop application.",
+    body: "PandaPostage Desktop App is Running",
   });
   notif.show();
 

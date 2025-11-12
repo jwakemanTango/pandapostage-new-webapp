@@ -1,5 +1,6 @@
 {
   "app":{
+    "hide":true,
     "toggles": {
       "showTopBar": true
     }
@@ -23,7 +24,7 @@
     },
     "selects": {
       "role": {
-        "value": "superAdmin",
+        "value": "user",
         "options": [
           "superAdmin",
           "admin",
@@ -33,11 +34,11 @@
     },
     "toggles": {
       "shippingPermission": true,
-      "reportsPermission": true,
-      "addressBookPermission": true,
-      "batchPermission": true,
-      "historyPermission": true,
-      "settingsPermission": true
+      "reportsPermission": false,
+      "addressBookPermission": false,
+      "batchPermission": false,
+      "historyPermission": false,
+      "devPermission": false
     }
   },
   "hardware": {
@@ -80,6 +81,12 @@
       "showBanner": true,
       "showLabelPreview": true,
       "showScaleButton": true
+    }
+  },
+    "SomeNewFeature":{
+      "hide": true,
+    "toggles": {
+      "enabled": true
     }
   }
 }

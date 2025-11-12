@@ -16,7 +16,7 @@ export default function DashboardPage() {
     <div className="p-6 flex flex-col gap-6">
       {/* Header */}
       <div className="flex justify-between items-center flex-wrap gap-4">
-        <h1 className="text-gray-500 text-lg">FAKE PLACEHOLDER DATA</h1>
+        <h1 className="text-xl">FAKE PLACEHOLDER DATA</h1>
 
         {/* Big Go To Shipping Button */}
         <Link href="/ship">
@@ -27,6 +27,53 @@ export default function DashboardPage() {
             Go to Shipping <ArrowRight className="h-5 w-5" />
           </Button>
         </Link>
+      </div>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Total Shipments</CardTitle>
+            <Package className="h-5 w-5 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">248</p>
+            <p className="text-xs text-gray-500">in the past 30 days</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Labels Printed</CardTitle>
+            <BarChart3 className="h-5 w-5 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">1,472</p>
+            <p className="text-xs text-gray-500">total since last sync</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Total Savings</CardTitle>
+            <DollarSign className="h-5 w-5 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold text-green-600">$3,426</p>
+            <p className="text-xs text-gray-500">in carrier discounts</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>System Status</CardTitle>
+            <Settings className="h-5 w-5 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold text-green-600">Online</p>
+            <p className="text-xs text-gray-500">all services operational</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Announcements + Recent Activity Side by Side */}
@@ -80,53 +127,6 @@ export default function DashboardPage() {
               <p className="font-medium text-gray-800">Rate cache refreshed</p>
               <p className="text-xs text-gray-500">2 hours ago</p>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Total Shipments</CardTitle>
-            <Package className="h-5 w-5 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">248</p>
-            <p className="text-xs text-gray-500">in the past 30 days</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Labels Printed</CardTitle>
-            <BarChart3 className="h-5 w-5 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">1,472</p>
-            <p className="text-xs text-gray-500">total since last sync</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Total Savings</CardTitle>
-            <DollarSign className="h-5 w-5 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-green-600">$3,426</p>
-            <p className="text-xs text-gray-500">in carrier discounts</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>System Status</CardTitle>
-            <Settings className="h-5 w-5 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-green-600">Online</p>
-            <p className="text-xs text-gray-500">all services operational</p>
           </CardContent>
         </Card>
       </div>

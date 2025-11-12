@@ -1,13 +1,13 @@
 [
-    {
-      "path": "/",
-      "name": "Dashboard",
-      "title": "Dashboard",
-      "icon": "LayoutDashboard",
-      "component": "DashboardPage",
-      "showInSidebar": true
-    },
-    {
+  {
+    "path": "/",
+    "name": "Dashboard",
+    "title": "Dashboard",
+    "icon": "Gauge",
+    "component": "DashboardPage",
+    "showInSidebar": true
+  },
+  {
     "path": "/ship",
     "name": "New Shipment",
     "title": "New Shipment",
@@ -16,14 +16,6 @@
     "permissions": [
       "shipping"
     ],
-    "showInSidebar": true
-  },
-  {
-    "path": "/dashboard",
-    "name": "Dashboard",
-    "title": "Dashboard",
-    "icon": "Gauge",
-    "component": "NotImplementedPage",
     "showInSidebar": true
   },
   {
@@ -79,19 +71,17 @@
     "title": "Settings",
     "icon": "SettingsIcon",
     "component": "NotImplementedPage",
-    "permissions": [
-      "settings"
-    ],
     "showInSidebar": true
   },
-    {
+  {
     "path": "/adminSettings",
     "name": "Admin Settings",
     "title": "Admin Settings",
     "icon": "UserCog",
     "component": "NotImplementedPage",
     "roles": [
-      "admin","superAdmin"
+      "admin",
+      "superAdmin"
     ],
     "showInSidebar": true
   },
@@ -115,6 +105,9 @@
     "title": "USB Scale - Debugger",
     "icon": "Scale",
     "component": "ScalePage",
+    "permissions": [
+      "dev"
+    ],
     "showInSidebar": true
   },
   {
@@ -123,6 +116,9 @@
     "title": "Developer Settings",
     "icon": "Code2",
     "component": "DevSettingsPage",
+    "permissions": [
+      "dev"
+    ],
     "showInSidebar": true
   },
   {

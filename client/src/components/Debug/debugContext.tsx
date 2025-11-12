@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import debugConfig from "@/config/debugConfig.json"; // ✅ direct import (no ?raw)
 
-const STORAGE_KEY = "debugSchema_v3";
+const STORAGE_KEY_DEBUG = "debugSchema_v3";
 
 // --- Types ---
 export type DebugSchema = Record<
@@ -39,12 +39,12 @@ export const DebugProvider = ({ children }: { children: React.ReactNode }) => {
   // --- Initial Load ---
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = localStorage.getItem(STORAGE_KEY_DEBUG);
       if (stored) {
-        console.log("[DebugProvider] Using stored schema");
+        console.log("[DebugProvider] Using stored schema", JSON.parse(stored));
         setSchemaState(JSON.parse(stored));
       } else {
-        console.log("[DebugProvider] Using default debugConfig.json");
+        console.log("[DebugProvider] Using default debugConfig.json", debugConfig);
         setSchemaState(debugConfig);
       }
     } catch (err) {
@@ -56,7 +56,7 @@ export const DebugProvider = ({ children }: { children: React.ReactNode }) => {
   // --- Persist Changes ---
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(schema));
+      localStorage.setItem(STORAGE_KEY_DEBUG, JSON.stringify(schema));
     } catch (err) {
       console.warn("[DebugProvider] Failed to persist schema:", err);
     }
@@ -84,7 +84,7 @@ export const DebugProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const resetSchemaToDefault = () => {
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEY_DEBUG);
     setSchemaState(debugConfig);
     console.log("[DebugProvider] Schema reset to default from file");
   };
