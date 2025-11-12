@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import debugConfig from "@/config/debugConfig.json"; // ✅ direct import (no ?raw)
 
-const STORAGE_KEY = "debugSchema_v2";
+const STORAGE_KEY = "debugSchema_v3";
 
 // --- Types ---
 export type DebugSchema = Record<

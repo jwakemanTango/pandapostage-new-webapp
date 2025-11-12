@@ -1,6 +1,13 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Package, MapPin, CheckCircle2, DollarSign, ChevronRight, Lock } from "lucide-react";
+import {
+  Package,
+  MapPin,
+  CheckCircle2,
+  DollarSign,
+  ChevronRight,
+  Lock,
+} from "lucide-react";
 import { ShipmentFormInput, Rate } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { PandaLogo } from "@/components/PandaLogo";
@@ -14,6 +21,56 @@ interface LiveSummaryProps {
   formErrors?: any;
 }
 
+const SummarySection = ({
+  icon: Icon,
+  title,
+  hasErrors,
+  hasContent,
+  children,
+  fallback,
+}: {
+  icon: any;
+  title: string;
+  hasErrors?: boolean;
+  hasContent?: boolean;
+  children?: React.ReactNode;
+  fallback?: string;
+}) => (
+  <div
+    className={cn(
+      "pt-1",
+      hasErrors && "border-l-2 border-destructive pl-1 -ml-1"
+    )}
+  >
+    <div className="flex items-center gap-1 mb-0.5">
+      <Icon
+        className={cn("h-3.5 w-3.5 shrink-0", hasErrors && "text-destructive")}
+      />
+      <h4
+        className={cn(
+          "font-semibold text-[13px] leading-tight",
+          hasErrors && "text-destructive"
+        )}
+      >
+        {title}
+      </h4>
+    </div>
+
+    {hasContent ? (
+      <div className="pl-4 text-[13px] space-y-0.5">{children}</div>
+    ) : (
+      <p
+        className={cn(
+          "pl-4 text-[13px]",
+          hasErrors ? "text-destructive" : "text-muted-foreground"
+        )}
+      >
+        {hasErrors ? "Invalid or incomplete" : fallback || "Not yet entered"}
+      </p>
+    )}
+  </div>
+);
+
 export const SidebarSummary = ({
   formData,
   currentStep,
@@ -24,23 +81,23 @@ export const SidebarSummary = ({
 }: LiveSummaryProps) => {
   const { fromAddress, toAddress, packages, additionalServices } = formData || {};
 
-  const hasFromAddress = fromAddress?.name && fromAddress?.city && fromAddress?.state;
-  const hasToAddress = toAddress?.name && toAddress?.city && toAddress?.state;
+  const hasFrom = fromAddress?.name && fromAddress?.city && fromAddress?.state;
+  const hasTo = toAddress?.name && toAddress?.city && toAddress?.state;
   const hasPackages = packages && packages.length > 0 && packages[0]?.weightLbs;
 
-  const hasFromAddressErrors =
-    formErrors?.fromAddress && Object.keys(formErrors.fromAddress).length > 0;
-  const hasToAddressErrors =
-    formErrors?.toAddress && Object.keys(formErrors.toAddress).length > 0;
-  const hasPackageErrors =
-    formErrors?.packages &&
-    formErrors.packages.length > 0 &&
-    formErrors.packages.some((pkg: any) => pkg && Object.keys(pkg).length > 0);
+  const hasErr = {
+    from:
+      !!formErrors?.fromAddress && Object.keys(formErrors.fromAddress).length > 0,
+    to: !!formErrors?.toAddress && Object.keys(formErrors.toAddress).length > 0,
+    pkg:
+      formErrors?.packages &&
+      formErrors.packages.some((p: any) => p && Object.keys(p).length > 0),
+  };
 
   const selectedServices = Object.entries(additionalServices || {})
-    .filter(([_, value]) => value === true)
-    .map(([key]) => {
-      const serviceLabels: Record<string, string> = {
+    .filter(([_, v]) => v === true)
+    .map(([k]) => {
+      const labels: Record<string, string> = {
         saturdayDelivery: "Saturday Delivery",
         requireSignature: "Signature Required",
         expressMailWaiver: "Express Waiver",
@@ -50,57 +107,51 @@ export const SidebarSummary = ({
         additionalHandling: "Additional Handling",
         certifiedMail: "Certified Mail",
       };
-      return serviceLabels[key] || key;
+      return labels[k] || k;
     });
 
   const steps = [
-    { number: 1, label: "Addresses", icon: MapPin, canClick: true },
-    { number: 2, label: "Package & Services", icon: Package, canClick: completedSteps.includes(1) },
-    { number: 3, label: "Rate Selection", icon: DollarSign, canClick: completedSteps.includes(2) && !purchasedLabel },
-    { number: 4, label: "Label", icon: CheckCircle2, canClick: completedSteps.includes(3) },
+    { num: 1, label: "Addresses", icon: MapPin },
+    { num: 2, label: "Package & Services", icon: Package },
+    { num: 3, label: "Rate Selection", icon: DollarSign },
+    { num: 4, label: "Label", icon: CheckCircle2 },
   ];
 
-  const isStepCompleted = (step: number) => completedSteps.includes(step);
-  const isStepCurrent = (step: number) => currentStep === step;
-
   return (
-    <Card className="sticky top-6">
-      <CardHeader
-        className="py-3.5 px-8 flex flex-col items-center rounded-t-xl"
-        style={{ backgroundColor: "#005392" }}
-      >
-        <PandaLogo compact className="h-28 w-full object-contain" />
+    <Card className="sticky top-4 overflow-hidden">
+      <CardHeader className="py-4 px-4 flex flex-col items-center bg-primary text-primary-foreground rounded-t-xl">
+        <PandaLogo compact className="h-10 w-auto object-contain" />
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        <h3 className="text-lg font-semibold text-center mt-2">Shipment Progress</h3>
-        <div className="space-y-2">
-          {steps.map((step) => {
-            const StepIcon = step.icon;
-            const completed = isStepCompleted(step.number);
-            const current = isStepCurrent(step.number);
+      <CardContent className="space-y-3 px-3.5 pt-3">
+        <h3 className="text-base font-semibold text-center leading-tight">
+          Shipment Progress
+        </h3>
+
+        <div className="space-y-1">
+          {steps.map(({ num, label, icon: Icon }) => {
+            const completed = completedSteps.includes(num);
+            const current = currentStep === num;
             const canClick =
-              step.canClick &&
-              (completed || step.number <= Math.max(...completedSteps, 0) + 1);
-            const isLocked = step.number === 3 && purchasedLabel;
+              num <= Math.max(...completedSteps, 0) + 1 &&
+              (completed || num !== current);
+            const locked = num === 3 && purchasedLabel;
 
             return (
               <button
-                key={step.number}
-                onClick={() => canClick && !isLocked && onStepClick(step.number)}
-                disabled={!canClick || !!isLocked}
+                key={num}
+                disabled={!canClick || locked}
+                onClick={() => canClick && !locked && onStepClick(num)}
                 className={cn(
-                  "w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left",
+                  "w-full flex items-center gap-2 p-1.5 rounded text-left transition-all",
                   current && "bg-primary/10 border border-primary/20",
-                  completed && !current && "hover-elevate",
                   !canClick && "opacity-50 cursor-not-allowed",
-                  canClick && !current && !isLocked && "cursor-pointer"
+                  canClick && !current && "hover:bg-muted/40"
                 )}
-                data-testid={`step-${step.number}`}
               >
                 <div
                   className={cn(
-                    "flex items-center justify-center h-8 w-8 rounded-full",
+                    "flex items-center justify-center h-6 w-6 rounded-full shrink-0",
                     completed
                       ? "bg-chart-2 text-white"
                       : current
@@ -109,185 +160,133 @@ export const SidebarSummary = ({
                   )}
                 >
                   {completed ? (
-                    <CheckCircle2 className="h-4 w-4" />
-                  ) : isLocked ? (
-                    <Lock className="h-4 w-4" />
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  ) : locked ? (
+                    <Lock className="h-3.5 w-3.5" />
                   ) : (
-                    <StepIcon className="h-4 w-4" />
+                    <Icon className="h-3.5 w-3.5" />
                   )}
                 </div>
 
-                <div className="flex-1 min-w-0">
-                  <p
-                    className={cn(
-                      "text-sm font-medium",
-                      current && "text-primary",
-                      completed && !current && "text-foreground",
-                      !completed && !current && "text-muted-foreground"
-                    )}
-                  >
-                    {step.label}
-                  </p>
-                </div>
+                <p
+                  className={cn(
+                    "text-[13px] font-medium truncate",
+                    current
+                      ? "text-primary"
+                      : completed
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {label}
+                </p>
 
-                {current && !completed && (
-                  <ChevronRight className="h-4 w-4 text-primary" />
+                {current && (
+                  <ChevronRight className="ml-auto h-3.5 w-3.5 text-primary" />
                 )}
               </button>
             );
           })}
         </div>
 
-        <div className="border-t pt-4 space-y-4">
-          {/* From Address */}
-          <div
-            className={`${hasFromAddressErrors ? "border-l-2 border-destructive pl-2 -ml-2" : ""}`}
+        <div className="border-t pt-2 space-y-1.5">
+          <SummarySection
+            icon={MapPin}
+            title="From Address"
+            hasErrors={hasErr.from}
+            hasContent={!!hasFrom}
           >
-            <div className="flex items-center gap-2 mb-2">
-              <MapPin
-                className={`h-4 w-4 ${
-                  hasFromAddressErrors ? "text-destructive" : "text-muted-foreground"
-                }`}
-              />
-              <h4
-                className={`font-semibold text-sm ${
-                  hasFromAddressErrors ? "text-destructive" : ""
-                }`}
-              >
-                From Address
-              </h4>
-            </div>
-            {hasFromAddress ? (
-              <div className="text-sm space-y-0.5 pl-6">
-                <p className="font-medium">{fromAddress?.name}</p>
+            {hasFrom && (
+              <>
+                <p className="font-medium leading-tight">{fromAddress?.name}</p>
                 {fromAddress?.company && (
-                  <p className="text-muted-foreground">{fromAddress.company}</p>
+                  <p className="text-muted-foreground text-[12px] truncate">
+                    {fromAddress.company}
+                  </p>
                 )}
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-[12px] truncate">
                   {fromAddress?.city}, {fromAddress?.state} {fromAddress?.zipCode}
                 </p>
-              </div>
-            ) : (
-              <p
-                className={`text-sm pl-6 ${
-                  hasFromAddressErrors ? "text-destructive" : "text-muted-foreground"
-                }`}
-              >
-                {hasFromAddressErrors ? "Invalid or incomplete" : "Not yet entered"}
-              </p>
+              </>
             )}
-          </div>
+          </SummarySection>
 
-          {/* To Address */}
-          <div
-            className={`${hasToAddressErrors ? "border-l-2 border-destructive pl-2 -ml-2" : ""}`}
+          <SummarySection
+            icon={MapPin}
+            title="To Address"
+            hasErrors={hasErr.to}
+            hasContent={!!hasTo}
           >
-            <div className="flex items-center gap-2 mb-2">
-              <MapPin
-                className={`h-4 w-4 ${
-                  hasToAddressErrors ? "text-destructive" : "text-muted-foreground"
-                }`}
-              />
-              <h4
-                className={`font-semibold text-sm ${
-                  hasToAddressErrors ? "text-destructive" : ""
-                }`}
-              >
-                To Address
-              </h4>
-            </div>
-            {hasToAddress ? (
-              <div className="text-sm space-y-0.5 pl-6">
-                <p className="font-medium">{toAddress?.name}</p>
+            {hasTo && (
+              <>
+                <p className="font-medium leading-tight">{toAddress?.name}</p>
                 {toAddress?.company && (
-                  <p className="text-muted-foreground">{toAddress.company}</p>
+                  <p className="text-muted-foreground text-[12px] truncate">
+                    {toAddress.company}
+                  </p>
                 )}
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-[12px] truncate">
                   {toAddress?.city}, {toAddress?.state} {toAddress?.zipCode}
                 </p>
-              </div>
-            ) : (
-              <p
-                className={`text-sm pl-6 ${
-                  hasToAddressErrors ? "text-destructive" : "text-muted-foreground"
-                }`}
-              >
-                {hasToAddressErrors ? "Invalid or incomplete" : "Not yet entered"}
-              </p>
+              </>
             )}
-          </div>
+          </SummarySection>
 
-          {/* Package Details */}
-          <div
-            className={`${hasPackageErrors ? "border-l-2 border-destructive pl-2 -ml-2" : ""}`}
+          <SummarySection
+            icon={Package}
+            title="Package Details"
+            hasErrors={hasErr.pkg}
+            hasContent={!!hasPackages}
           >
-            <div className="flex items-center gap-2 mb-2">
-              <Package
-                className={`h-4 w-4 ${
-                  hasPackageErrors ? "text-destructive" : "text-muted-foreground"
-                }`}
-              />
-              <h4
-                className={`font-semibold text-sm ${
-                  hasPackageErrors ? "text-destructive" : ""
-                }`}
-              >
-                Package Details
-              </h4>
-            </div>
-            {hasPackages ? (
-              <div className="text-sm space-y-2 pl-6">
-                {packages?.map((pkg, index) => (
-                  <div key={index} className="space-y-0.5">
-                    <p className="font-medium">Package {index + 1}</p>
-                    <p className="text-muted-foreground">
-                      Weight: {pkg.weightLbs} lbs {pkg.weightOz || 0} oz
-                    </p>
-                    {pkg.length && pkg.width && pkg.height && (
-                      <p className="text-muted-foreground">
-                        Dimensions: {pkg.length}" × {pkg.width}" × {pkg.height}"
-                      </p>
-                    )}
-                  </div>
-                ))}
+            {packages?.map((pkg, i) => (
+              <div key={i} className="space-y-0.5">
+                <p className="font-medium leading-tight">Package {i + 1}</p>
+                <p className="text-muted-foreground text-[12px] truncate">
+                  Weight: {pkg.weightLbs} lbs {pkg.weightOz || 0} oz
+                </p>
+                {pkg.length && pkg.width && pkg.height && (
+                  <p className="text-muted-foreground text-[12px] truncate">
+                    {pkg.length}" × {pkg.width}" × {pkg.height}"
+                  </p>
+                )}
               </div>
-            ) : (
-              <p
-                className={`text-sm pl-6 ${
-                  hasPackageErrors ? "text-destructive" : "text-muted-foreground"
-                }`}
-              >
-                {hasPackageErrors ? "Invalid or incomplete" : "Not yet entered"}
-              </p>
-            )}
-          </div>
+            ))}
+          </SummarySection>
 
-          {/* Additional Services */}
           {selectedServices.length > 0 && (
             <div>
-              <h4 className="font-semibold text-sm mb-2">Additional Services</h4>
-              <div className="flex flex-wrap gap-1.5 pl-6">
-                {selectedServices.map((service) => (
-                  <Badge key={service} variant="secondary" className="text-xs">
-                    {service}
+              <h4 className="font-semibold text-[13px] mb-0.5 leading-tight">
+                Additional Services
+              </h4>
+              <div className="flex flex-wrap gap-1 pl-4">
+                {selectedServices.map((s) => (
+                  <Badge
+                    key={s}
+                    variant="secondary"
+                    className="text-[11px] px-1 py-0.5 truncate"
+                  >
+                    {s}
                   </Badge>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Selected Rate */}
           {purchasedLabel && (
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                <h4 className="font-semibold text-sm">Selected Rate</h4>
+              <div className="flex items-center gap-1 mb-0.5">
+                <DollarSign className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                <h4 className="font-semibold text-[13px] leading-tight">
+                  Selected Rate
+                </h4>
               </div>
-              <div className="text-sm pl-6 space-y-1">
-                <p className="font-medium text-primary">
+              <div className="pl-4 text-[13px] space-y-0.5">
+                <p className="font-medium text-primary leading-tight truncate">
                   {purchasedLabel.carrier} - {purchasedLabel.service}
                 </p>
-                <p className="text-muted-foreground">{purchasedLabel.rate}</p>
+                <p className="text-muted-foreground text-[12px] truncate">
+                  {purchasedLabel.rate}
+                </p>
               </div>
             </div>
           )}

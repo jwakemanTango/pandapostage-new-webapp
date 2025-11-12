@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import PandaLogo from "@/components/PandaLogo";
 import {
@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { appRoutes } from "@/AppRoutes";
 
 type SidebarProps = {
@@ -23,16 +24,8 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
   const { user, logoutMutation } = useAuth();
   const { toast } = useToast();
 
+  const isMobile = useIsMobile();
   const [collapsed, setCollapsed] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Detect mobile viewport
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const handleLogout = () => {
     logoutMutation.mutate(undefined, {
@@ -50,22 +43,24 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
     if (!isMobile) setCollapsed((prev) => !prev);
   };
 
-  // Sidebar style
+  // --- Dynamic classes ---
+  const sidebarWidth = isMobile ? "w-64" : collapsed ? "w-16" : "w-64";
+  const sidebarVisibility =
+    isMobile && !isMobileOpen ? "-translate-x-full" : "translate-x-0";
+
   const sidebarClasses = `
-  fixed inset-y-0 left-0 flex flex-col h-full
-  bg-[hsl(var(--sidebar-background))] text-[hsl(var(--sidebar-foreground))]
-  shadow-xl
-  transition-all duration-300 ease-in-out
-  transform-gpu will-change-[width,transform] overscroll-none
-  ${isMobile ? "w-64" : collapsed ? "w-16" : "w-64"}
-  ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-  ${isMobile ? "z-[200]" : "z-20"}
-  md:relative md:translate-x-0
-  overflow-x-clip overflow-y-hidden
-`;
+    fixed inset-y-0 left-0 flex flex-col h-full
+    bg-[hsl(var(--sidebar-background))] text-[hsl(var(--sidebar-foreground))]
+    shadow-xl transition-all duration-300 ease-in-out transform-gpu
+    will-change-[width,transform] overscroll-none
+    z-[200]
+    ${sidebarWidth} ${sidebarVisibility}
+    ${isMobile ? "" : "relative translate-x-0"}
+    overflow-x-clip overflow-y-hidden
+  `;
+
   const overlayClasses = `
-    fixed inset-0 bg-black/40
-    transition-all duration-300 ease-in-out
+    fixed inset-0 bg-black/40 transition-all duration-300 ease-in-out
     ${isMobileOpen ? "opacity-100 visible" : "opacity-0 invisible"}
     z-[150]
   `;
@@ -92,7 +87,8 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
 
   return (
     <>
-      {isMobile && (
+      {/* Mobile overlay */}
+      {isMobile && isMobileOpen && (
         <div
           className={overlayClasses}
           onClick={onCloseMobile}
@@ -106,34 +102,30 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
           <div className="flex items-center w-full justify-between gap-2">
             <div className="flex-none overflow-hidden">
               {!collapsed && (
-                <PandaLogo
-                  className="max-h-10 w-auto block object-contain pointer-events-none select-none"
-                />
+                <PandaLogo className="max-h-10 w-auto block object-contain pointer-events-none select-none" />
               )}
             </div>
 
-            <div className="flex-shrink-0 flex items-center justify-center">
-              <button
-                onClick={isMobile ? onCloseMobile : toggleCollapse}
-                className="
-                  bg-[hsl(var(--sidebar-accent)/0.1)]
-                  border border-[hsl(var(--sidebar-border))]
-                  rounded-md p-1.5
-                  hover:bg-[hsl(var(--sidebar-accent)/0.2)]
-                  hover:text-[hsl(var(--sidebar-primary))]
-                  transition-all duration-200
-                  flex items-center justify-center
-                "
-              >
-                {isMobile ? (
-                  <X className="h-4 w-4" />
-                ) : collapsed ? (
-                  <ChevronRight className="h-4 w-4" />
-                ) : (
-                  <ChevronLeft className="h-4 w-4" />
-                )}
-              </button>
-            </div>
+            <button
+              onClick={isMobile ? onCloseMobile : toggleCollapse}
+              className="
+                bg-[hsl(var(--sidebar-accent)/0.1)]
+                border border-[hsl(var(--sidebar-border))]
+                rounded-md p-1.5
+                hover:bg-[hsl(var(--sidebar-accent)/0.2)]
+                hover:text-[hsl(var(--sidebar-primary))]
+                transition-all duration-200
+                flex items-center justify-center
+              "
+            >
+              {isMobile ? (
+                <X className="h-4 w-4" />
+              ) : collapsed ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <ChevronLeft className="h-4 w-4" />
+              )}
+            </button>
           </div>
         </div>
 
@@ -172,7 +164,9 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
                 <li key={item.path}>
                   <Link href={item.path} title={item.title}>
                     <div
-                      onClick={onCloseMobile}
+                      onClick={() => {
+                        if (isMobile) onCloseMobile();
+                      }}
                       className={`flex items-center px-4 py-3 cursor-pointer transition-colors duration-150 ${
                         collapsed && !isMobile
                           ? "justify-center"
@@ -185,10 +179,9 @@ const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
                           <span className="whitespace-nowrap">{item.name}</span>
                         )}
                       </div>
-                      {!collapsed &&
-                        item.underConstruction && (
-                          <Wrench className="h-4 w-4 ml-2 text-amber-400 flex-none" />
-                        )}
+                      {!collapsed && item.underConstruction && (
+                        <Wrench className="h-4 w-4 ml-2 text-amber-400 flex-none" />
+                      )}
                     </div>
                   </Link>
                 </li>

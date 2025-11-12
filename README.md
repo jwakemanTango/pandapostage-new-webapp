@@ -17,6 +17,8 @@ npm run build
 
 - shipping
     - hide right side bar sooner
+    - sidebar summary adapt to 3-step / 4-step
+    - clicking step / next step function
 
 - rates
     - delivery dates are only estimates

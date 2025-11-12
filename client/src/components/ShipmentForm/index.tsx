@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -25,7 +25,6 @@ import {
   MapIcon,
 } from "lucide-react";
 
-import AdditionalServices from "./Package/AdditionalServices";
 import RatesSelection from "./RatesSelection";
 import { LabelSummary } from "./LabelSummary";
 import { SidebarSummary } from "./SidebarSummary";
@@ -113,51 +112,66 @@ export const ShipmentForm = ({
   const [purchasedLabel, setPurchasedLabel] = useState<any | null>(null);
   const [rates, setRates] = useState<Rate[]>([]);
 
+  const SIDEBAR_BREAKPOINT = 1280;
+  const [isNarrow, setIsNarrow] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${SIDEBAR_BREAKPOINT - 1}px)`);
+    const onChange = (e: MediaQueryListEvent | MediaQueryList) =>
+      setIsNarrow("matches" in e ? e.matches : (e as MediaQueryList).matches);
+    // Init and subscribe
+    setIsNarrow(mql.matches);
+    mql.addEventListener?.("change", onChange);
+    return () => {
+      mql.removeEventListener?.("change", onChange);
+    };
+  }, []);
+
   // ---- Dynamic step configuration ----
   const stepConfig =
     shipmentFormLayout === "3-step" || shipmentFormLayout === "3-step-2"
       ? [
-        {
-          key: "shipment", // Combined address & packages
-          title: "Shipment Information",
-          icon: <MapPin className="h-5 w-5 text-primary" />,
-          validate: ["fromAddress", "toAddress", "packages"],
-        },
-        {
-          key: "rates",
-          title: "Select Shipping Rate",
-          icon: <DollarSign className="h-5 w-5 text-primary" />,
-        },
-        {
-          key: "label",
-          title: "Label Purchased",
-          icon: <Printer className="h-5 w-5 text-primary" />,
-        },
-      ]
+          {
+            key: "shipment", // Combined address & packages
+            title: "Shipment Information",
+            icon: <MapPin className="h-5 w-5 text-primary" />,
+            validate: ["fromAddress", "toAddress", "packages"],
+          },
+          {
+            key: "rates",
+            title: "Select Shipping Rate",
+            icon: <DollarSign className="h-5 w-5 text-primary" />,
+          },
+          {
+            key: "label",
+            title: "Label Purchased",
+            icon: <Printer className="h-5 w-5 text-primary" />,
+          },
+        ]
       : [
-        {
-          key: "addresses",
-          title: "Shipping Addresses",
-          icon: <MapPin className="h-5 w-5 text-primary" />,
-          validate: ["fromAddress", "toAddress"],
-        },
-        {
-          key: "packages",
-          title: "Package & Services",
-          icon: <Package className="h-5 w-5 text-primary" />,
-          validate: ["packages"],
-        },
-        {
-          key: "rates",
-          title: "Select Shipping Rate",
-          icon: <DollarSign className="h-5 w-5 text-primary" />,
-        },
-        {
-          key: "label",
-          title: "Label Purchased",
-          icon: <Printer className="h-5 w-5 text-primary" />,
-        },
-      ];
+          {
+            key: "addresses",
+            title: "Shipping Addresses",
+            icon: <MapPin className="h-5 w-5 text-primary" />,
+            validate: ["fromAddress", "toAddress"],
+          },
+          {
+            key: "packages",
+            title: "Package & Services",
+            icon: <Package className="h-5 w-5 text-primary" />,
+            validate: ["packages"],
+          },
+          {
+            key: "rates",
+            title: "Select Shipping Rate",
+            icon: <DollarSign className="h-5 w-5 text-primary" />,
+          },
+          {
+            key: "label",
+            title: "Label Purchased",
+            icon: <Printer className="h-5 w-5 text-primary" />,
+          },
+        ];
 
   const form = useForm<ShipmentFormInput>({
     resolver: zodResolver(createShipmentSchema),
@@ -212,8 +226,6 @@ export const ShipmentForm = ({
   });
 
   const handleNext = async () => {
-    console.log("Handling next for step:", step.key);
-
     if (step.key === "shipment" || step.key === "addresses" || step.key === "packages") {
       const fieldsToValidate =
         step.key === "shipment"
@@ -323,6 +335,7 @@ export const ShipmentForm = ({
           );
         }
         break;
+
       case "addresses":
         return <AddressSection layout={addressFormLayout} form={form} />;
 
@@ -363,28 +376,28 @@ export const ShipmentForm = ({
     shipmentFormLayout,
   ]);
 
-  const shouldShowSidebar = showSidebar && step.key !== "label";
+  // Only show sidebar when allowed by props, not on the label step, and not on narrow screens
+  const shouldShowSidebar = showSidebar && step.key !== "label" && !isNarrow;
 
   return (
     <>
       {showBanner && (
         <BannerSummary
           formData={form.getValues()}
-          currentStep={step.key as
-            | "shipment"
-            | "addresses"
-            | "packages"
-            | "rates"
-            | "label"}
+          currentStep={
+            step.key as "shipment" | "addresses" | "packages" | "rates" | "label"
+          }
           formErrors={form.formState.errors}
         />
       )}
 
       <Form {...form}>
         <div
-          className={`grid grid-cols-1 gap-6 ${shouldShowSidebar ? "md:grid-cols-[1fr_380px]" : ""
-            } pt-4 p-6`}
+          className={`grid gap-6 pt-4 p-6 ${
+            shouldShowSidebar ? "grid-cols-[1fr_minmax(260px,320px)]" : "grid-cols-1"
+          }`}
         >
+          {/* Left / Main column (auto-fills when sidebar hidden) */}
           <div>
             <Card className="rounded-b-none">
               <CardContent className="p-6">
@@ -451,8 +464,9 @@ export const ShipmentForm = ({
             </StepFooter>
           </div>
 
+          {/* Right / Sidebar column (hidden under 1028px) */}
           {shouldShowSidebar && (
-            <div className="hidden md:block">
+            <div className="block">
               <SidebarSummary
                 formData={form.getValues()}
                 currentStep={currentStepIndex + 1}

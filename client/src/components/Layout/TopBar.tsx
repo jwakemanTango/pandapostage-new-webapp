@@ -1,58 +1,43 @@
 import { useDebug } from "@/components/Debug/debugContext";
 import { Button } from "@/components/ui/button";
-import { Menu, Bell, HelpCircle, Settings2 } from "lucide-react";
+import { Menu, Settings2 } from "lucide-react";
 import { DynamicDebugPanel } from "@/components/Debug/DynamicDebugPanel";
 import { FundsBalance } from "@/components/FundsBalance";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type TopBarProps = {
   title: string;
-  onMenuClick: () => void;
+  onMenuClick?: () => void;
 };
 
 export const TopBar = ({ title, onMenuClick }: TopBarProps) => {
   const { showPanel, togglePanel } = useDebug();
+  const isMobile = useIsMobile();
 
   return (
-    <header className="bg-white shadow-sm flex flex-col">
+    <header className="bg-white shadow-sm flex flex-col border-b border-[hsl(var(--sidebar-border))]">
       {/* Top Row */}
       <div className="h-16 flex items-center justify-between px-4">
         {/* Left Section */}
         <div className="flex items-center">
-          <Button
-            variant="ghost"
-            className="md:hidden mr-4 text-primary"
-            onClick={onMenuClick}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
-          <h1 className="text-xl font-bold text-primary">{title}</h1>
+          {isMobile && onMenuClick && (
+            <Button
+              variant="ghost"
+              className="mr-4 text-primary"
+              onClick={onMenuClick}
+              title="Open sidebar menu"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          )}
+
+          <h1 className="text-xl font-bold text-primary truncate">{title}</h1>
         </div>
 
         {/* Right Section */}
         <div className="flex items-center space-x-3">
-          {/*
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-primary"
-            title="Notifications"
-          >
-            <Bell className="h-5 w-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-primary"
-            title="Help"
-          >
-            <HelpCircle className="h-5 w-5" />
-          </Button>
-          */}
-
-          {/* User Funds Balance */}
           <FundsBalance />
 
-          {/* Debug Button */}
           <Button
             variant="ghost"
             size="sm"
@@ -68,7 +53,7 @@ export const TopBar = ({ title, onMenuClick }: TopBarProps) => {
 
       {/* Debug Panel (collapsible below top bar) */}
       {showPanel && (
-        <div className="border-t">
+        <div className="border-t border-[hsl(var(--sidebar-border))] bg-amber-50/40">
           <DynamicDebugPanel />
         </div>
       )}
