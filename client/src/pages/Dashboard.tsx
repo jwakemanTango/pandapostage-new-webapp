@@ -19,7 +19,7 @@ export default function DashboardPage() {
         <h1 className="text-gray-500 text-lg">FAKE PLACEHOLDER DATA</h1>
 
         {/* Big Go To Shipping Button */}
-        <Link href="/shipping">
+        <Link href="/ship">
           <Button
             size="lg"
             className="bg-primary text-white hover:bg-primary/90 text-lg px-6 py-4 flex items-center gap-2 shadow-md"
