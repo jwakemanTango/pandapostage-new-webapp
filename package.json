@@ -10,8 +10,8 @@
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push",
-    "dev:electron": "concurrently -n vite,electron -c yellow,blue \"vite\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development node ./node_modules/electron/cli.js ./electron.js\"",
-    "electron": "npm run build && node ./node_modules/electron/cli.js ./electron.js"
+  "dev:electron": "cross-env ELECTRON=true NODE_ENV=development concurrently -n vite,electron -c yellow,blue \"vite\" \"wait-on http://localhost:5173 && node ./node_modules/electron/cli.js ./electron.js\"",
+  "electron": "cross-env ELECTRON=true NODE_ENV=production npm run build && node ./node_modules/electron/cli.js ./electron.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

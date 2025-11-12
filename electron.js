@@ -9,6 +9,10 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// ✅ Set correct app identity BEFORE creating any windows or notifications
+app.setName("PandaPostage-Desktop");
+app.setAppUserModelId("PandaPostage-Desktop");
+
 let mainWindow;
 let tray; // tray reference must persist
 
@@ -88,7 +92,7 @@ function createWindow() {
   // automatically sync with whatever <title> React sets
   mainWindow.webContents.on("page-title-updated", (event, title) => {
     event.preventDefault();
-    mainWindow.setTitle(title || "PandaPostage");
+    //mainWindow.setTitle(title || "PandaPostage");
     console.log(`🪶 Window title updated: ${title}`);
   });
 
