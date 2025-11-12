@@ -7,6 +7,7 @@ import DevSettingsPage from "@/pages/settings/DevSettings";
 
 import NotImplementedPage from "@/pages/catch-alls/NotImplemented";
 import NotFoundPage from "@/pages/catch-alls/NotFound";
+import DashboardPage from "@/pages/Dashboard";
 
 // --------------------------------------------------
 // Component lookup table
@@ -14,6 +15,7 @@ import NotFoundPage from "@/pages/catch-alls/NotFound";
 const componentMap: Record<string, React.ComponentType> = {
   NewShipmentPage,
   ScalePage,
+  DashboardPage,
   DevSettingsPage,
   NotImplementedPage,
   NotFoundPage,

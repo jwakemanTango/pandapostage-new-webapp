@@ -1,12 +1,12 @@
 [
-  {
-    "path": "/",
-    "name": "Dashboard",
-    "title": "Dashboard",
-    "icon": "LayoutDashboard",
-    "component": "DashboardPage",
-    "showInSidebar": false
-  },
+    {
+      "path": "/",
+      "name": "Dashboard",
+      "title": "Dashboard",
+      "icon": "LayoutDashboard",
+      "component": "DashboardPage",
+      "showInSidebar": true
+    },
     {
     "path": "/ship",
     "name": "New Shipment",
