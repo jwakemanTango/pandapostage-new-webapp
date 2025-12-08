@@ -1,4 +1,4 @@
-import { Rate } from "@shared/schema";
+import { Rate } from "@/api/schema";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FaFedex } from "react-icons/fa";

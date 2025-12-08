@@ -8,7 +8,7 @@ import {
   ChevronRight,
   Lock,
 } from "lucide-react";
-import { ShipmentFormInput, Rate } from "@shared/schema";
+import { ShipmentFormInput, Rate } from "@/api/schema";
 import { cn } from "@/lib/utils";
 import { PandaLogo } from "@/components/PandaLogo";
 
@@ -130,12 +130,14 @@ export const SidebarSummary = ({
 
         <div className="space-y-1">
           {steps.map(({ num, label, icon: Icon }) => {
-            const completed = completedSteps.includes(num);
-            const current = currentStep === num;
-            const canClick =
-              num <= Math.max(...completedSteps, 0) + 1 &&
-              (completed || num !== current);
-            const locked = num === 3 && purchasedLabel;
+          const completed = completedSteps.includes(num);
+          const current = currentStep === num;
+          const locked = num === 3 && !!purchasedLabel;
+
+          const canClick =
+            !locked &&
+            num <= Math.max(...completedSteps, 0) + 1 &&
+            (completed || !current);
 
             return (
               <button

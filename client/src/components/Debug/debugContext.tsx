@@ -1,8 +1,10 @@
 // src/components/Debug/debugContext.tsx
 import React, { createContext, useContext, useState, useEffect } from "react";
-import debugConfig from "@/config/debugConfig.json"; // ✅ direct import (no ?raw)
+import debugConfig from "@/config/debugContextConfig.json"; // ✅ direct import (no ?raw)
 
-const STORAGE_KEY_DEBUG = "debugSchema_v3";
+const STORAGE_KEY_DEBUG = "debugSchema_v4";
+
+// Uses localStorage to persist debug context across sessions
 
 // --- Types ---
 export type DebugSchema = Record<
@@ -40,11 +42,12 @@ export const DebugProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY_DEBUG);
-      if (stored) {
+
+      if (stored && stored !== "{}") {
         console.log("[DebugProvider] Using stored schema", JSON.parse(stored));
         setSchemaState(JSON.parse(stored));
       } else {
-        console.log("[DebugProvider] Using default debugConfig.json", debugConfig);
+        console.log("[DebugProvider] Using default debugContextConfig.json", debugConfig);
         setSchemaState(debugConfig);
       }
     } catch (err) {
@@ -98,6 +101,7 @@ export const DebugProvider = ({ children }: { children: React.ReactNode }) => {
         setSchema,
         mergeSchema,
         resetSchemaToDefault,
+        // TODO: These should just be values in the schema.. not the context itself
         showPanel,
         togglePanel,
       }}

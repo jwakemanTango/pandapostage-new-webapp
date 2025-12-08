@@ -28,7 +28,7 @@ import { Plus, Trash2, Scale, Loader2 } from "lucide-react";
 import { useFieldArray, type UseFormReturn } from "react-hook-form";
 import { useScale, ScaleProvider } from "@/lib/usbScale";
 import { CARRIERS, PACKAGE_TYPES } from "@/lib/constants";
-import type { PackageFieldKey, ShipmentFormInput } from "@shared/schema";
+import type { PackageFieldKey, ShipmentFormInput } from "@/api/schema";
 
 interface PackageBasicInfoProps {
   form: UseFormReturn<ShipmentFormInput>;

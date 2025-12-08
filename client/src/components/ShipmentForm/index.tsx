@@ -8,7 +8,7 @@ import {
   createShipmentSchema,
   Rate,
   ShipmentFormInput,
-} from "@shared/schema";
+} from "@/api/schema";
 import { getShippingRates, purchaseShippingLabel } from "@/lib/directApiClient";
 import { useToast } from "@/hooks/use-toast";
 

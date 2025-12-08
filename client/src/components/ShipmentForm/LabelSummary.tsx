@@ -14,7 +14,7 @@ import {
   Settings,
 } from "lucide-react";
 import labelPreviewUrl from "@assets/panda-logo.png";
-import { ShipmentFormInput } from "@shared/schema";
+import { ShipmentFormInput } from "@/api/schema";
 import { printMultipleShippingLabels, printShippingLabel } from "@/utils/printLabel";
 
 interface LabelSummaryProps {

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { createInsertSchema } from "drizzle-zod";
 
 // Address schema for shipment forms
 export const shipmentAddressSchema = z.object({

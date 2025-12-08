@@ -1,5 +1,5 @@
 import { MapPin, DollarSign, Printer } from "lucide-react";
-import { ShipmentFormInput } from "@shared/schema";
+import { ShipmentFormInput } from "@/api/schema";
 
 interface BannerSummaryProps {
   formData: ShipmentFormInput;
